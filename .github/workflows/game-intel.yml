@@ -1,0 +1,51 @@
+name: 游戏情报采集与发布
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: game-intel-pages
+  cancel-in-progress: true
+
+jobs:
+  collect-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 获取项目代码
+        uses: actions/checkout@v6
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 安装邮件发送依赖
+        run: npm install --no-audit --no-fund
+      - name: 采集并生成早报
+        env:
+          SEND_EMAIL: ${{ github.event_name == 'schedule' && 'true' || (github.event_name == 'workflow_dispatch' && 'true' || 'false') }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: npm run collect
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: 上传网页文件
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+      - name: 发布网页
+        id: deployment
+        uses: actions/deploy-pages@v4
+
