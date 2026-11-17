@@ -1,0 +1,12 @@
+{
+  "name": "game-intel-brief",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "collect": "node collect.mjs"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.10"
+  }
+}
+
