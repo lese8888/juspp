@@ -1,44 +1,26 @@
-# 云端部署
+# 免费采集与发布
 
-## 实时采集服务
+## GitHub Actions 与 Pages
 
-实时采集使用常驻 Node.js 服务，不由 GitHub Pages 工作流执行。安装 Node.js 后，在本目录运行：
+仓库是公开的，因此标准 GitHub-hosted runner 和 GitHub Pages 可免费使用。工作流每 5 分钟读取 `sources.json` 里的 RSS/Atom 源，筛选最近 24 小时内容，生成 `news.json` 和独立聚合订阅 `rss.xml`，有新内容时自动发布网页。
+
+GitHub 的定时任务可能排队延迟；5 分钟是配置间隔，不是精确到点的服务保证。该免费方案运行短时采集任务，不运行常驻 Node 进程。
+
+首次部署前，在仓库 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**。此项完成后，推送工作流会首次采集并发布。站点地址为 `https://lese8888.github.io/juspp/`，聚合 RSS 地址为 `https://lese8888.github.io/juspp/rss.xml`。
+
+以后每次有新闻数据变化，工作流会将 `news.json` 和 `rss.xml` 提交到 `main` 并重新发布。没有新数据时不会产生提交或重复发布。公开仓库的标准 GitHub Actions runner 使用量免费；私有仓库超出账户配额后可能产生费用。
+
+## 本地常驻预览
+
+安装 Node.js 后，在项目目录运行：
 
 ```bash
-npm install
 npm start
 ```
 
-服务默认监听 `8765` 端口，启动时立即采集一次 RSS，之后每 5 分钟采集一次；网页每分钟检查新闻数据并自动更新。可通过环境变量 `PORT` 修改服务端口，通过 `CRAWL_INTERVAL_MS` 修改采集间隔（毫秒）。
+本地服务默认监听 `http://localhost:8765`，启动时采集一次，之后每 5 分钟采集；网页可用 `/api/news.json` 取数据，`/rss.xml` 提供聚合 Feed。可通过 `PORT` 和 `CRAWL_INTERVAL_MS` 设置端口和采集间隔。
 
-要在公网持续实时更新，需要把此 Node 服务部署到支持常驻进程的主机，并让网页通过该服务提供的页面和 `/api/news.json` 访问。GitHub Pages 只能发布静态文件，现有 Pages 工作流仍是每日静态发布，不能代替常驻采集服务。
+## 新闻源
 
-## Render 部署
-
-仓库根目录的 `render.yaml` 定义了一个新加坡常驻 Web 服务、1 GB 持久化数据盘和 5 分钟 RSS 采集周期。将仓库连接到 Render 后，在 Dashboard 选择 **New → Blueprint** 并部署该 Blueprint。Render Starter 常驻实例当前从约 US$7/月起，1 GB 持久化磁盘另计；创建前请在 Render 账单预览中确认实际金额。
-
-部署成功后，Render 会分配 `onrender.com` 地址。该地址提供网页、`/api/news.json` 数据接口和 `/rss.xml` 聚合订阅源，可将 `/rss.xml` 添加到任意 RSS 阅读器。采集服务从源站读取 RSS/Atom，并把已采集文章重新发布为标准 RSS 2.0；现有清单中没有 RSS 地址的任天堂官网暂时仍只作为人工核验来源。
-
-## 当前方案
-
-- GitHub Actions 每天 00:00 UTC 运行，对应香港时间 08:00。
-- 自动读取 `sources.json` 中启用且有 RSS 地址的来源，筛选过去 24 小时的文章并按链接去重。
-- 生成 `news.json`，发送简报邮件，并将网页发布到 GitHub Pages。
-- 手动运行工作流也会采集、发送并部署；代码推送只采集并部署，不发邮件。
-
-GitHub Actions 的定时任务使用 UTC，且高负载时可能延迟。每天 08:00 是预期触发时间，不是精确送达保证。
-
-## 首次部署步骤
-
-1. 将 `game-intel` 目录和仓库根目录的 `.github/workflows/game-intel.yml` 推送到 GitHub 仓库默认分支。
-2. 在仓库的 **Settings → Pages → Build and deployment** 中，将来源设为 **GitHub Actions**。
-3. 在 **Settings → Secrets and variables → Actions** 添加仓库 Secrets：
-   - `GMAIL_USER`：用于发信的 Gmail 地址。
-   - `GMAIL_APP_PASSWORD`：该 Gmail 账户生成的应用专用密码。不要使用 Gmail 登录密码，也不要提交到代码。
-   - `RECIPIENT_EMAIL`：简报收件地址。
-4. 等待首次工作流发布；网页地址会显示在 Actions 的 `github-pages` 环境中。把该地址作为仓库变量 `SITE_URL` 添加后，邮件会包含网页链接。
-
-## 来源说明
-
-当前采集器读取 RSS/Atom。清单中没有订阅地址的官方站点暂时只作为人工核验来源，不会被自动抓取。文章时间缺失或无法解析时会被跳过。RSS 源的可用性可能变化，部署后应查看 Actions 日志。
+`sources.json` 中启用且带有 RSS/Atom 地址的来源会自动读取。任天堂官方页目前没有配置订阅地址，因此保留为人工核验来源。若所有订阅源均连接失败，采集器会保留上次已生成的数据。
 
