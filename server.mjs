@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 8765);
-const intervalMs = Number(process.env.CRAWL_INTERVAL_MS || 5 * 60 * 1000);
+const intervalMs = Number(process.env.CRAWL_INTERVAL_MS || 24 * 60 * 60 * 1000);
 const newsFile = process.env.NEWS_FILE || path.join(root, 'news.json');
 let collecting = false;
 
@@ -90,7 +90,7 @@ function xmlEscape(value) {
 
 server.listen(port, '0.0.0.0', () => {
   console.log(`游戏新闻情报台：http://localhost:${port}`);
-  console.log(`RSS 采集间隔：${Math.round(intervalMs / 60000)} 分钟`);
+  console.log(`RSS 采集间隔：${Math.round(intervalMs / 3600000)} 小时`);
   collect();
   setInterval(collect, intervalMs);
 });

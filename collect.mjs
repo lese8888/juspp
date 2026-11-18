@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 
 const config = JSON.parse(await fs.readFile(new URL('./sources.json', import.meta.url), 'utf8'));
 const newsFile = process.env.NEWS_FILE || new URL('./news.json', import.meta.url);
@@ -68,7 +69,7 @@ if (articles.length === 0 && failedSourceCount === activeSources.length) {
 const unchanged = previousReport
   && previousReport.sourceCount === activeSources.length
   && JSON.stringify(previousReport.articles) === JSON.stringify(articles);
-const report = {
+let report = {
   generatedAt: unchanged ? previousReport.generatedAt : new Date().toISOString(),
   timezone: config['默认时区'],
   periodHours: config['采集规则']['时间范围小时'],
@@ -87,6 +88,21 @@ const rssItems = articles.map(item => `
       <category>${escapeXml(item.category || '游戏新闻')}</category>
     </item>`).join('');
 await fs.writeFile(new URL('./rss.xml', import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel>\n  <title>游闻 · 游戏新闻情报</title>\n  <link>${escapeXml(rssSiteUrl)}</link>\n  <description>过去 24 小时游戏新闻聚合</description>\n  <language>zh-CN</language>${rssItems}\n</channel></rss>\n`);
+
+const python = process.env.PYTHON_EXECUTABLE || (process.platform === 'win32' ? 'python' : 'python3');
+const translation = spawnSync(python, ['translate_news.py'], {
+  cwd: new URL('.', import.meta.url),
+  env: process.env,
+  encoding: 'utf8',
+  maxBuffer: 10 * 1024 * 1024
+});
+if (translation.stdout) process.stdout.write(translation.stdout);
+if (translation.stderr) process.stderr.write(translation.stderr);
+if (translation.error || translation.status !== 0) {
+  throw new Error(`简体中文转换失败：${translation.error?.message || `退出码 ${translation.status}`}`);
+}
+report = JSON.parse(await fs.readFile(newsFile, 'utf8'));
+articles = report.articles;
 
 const byCategory = Map.groupBy ? Map.groupBy(articles, item => item.category) : articles.reduce((map, item) => map.set(item.category, [...(map.get(item.category) || []), item]), new Map());
 const date = new Intl.DateTimeFormat('zh-HK', { timeZone: config['默认时区'], dateStyle: 'medium' }).format(new Date());

@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - 'collect.mjs'
+      - 'translate_news.py'
       - 'index.html'
       - 'news.json'
       - 'rss.xml'
@@ -33,7 +34,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: 采集最近 24 小时的新闻
+      - name: 配置 Python 翻译环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安装离线中文翻译工具
+        run: python -m pip install --disable-pip-version-check argostranslate
+      - name: 采集新闻并生成中文口播稿
         env:
           SITE_URL: https://lese8888.github.io/juspp/
         run: node collect.mjs
@@ -65,3 +72,4 @@ jobs:
         if: github.event_name != 'schedule' || steps.save.outputs.changed == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
+
