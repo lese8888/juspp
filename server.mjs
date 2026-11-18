@@ -34,18 +34,41 @@ const contentTypes = {
 const server = http.createServer(async (request, response) => {
   const pathname = new URL(request.url, `http://${request.headers.host}`).pathname;
   const relativePath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
-  if (!['index.html', 'news.json', 'api/news.json'].includes(relativePath)) {
+  if (!['index.html', 'news.json', 'api/news.json', 'rss.xml'].includes(relativePath)) {
     response.writeHead(404).end('未找到');
     return;
   }
 
   try {
     let body;
-    if (relativePath === 'api/news.json') {
+    if (relativePath === 'api/news.json' || relativePath === 'rss.xml') {
       try {
         body = await fs.readFile(newsFile);
       } catch {
         body = await fs.readFile(path.join(root, 'news.json'));
+      }
+      if (relativePath === 'rss.xml') {
+        const report = JSON.parse(body.toString('utf8'));
+        const siteUrl = `${request.headers['x-forwarded-proto'] || 'http'}://${request.headers.host}`;
+        const items = (report.articles || []).map(item => `
+    <item>
+      <title>${xmlEscape(item.title)}</title>
+      <link>${xmlEscape(item.url)}</link>
+      <description>${xmlEscape(item.summary || '')}</description>
+      <pubDate>${new Date(item.timestamp).toUTCString()}</pubDate>
+      <guid isPermaLink="true">${xmlEscape(item.url)}</guid>
+      <category>${xmlEscape(item.category || '游戏新闻')}</category>
+    </item>`).join('');
+        body = Buffer.from(`<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+  <title>游闻 · 游戏新闻情报</title>
+  <link>${xmlEscape(siteUrl)}</link>
+  <description>过去 24 小时游戏新闻聚合</description>
+  <language>zh-CN</language>${items}
+</channel></rss>`);
+        response.writeHead(200, { 'content-type': 'application/rss+xml; charset=utf-8', 'cache-control': 'no-store' });
+        response.end(body);
+        return;
       }
     } else {
       body = await fs.readFile(path.join(root, relativePath));
@@ -60,6 +83,10 @@ const server = http.createServer(async (request, response) => {
     response.end('新闻数据尚未生成，请稍后刷新。');
   }
 });
+
+function xmlEscape(value) {
+  return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[char]);
+}
 
 server.listen(port, '0.0.0.0', () => {
   console.log(`游戏新闻情报台：http://localhost:${port}`);
