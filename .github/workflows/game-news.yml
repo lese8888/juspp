@@ -1,0 +1,68 @@
+name: 游戏新闻 RSS 采集与网页发布
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'collect.mjs'
+      - 'index.html'
+      - 'news.json'
+      - 'rss.xml'
+      - 'sources.json'
+      - '.github/workflows/game-news.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: game-news-pages
+  cancel-in-progress: false
+
+jobs:
+  collect-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 获取项目代码
+        uses: actions/checkout@v4
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 采集最近 24 小时的新闻
+        env:
+          SITE_URL: https://lese8888.github.io/juspp/
+        run: node collect.mjs
+      - name: 保存有变化的新闻与 RSS 数据
+        id: save
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add news.json rss.xml
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            git commit -m '更新游戏新闻 RSS 数据'
+            git push
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: 配置 GitHub Pages
+        if: github.event_name != 'schedule' || steps.save.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+      - name: 准备网页发布文件
+        if: github.event_name != 'schedule' || steps.save.outputs.changed == 'true'
+        run: mkdir -p _site && cp index.html news.json rss.xml _site/
+      - name: 上传网页文件
+        if: github.event_name != 'schedule' || steps.save.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: 发布 GitHub Pages
+        if: github.event_name != 'schedule' || steps.save.outputs.changed == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
+
