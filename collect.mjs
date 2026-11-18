@@ -1,9 +1,10 @@
 import fs from 'node:fs/promises';
-import nodemailer from 'nodemailer';
 
 const config = JSON.parse(await fs.readFile(new URL('./sources.json', import.meta.url), 'utf8'));
+const newsFile = process.env.NEWS_FILE || new URL('./news.json', import.meta.url);
 const activeSources = config['来源'].filter(source => source['启用'] && source['订阅']);
 const cutoff = Date.now() - config['采集规则']['时间范围小时'] * 60 * 60 * 1000;
+let failedSourceCount = 0;
 
 function clean(value = '') {
   return value
@@ -43,6 +44,7 @@ async function readSource(source) {
       };
     }).filter(item => item.title && item.url && item.timestamp >= cutoff);
   } catch (error) {
+    failedSourceCount += 1;
     console.error(`${source['名称']}: ${error.message}`);
     return [];
   }
@@ -55,6 +57,10 @@ for (const item of batches.flat().sort((a, b) => b.timestamp - a.timestamp)) {
   if (!unique.has(key)) unique.set(key, item);
 }
 const articles = [...unique.values()].sort((a, b) => b.timestamp - a.timestamp);
+if (articles.length === 0 && failedSourceCount === activeSources.length) {
+  console.error('所有新闻源均连接失败，保留上一份新闻数据。');
+  process.exit(0);
+}
 const report = {
   generatedAt: new Date().toISOString(),
   timezone: config['默认时区'],
@@ -62,7 +68,7 @@ const report = {
   sourceCount: activeSources.length,
   articles
 };
-await fs.writeFile(new URL('./news.json', import.meta.url), `${JSON.stringify(report, null, 2)}\n`);
+await fs.writeFile(newsFile, `${JSON.stringify(report, null, 2)}\n`);
 
 const byCategory = Map.groupBy ? Map.groupBy(articles, item => item.category) : articles.reduce((map, item) => map.set(item.category, [...(map.get(item.category) || []), item]), new Map());
 const date = new Intl.DateTimeFormat('zh-HK', { timeZone: config['默认时区'], dateStyle: 'medium' }).format(new Date());
@@ -77,6 +83,7 @@ if (process.env.SEND_EMAIL === 'true') {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD || !process.env.RECIPIENT_EMAIL) {
     console.warn('未发送邮件：请在 GitHub Secrets 配置发件邮箱、应用专用密码和收件地址。');
   } else {
+    const { default: nodemailer } = await import('nodemailer');
     const transporter = nodemailer.createTransport({ host: 'smtp.gmail.com', port: 465, secure: true, auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD } });
     await transporter.sendMail({ from: process.env.GMAIL_USER, to: process.env.RECIPIENT_EMAIL, subject: `游戏情报早报｜${date}`, html: htmlBody });
     console.log(`简报已发送至 ${process.env.RECIPIENT_EMAIL}`);
