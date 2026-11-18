@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "collect": "node collect.mjs"
+    "collect": "node collect.mjs",
+    "start": "node server.mjs"
   },
   "dependencies": {
     "nodemailer": "^7.0.10"
