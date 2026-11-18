@@ -40,10 +40,18 @@ const server = http.createServer(async (request, response) => {
   }
 
   try {
-    const file = relativePath === 'api/news.json' ? newsFile : path.join(root, relativePath);
-    const body = await fs.readFile(path.join(root, file));
+    let body;
+    if (relativePath === 'api/news.json') {
+      try {
+        body = await fs.readFile(newsFile);
+      } catch {
+        body = await fs.readFile(path.join(root, 'news.json'));
+      }
+    } else {
+      body = await fs.readFile(path.join(root, relativePath));
+    }
     response.writeHead(200, {
-      'content-type': contentTypes[path.extname(file)],
+      'content-type': contentTypes[path.extname(relativePath === 'api/news.json' ? 'news.json' : relativePath)],
       'cache-control': 'no-store'
     });
     response.end(body);
