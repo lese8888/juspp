@@ -71,14 +71,20 @@ def localize_game_terms(original, translated):
         if re.search(r"\bNintendo Switch\b", original, re.IGNORECASE):
             translated = re.sub(r"任天堂(?:的)?\s*开关\s*2", "任天堂 Switch 2", translated)
             translated = re.sub(r"任天堂(?:的)?\s*开关", "任天堂 Switch", translated)
-        translated = re.sub(r"开关\s*2", "Switch 2", translated)
-        translated = re.sub(r"开关", "Switch", translated)
+        translated = re.sub(r"(?:开关|交换)\s*2", "Switch 2", translated)
+        translated = re.sub(r"(?:开关|交换)", "Switch", translated)
+        translated = re.sub(r"Switch\s*游戏", "Switch 游戏", translated)
+    if re.search(r"\bFighting Game\b", original, re.IGNORECASE):
+        translated = re.sub(r"战斗游戏", "格斗游戏", translated)
+    if re.search(r"\bimprov(?:e|es|ed|ing)\b", original, re.IGNORECASE):
+        translated = re.sub(r"改善", "提升", translated)
     if re.search(r"\bAvatar Legends: The Fighting Game\b", original, re.IGNORECASE):
         translated = re.sub(r"(?:神通|化身|阿凡达)?传说\s*[:：]\s*战斗游戏|Avatar Legends", "《Avatar Legends: The Fighting Game》", translated, flags=re.IGNORECASE)
     elif re.search(r"\bAvatar Legends\b", original, re.IGNORECASE):
         translated = re.sub(r"神通传说|化身传说|阿凡达传说", "Avatar Legends", translated)
     if re.search(r"\bPokémon Champions\b", original, re.IGNORECASE):
         translated = re.sub(r"(?:Pokémon|宝可梦)\s*冠军", "《Pokémon Champions》", translated, flags=re.IGNORECASE)
+        translated = re.sub(r"(?<!《)Pokémon Champions(?!》)", "《Pokémon Champions》", translated, flags=re.IGNORECASE)
     if re.search(r"\bThe Pokémon Company\b", original, re.IGNORECASE):
         translated = re.sub(r"(?:Pokémon|宝可梦)\s*公司", "宝可梦公司", translated, flags=re.IGNORECASE)
     if re.search(r"\bHalf-Life 2\b", original, re.IGNORECASE):
@@ -89,10 +95,24 @@ def localize_game_terms(original, translated):
         translated = re.sub(r"(?:新)?修女\s*Novitiate(?:\s*(?:阶级|职业|级))?", "见习修女职业", translated, flags=re.IGNORECASE)
     if re.search(r"\bbalance\b", original, re.IGNORECASE):
         translated = re.sub(r"余额(更新|补丁|调整)", r"平衡性\1", translated)
+        translated = re.sub(r"获得平衡性?(更新|补丁)", r"将迎来平衡性\1", translated)
+        if re.search(r"\bnext month\b", original, re.IGNORECASE):
+            translated = re.sub(r"(?:将迎来|获得)?平衡性?补丁\s*下个月更新", "下个月将迎来平衡性补丁更新", translated)
     if re.search(r"\bfree.to.play\b", original, re.IGNORECASE):
-        translated = re.sub(r"自由转会(?:移动|手机游戏)?", "免费手游", translated)
+        translated = re.sub(r"自由(?:转会|对游戏)?(?:移动|手机游戏)?", "免费手游", translated)
+    if re.search(r"\bmoves?\b", original, re.IGNORECASE):
+        translated = re.sub(r"移动更新(?:和调整)?", "招式调整", translated)
+    if re.search(r"\bfeatures?\b", original, re.IGNORECASE):
+        translated = re.sub(r"特征", "功能", translated)
+    if re.search(r"\bcharacters?\b", original, re.IGNORECASE):
+        translated = re.sub(r"字符", "角色", translated)
+    if re.search(r"\bPatch 4\.5 Update\b", original, re.IGNORECASE):
+        translated = re.sub(r"Patch\s*4\.5\s*Update", "4.5 版本更新", translated, flags=re.IGNORECASE)
     translated = re.sub(r"阶级", "职业", translated)
     translated = re.sub(r"见习修女职业职业", "见习修女职业", translated)
+    translated = re.sub(r"[\"“”]\s*(《[^》]+》)\s*[\"“”]", r"\1", translated)
+    translated = re.sub(r"(?<=[\u3400-\u9fff])(?=[A-Za-z0-9])", " ", translated)
+    translated = re.sub(r"(?<=[A-Za-z0-9])(?=[\u3400-\u9fff])", " ", translated)
     translated = re.sub(r"倒闭(?=[，。,:：]|$)", "详情如下", translated)
     return translated
 
