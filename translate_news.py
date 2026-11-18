@@ -98,6 +98,9 @@ def localize_game_terms(original, translated):
         translated = re.sub(r"获得平衡性?(更新|补丁)", r"将迎来平衡性\1", translated)
         if re.search(r"\bnext month\b", original, re.IGNORECASE):
             translated = re.sub(r"(?:将迎来|获得)?平衡性?补丁\s*下个月更新", "下个月将迎来平衡性补丁更新", translated)
+            date_pattern = r"(\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日)"
+            translated = re.sub(r"(?:将于)?下月(?:将于|于)\s*" + date_pattern + r"\s*将迎来", r"将于 \1 进行", translated)
+            translated = re.sub(r"(?:将于)?下个月(?:将于|于)\s*" + date_pattern + r"\s*将迎来", r"将于 \1 进行", translated)
     if re.search(r"\bfree.to.play\b", original, re.IGNORECASE):
         translated = re.sub(r"自由(?:转会|对游戏)?(?:移动|手机游戏)?", "免费手游", translated)
     if re.search(r"\bmoves?\b", original, re.IGNORECASE):
@@ -106,8 +109,11 @@ def localize_game_terms(original, translated):
         translated = re.sub(r"特征", "功能", translated)
     if re.search(r"\bcharacters?\b", original, re.IGNORECASE):
         translated = re.sub(r"字符", "角色", translated)
+        translated = re.sub(r"人物", "角色", translated)
     if re.search(r"\bPatch 4\.5 Update\b", original, re.IGNORECASE):
         translated = re.sub(r"Patch\s*4\.5\s*Update", "4.5 版本更新", translated, flags=re.IGNORECASE)
+    if re.search(r"\brundown\b", original, re.IGNORECASE):
+        translated = re.sub(r"(?:以下是|以下为)?倒数[：:]?", "详情如下：", translated)
     translated = re.sub(r"阶级", "职业", translated)
     translated = re.sub(r"见习修女职业职业", "见习修女职业", translated)
     translated = re.sub(r"[\"“”]\s*(《[^》]+》)\s*[\"“”]", r"\1", translated)
