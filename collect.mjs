@@ -56,19 +56,37 @@ for (const item of batches.flat().sort((a, b) => b.timestamp - a.timestamp)) {
   const key = item.url.replace(/\/$/, '').toLowerCase();
   if (!unique.has(key)) unique.set(key, item);
 }
-const articles = [...unique.values()].sort((a, b) => b.timestamp - a.timestamp);
+let articles = [...unique.values()].sort((a, b) => b.timestamp - a.timestamp);
+let previousReport;
+try {
+  previousReport = JSON.parse(await fs.readFile(newsFile, 'utf8'));
+} catch {}
 if (articles.length === 0 && failedSourceCount === activeSources.length) {
   console.error('所有新闻源均连接失败，保留上一份新闻数据。');
-  process.exit(0);
+  articles = previousReport?.articles || [];
 }
+const unchanged = previousReport
+  && previousReport.sourceCount === activeSources.length
+  && JSON.stringify(previousReport.articles) === JSON.stringify(articles);
 const report = {
-  generatedAt: new Date().toISOString(),
+  generatedAt: unchanged ? previousReport.generatedAt : new Date().toISOString(),
   timezone: config['默认时区'],
   periodHours: config['采集规则']['时间范围小时'],
   sourceCount: activeSources.length,
   articles
 };
 await fs.writeFile(newsFile, `${JSON.stringify(report, null, 2)}\n`);
+const rssSiteUrl = process.env.SITE_URL || 'https://lese8888.github.io/juspp/';
+const rssItems = articles.map(item => `
+    <item>
+      <title>${escapeXml(item.title)}</title>
+      <link>${escapeXml(item.url)}</link>
+      <description>${escapeXml(item.summary || '')}</description>
+      <pubDate>${new Date(item.timestamp).toUTCString()}</pubDate>
+      <guid isPermaLink="true">${escapeXml(item.url)}</guid>
+      <category>${escapeXml(item.category || '游戏新闻')}</category>
+    </item>`).join('');
+await fs.writeFile(new URL('./rss.xml', import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel>\n  <title>游闻 · 游戏新闻情报</title>\n  <link>${escapeXml(rssSiteUrl)}</link>\n  <description>过去 24 小时游戏新闻聚合</description>\n  <language>zh-CN</language>${rssItems}\n</channel></rss>\n`);
 
 const byCategory = Map.groupBy ? Map.groupBy(articles, item => item.category) : articles.reduce((map, item) => map.set(item.category, [...(map.get(item.category) || []), item]), new Map());
 const date = new Intl.DateTimeFormat('zh-HK', { timeZone: config['默认时区'], dateStyle: 'medium' }).format(new Date());
@@ -78,6 +96,7 @@ const htmlBody = `<!doctype html><html lang="zh-CN"><meta charset="utf-8"><body 
 
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]); }
 function escapeAttr(value) { return escapeHtml(value).replace(/`/g, '&#96;'); }
+function escapeXml(value) { return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[char]); }
 
 if (process.env.SEND_EMAIL === 'true') {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD || !process.env.RECIPIENT_EMAIL) {
