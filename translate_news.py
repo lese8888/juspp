@@ -79,7 +79,7 @@ def localize_game_terms(original, translated):
     if re.search(r"\bimprov(?:e|es|ed|ing)\b", original, re.IGNORECASE):
         translated = re.sub(r"改善", "提升", translated)
     if re.search(r"\bAvatar Legends: The Fighting Game\b", original, re.IGNORECASE):
-        translated = re.sub(r"(?:神通|化身|阿凡达)?传说\s*[:：]\s*战斗游戏|Avatar Legends", "《Avatar Legends: The Fighting Game》", translated, flags=re.IGNORECASE)
+        translated = re.sub(r"(?:神通|化身|阿凡达)?传说\s*[:：]\s*(?:战斗|格斗)游戏|Avatar Legends", "《Avatar Legends: The Fighting Game》", translated, flags=re.IGNORECASE)
     elif re.search(r"\bAvatar Legends\b", original, re.IGNORECASE):
         translated = re.sub(r"神通传说|化身传说|阿凡达传说", "Avatar Legends", translated)
     if re.search(r"\bPokémon Champions\b", original, re.IGNORECASE):
@@ -111,6 +111,7 @@ def localize_game_terms(original, translated):
     translated = re.sub(r"阶级", "职业", translated)
     translated = re.sub(r"见习修女职业职业", "见习修女职业", translated)
     translated = re.sub(r"[\"“”]\s*(《[^》]+》)\s*[\"“”]", r"\1", translated)
+    translated = re.sub(r"将于\s+((?:\d{4}\s*年\s*)?\d{1,2}\s*月\s*\d{1,2}\s*日)\s+将迎来", r"将于 \1 进行", translated)
     translated = re.sub(r"(?<=[\u3400-\u9fff])(?=[A-Za-z0-9])", " ", translated)
     translated = re.sub(r"(?<=[A-Za-z0-9])(?=[\u3400-\u9fff])", " ", translated)
     translated = re.sub(r"倒闭(?=[，。,:：]|$)", "详情如下", translated)
