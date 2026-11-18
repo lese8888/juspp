@@ -1,5 +1,24 @@
 # 云端部署
 
+## 实时采集服务
+
+实时采集使用常驻 Node.js 服务，不由 GitHub Pages 工作流执行。安装 Node.js 后，在本目录运行：
+
+```bash
+npm install
+npm start
+```
+
+服务默认监听 `8765` 端口，启动时立即采集一次 RSS，之后每 5 分钟采集一次；网页每分钟检查新闻数据并自动更新。可通过环境变量 `PORT` 修改服务端口，通过 `CRAWL_INTERVAL_MS` 修改采集间隔（毫秒）。
+
+要在公网持续实时更新，需要把此 Node 服务部署到支持常驻进程的主机，并让网页通过该服务提供的页面和 `/api/news.json` 访问。GitHub Pages 只能发布静态文件，现有 Pages 工作流仍是每日静态发布，不能代替常驻采集服务。
+
+## Render 部署
+
+仓库根目录的 `render.yaml` 定义了一个新加坡常驻 Web 服务、1 GB 持久化数据盘和 5 分钟 RSS 采集周期。将仓库连接到 Render 后，在 Dashboard 选择 **New → Blueprint** 并部署该 Blueprint。Render Starter 常驻实例当前从约 US$7/月起，1 GB 持久化磁盘另计；创建前请在 Render 账单预览中确认实际金额。
+
+部署成功后，Render 会分配 `onrender.com` 地址。该地址同时提供网页和 `/api/news.json` 接口。此服务从源站读取 RSS/Atom，不需要另外部署 RSSHub；现有清单中没有 RSS 地址的任天堂官网暂时仍只作为人工核验来源。
+
 ## 当前方案
 
 - GitHub Actions 每天 00:00 UTC 运行，对应香港时间 08:00。
