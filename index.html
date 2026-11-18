@@ -75,7 +75,7 @@
     let lastReportAt='';
     function applyReport(report){if(report.generatedAt===lastReportAt)return;lastReportAt=report.generatedAt;articles=report.articles||[];$('#stat-total').textContent=articles.length;$('#stat-featured').textContent=Math.min(articles.length,5);$('#stat-sources').textContent=new Set(articles.map(item=>item.source)).size;$('#saved-count').textContent=savedIds.size;$('.date').textContent=`${new Intl.DateTimeFormat('zh-HK',{timeZone:'Asia/Hong_Kong',dateStyle:'medium',timeStyle:'short'}).format(new Date(report.generatedAt))} HKT`;$('.foot').textContent=`最近采集：${$('.date').textContent} · ${articles.length} 条新闻 · 每分钟检查更新`;renderStories();renderTrends();renderFollow()}
     async function refreshNews(allowStaticFallback=false){try{let response=await fetch('./api/news.json',{cache:'no-store'});if(!response.ok&&allowStaticFallback)response=await fetch('./news.json',{cache:'no-store'});if(!response.ok)throw new Error('新闻数据暂不可用');applyReport(await response.json())}catch{if(!lastReportAt){$('#empty').hidden=false;$('#empty').textContent='新闻数据暂不可用，请稍后刷新。'}}}
-    refreshNews(true);setInterval(()=>refreshNews(false),60*1000);
+    refreshNews(true);setInterval(()=>refreshNews(true),60*1000);
   </script>
 </body>
 </html>
