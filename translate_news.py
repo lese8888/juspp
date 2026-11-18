@@ -22,41 +22,6 @@ RSS_INTRO_RE = re.compile(
     re.IGNORECASE,
 )
 RUMOR_RE = re.compile(r"\b(report(?:ed|edly)?|rumou?r|allegedly|leak|unconfirmed|according to|sources say)\b", re.IGNORECASE)
-PROTECTED_TERMS = [
-    ("Avatar Legends: The Fighting Game", "《Avatar Legends: The Fighting Game》"),
-    ("Call of the Elder Gods", "《Call of the Elder Gods》"),
-    ("Pokémon Champions", "《Pokémon Champions》"),
-    ("The Pokémon Company", "宝可梦公司"),
-    ("High on Life 2", "《High on Life 2》"),
-    ("Half-Life 2", "《Half-Life 2》"),
-    ("Patch 4.5 Update", "4.5 版本更新"),
-    ("Nintendo Switch 2", "任天堂 Switch 2"),
-    ("Nintendo Switch", "任天堂 Switch"),
-    ("PlayStation 5", "PS5"),
-    ("PlayStation 4", "PS4"),
-    ("Sister Novitiate", "见习修女"),
-    ("The Game Awards", "TGA"),
-    ("Resident Evil", "《生化危机》"),
-    ("Avatar Legends", "Avatar Legends"),
-    ("Game Pass", "Game Pass"),
-    ("Switch 2", "Switch 2"),
-    ("Pokémon", "宝可梦"),
-    ("Darktide", "Darktide"),
-    ("Half-Life", "《Half-Life》"),
-    ("GTA 6", "《GTA 6》"),
-    ("Steam", "Steam"),
-    ("Switch", "Switch"),
-    ("Xbox", "Xbox"),
-    ("PlayStation", "PlayStation"),
-    ("Avatar", "Avatar"),
-]
-TERM_FIXES = [
-    (re.compile(r"余额(更新|补丁|调整)"), r"平衡性\1"),
-    (re.compile(r"自由转会(?:移动|手机游戏)?"), "免费手游"),
-    (re.compile(r"阶级"), "职业"),
-    (re.compile(r"神通传说|化身传说"), "Avatar Legends"),
-    (re.compile(r"开关\s*2"), "Switch 2"),
-]
 
 
 def has_chinese(text):
@@ -88,27 +53,48 @@ def ensure_translation_model():
 def translate_text(text):
     text = RSS_FOOTER_RE.sub("", str(text or "")).strip()
     text = RSS_INTRO_RE.sub("", text).strip()
+    text = re.sub(r"\s*\(?\s*via\s+[^)]+\)?\s*", " ", text, flags=re.IGNORECASE).strip()
     if not text or has_chinese(text):
         return text, False
-    replacements = {}
-    prepared = text
-    for index, (term, localized) in enumerate(sorted(PROTECTED_TERMS, key=lambda item: len(item[0]), reverse=True)):
-        token = f"ZXQTERM{index:04d}QXZ"
-        prepared, count = re.subn(re.escape(term), token, prepared)
-        if count:
-            replacements[token] = localized
-    translated = argostranslate.translate.translate(prepared, "en", "zh").strip()
+    translated = argostranslate.translate.translate(text, "en", "zh").strip()
     if not translated:
         raise RuntimeError(f"翻译结果为空：{text[:100]}")
-    for token, localized in replacements.items():
-        translated = re.sub(re.escape(token), localized, translated, flags=re.IGNORECASE)
     translated = re.sub(r"\s+([,，.!?;:])", r"\1", translated)
-    translated = translated.replace(",", "，").replace("!", "！").replace("?", "？").replace(";", "；")
+    translated = translated.replace(",", "，").replace("!", "！").replace("?", "？").replace(";", "；").replace(":", "：")
     translated = re.sub(r"\.(?=\s|$)", "。", translated)
     translated = re.sub(r"\s+([，。！？；：])", r"\1", translated)
-    for pattern, correction in TERM_FIXES:
-        translated = pattern.sub(correction, translated)
     return translated, True
+
+
+def localize_game_terms(original, translated):
+    if re.search(r"\bSwitch(?:\s*2)?\b", original):
+        if re.search(r"\bNintendo Switch\b", original, re.IGNORECASE):
+            translated = re.sub(r"任天堂(?:的)?\s*开关\s*2", "任天堂 Switch 2", translated)
+            translated = re.sub(r"任天堂(?:的)?\s*开关", "任天堂 Switch", translated)
+        translated = re.sub(r"开关\s*2", "Switch 2", translated)
+        translated = re.sub(r"开关", "Switch", translated)
+    if re.search(r"\bAvatar Legends: The Fighting Game\b", original, re.IGNORECASE):
+        translated = re.sub(r"(?:神通|化身|阿凡达)?传说\s*[:：]\s*战斗游戏|Avatar Legends", "《Avatar Legends: The Fighting Game》", translated, flags=re.IGNORECASE)
+    elif re.search(r"\bAvatar Legends\b", original, re.IGNORECASE):
+        translated = re.sub(r"神通传说|化身传说|阿凡达传说", "Avatar Legends", translated)
+    if re.search(r"\bPokémon Champions\b", original, re.IGNORECASE):
+        translated = re.sub(r"(?:Pokémon|宝可梦)\s*冠军", "《Pokémon Champions》", translated, flags=re.IGNORECASE)
+    if re.search(r"\bThe Pokémon Company\b", original, re.IGNORECASE):
+        translated = re.sub(r"(?:Pokémon|宝可梦)\s*公司", "宝可梦公司", translated, flags=re.IGNORECASE)
+    if re.search(r"\bHalf-Life 2\b", original, re.IGNORECASE):
+        translated = re.sub(r"半(?:生|条命)\s*2", "《Half-Life 2》", translated)
+    if re.search(r"\bResistance Crossbow\b", original, re.IGNORECASE):
+        translated = re.sub(r"抵抗十字弓", "Resistance Crossbow", translated)
+    if re.search(r"\bSister Novitiate\b", original, re.IGNORECASE):
+        translated = re.sub(r"(?:新)?修女\s*Novitiate(?:\s*(?:阶级|职业|级))?", "见习修女职业", translated, flags=re.IGNORECASE)
+    if re.search(r"\bbalance\b", original, re.IGNORECASE):
+        translated = re.sub(r"余额(更新|补丁|调整)", r"平衡性\1", translated)
+    if re.search(r"\bfree.to.play\b", original, re.IGNORECASE):
+        translated = re.sub(r"自由转会(?:移动|手机游戏)?", "免费手游", translated)
+    translated = re.sub(r"阶级", "职业", translated)
+    translated = re.sub(r"见习修女职业职业", "见习修女职业", translated)
+    translated = re.sub(r"倒闭(?=[，。,:：]|$)", "详情如下", translated)
+    return translated
 
 
 def video_script(article, title, summary):
@@ -180,6 +166,8 @@ def main():
         original_summary = article.get("originalSummary") or article.get("summary") or ""
         title, title_translated = translate_text(original_title)
         summary, summary_translated = translate_text(original_summary)
+        title = localize_game_terms(original_title, title)
+        summary = localize_game_terms(original_summary, summary)
         article["originalTitle"] = original_title
         article["originalSummary"] = original_summary
         article["title"] = title
