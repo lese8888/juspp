@@ -17,7 +17,7 @@ npm start
 
 仓库根目录的 `render.yaml` 定义了一个新加坡常驻 Web 服务、1 GB 持久化数据盘和 5 分钟 RSS 采集周期。将仓库连接到 Render 后，在 Dashboard 选择 **New → Blueprint** 并部署该 Blueprint。Render Starter 常驻实例当前从约 US$7/月起，1 GB 持久化磁盘另计；创建前请在 Render 账单预览中确认实际金额。
 
-部署成功后，Render 会分配 `onrender.com` 地址。该地址同时提供网页和 `/api/news.json` 接口。此服务从源站读取 RSS/Atom，不需要另外部署 RSSHub；现有清单中没有 RSS 地址的任天堂官网暂时仍只作为人工核验来源。
+部署成功后，Render 会分配 `onrender.com` 地址。该地址提供网页、`/api/news.json` 数据接口和 `/rss.xml` 聚合订阅源，可将 `/rss.xml` 添加到任意 RSS 阅读器。采集服务从源站读取 RSS/Atom，并把已采集文章重新发布为标准 RSS 2.0；现有清单中没有 RSS 地址的任天堂官网暂时仍只作为人工核验来源。
 
 ## 当前方案
 
