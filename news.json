@@ -1,13 +1,27 @@
 {
-  "generatedAt": "2026-11-21T05:47:58.074Z",
+  "generatedAt": "2026-11-21T06:13:34.616Z",
   "timezone": "Asia/Hong_Kong",
   "periodHours": 24,
   "sourceCount": 11,
   "articles": [
     {
-      "title": "我们中的狼 已经延迟切换",
+      "title": "塞尔达的 Ocarina Remake Is One Of Metacritic 的 2026 年最高评分游戏，根据用户评分",
+      "url": "https://www.nintendolife.com/news/2026/11/zeldas-ocarina-remake-is-one-of-metacritics-highest-rated-games-in-2026-according-to-user-scores",
+      "summary": "玩家的声音。 过去几个月来， 各种重击者释放的游戏业已经是一个巨大的年头， 而随着 2026 年底，",
+      "publishedAt": "Sat, 21 Nov 2026 05:30:00 GMT",
+      "timestamp": 1795239000000,
+      "source": "Nintendo Life",
+      "sourceType": "媒体",
+      "category": "任天堂游戏",
+      "originalTitle": "Zelda's Ocarina Remake Is One Of Metacritic's Highest-Rated Games In 2026, According To User Scores",
+      "originalSummary": "Players' voice. It's been a huge year for the games industry with all sorts of heavy-hitters releasing over the past few months, and as we look towards the end of 2026, we're now checking in on Metacritic's highest-rated games of the year based on the user score . Read the full article on nintendolife.com",
+      "videoScript": "【开场】塞尔达的 Ocarina Remake Is One Of Metacritic 的 2026 年最高评分游戏，根据用户评分\n【正文】玩家的声音。 过去几个月来， 各种重击者释放的游戏业已经是一个巨大的年头， 而随着 2026 年底，\n【核实提醒】这条内容涉及媒体报道或未证实消息，发布前请确认官方是否回应。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "translationStatus": "已转为简体中文"
+    },
+    {
+      "title": "我们中的狼 已经延迟了切换",
       "url": "https://www.nintendolife.com/news/2026/11/the-wolf-among-us-remastered-has-been-delayed-for-switch",
-      "summary": "最新消息：现\"估计\"本月晚些时候发布.：Telltale Games 宣布任天堂 Switch 版\"我们中的狼\"重塑\"需要一点时间\"。 在社交媒体分享的官方声明中，它提到这位主演警长比格比·沃尔夫将如何\"按计划于 10 月 29 日为 PlayStation，Xbox，和 PC 启动\"，\"任天堂 Switch 版本将在稍后日期跟进\"。",
+      "summary": "最新消息：现\"估计\"本月晚些时候发布.：Telltale Games 已经宣布任天堂 Switch 版的\"我们中的狼\"重制版\"需要一点时间\"。 在社交媒体分享的官方声明中，它提到这位主演警长比格比·沃尔夫将如何\"按计划于 10 月 29 日为 PlayStation，Xbox，和 PC 启动\"，\"任天堂 Switch 版本将在稍后日期跟进\"。",
       "publishedAt": "Sat, 21 Nov 2026 03:30:00 GMT",
       "timestamp": 1795231800000,
       "source": "Nintendo Life",
@@ -15,13 +29,13 @@
       "category": "任天堂游戏",
       "originalTitle": "The Wolf Among Us Remastered Has Been Delayed For Switch",
       "originalSummary": "Update: It's now \"estimated\" to release later this month. : Telltale Games has announced the Nintendo Switch version of The Wolf Among Us Remastered \"needs a little bit more time\". In an official statement shared on social media , it mentions how this remaster starring Sheriff Bigby Wolf will \"launch as planned on October 29 for PlayStation, Xbox, and PC\", and the \"Nintendo Switch version will follow at a later date\"",
-      "videoScript": "【开场】我们中的狼 已经延迟切换\n【正文】最新消息：现\"估计\"本月晚些时候发布.：Telltale Games 宣布任天堂 Switch 版\"我们中的狼\"重塑\"需要一点时间\"。 在社交媒体分享的官方声明中，它提到这位主演警长比格比·沃尔夫将如何\"按计划于 10 月 29 日为 PlayStation，Xbox，和 PC 启动\"，\"任天堂 Switch 版本将在稍后日期跟进\"。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】我们中的狼 已经延迟了切换\n【正文】最新消息：现\"估计\"本月晚些时候发布.：Telltale Games 已经宣布任天堂 Switch 版的\"我们中的狼\"重制版\"需要一点时间\"。 在社交媒体分享的官方声明中，它提到这位主演警长比格比·沃尔夫将如何\"按计划于 10 月 29 日为 PlayStation，Xbox，和 PC 启动\"，\"任天堂 Switch 版本将在稍后日期跟进\"。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "'超额游戏'：GTA 6 PS5 评论轰炸在录制后开始-破解发行",
       "url": "https://www.pushsquare.com/news/2026/11/overrated-game-gta-6-ps5-review-bombing-has-started-after-record-breaking-release",
-      "summary": "\"更像\"偷盗汽车\" GTA 6 是全时评分最高的游戏， 在编写本报告时，标题的用户得分为 5.4，意思是它被认为是“混合或平均”：",
+      "summary": "更像\"偷盗汽车\" GTA 6 是全时评分最高的游戏， 在编写本报告时，标题的用户分数为 5.4，意思是它被认为是“混合或平均”：",
       "publishedAt": "Sat, 21 Nov 2026 03:00:00 GMT",
       "timestamp": 1795230000000,
       "source": "Push Square",
@@ -29,13 +43,13 @@
       "category": "PlayStation 游戏",
       "originalTitle": "'Overrated Game': GTA 6 PS5 Review Bombing Has Started After Record-Breaking Release",
       "originalSummary": "\"More like Slop Theft Auto\". GTA 6 , the highest-rated game of all-time , is getting review bombed on Metacritic as idiots attempt to plunge the seminal Rockstar release’s rating with bogus ‘0’ scores. At the time of writing, the title has a user score of 5.4 , meaning it’s considered ‘Mixed or Average’: Read the full article on pushsquare.com",
-      "videoScript": "【开场】'超额游戏'：GTA 6 PS5 评论轰炸在录制后开始-破解发行\n【正文】\"更像\"偷盗汽车\" GTA 6 是全时评分最高的游戏， 在编写本报告时，标题的用户得分为 5.4，意思是它被认为是“混合或平均”：\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】'超额游戏'：GTA 6 PS5 评论轰炸在录制后开始-破解发行\n【正文】更像\"偷盗汽车\" GTA 6 是全时评分最高的游戏， 在编写本报告时，标题的用户分数为 5.4，意思是它被认为是“混合或平均”：\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "纪念日：超级粉碎兄弟会 Melee 已经 25 年了",
       "url": "https://www.nintendolife.com/news/2026/11/anniversary-super-smash-bros-melee-has-now-been-duking-it-out-for-25-years",
-      "summary": "国家统计局什么时候发布？ 一个来自 GameCube 库的第一党称，很好，而且真正地超越了这个特定的任天堂一代，是 Super Smash Bros。 Melee，今天恰好是游戏在日本 25 周年。 在 1999 年 N64 赛季引进系列球迷后，樱井正弘和 HAL 实验室和任天堂的团队推出了这个新的，改进的，更快的接力全明星任天堂战斗机。",
+      "summary": "国家统计局什么时候发布？ 一个来自 GameCube 库的第一党称，很好，而且真正地超越了这个特定的任天堂一代，是 Super Smash Bros。 Melee，今天恰好是游戏在日本 25 周年。 在 1999 年 N64 上引进系列的粉丝后，樱井正弘和 HAL 实验室和任天堂的团队推出了这个新的，改进的，更快的接力全明星任天堂战斗机。",
       "publishedAt": "Sat, 21 Nov 2026 02:25:00 GMT",
       "timestamp": 1795227900000,
       "source": "Nintendo Life",
@@ -43,13 +57,13 @@
       "category": "任天堂游戏",
       "originalTitle": "Anniversary: Super Smash Bros. Melee Has Now Been Duking It Out For 25 Years",
       "originalSummary": "NSO release when? One first-party title from the GameCube library that's well and truly outlived this particular Nintendo generation is Super Smash Bros. Melee , and today happens to be the game's 25th anniversary in Japan. After introducing fans to the series in 1999 on the N64, Masahiro Sakurai and the team at HAL Laboratory & Nintendo rolled out this new, improved, and faster take on the all-star Nintendo fighter ",
-      "videoScript": "【开场】纪念日：超级粉碎兄弟会 Melee 已经 25 年了\n【正文】国家统计局什么时候发布？ 一个来自 GameCube 库的第一党称，很好，而且真正地超越了这个特定的任天堂一代，是 Super Smash Bros。 Melee，今天恰好是游戏在日本 25 周年。 在 1999 年 N64 赛季引进系列球迷后，樱井正弘和 HAL 实验室和任天堂的团队推出了这个新的，改进的，更快的接力全明星任天堂战斗机。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】纪念日：超级粉碎兄弟会 Melee 已经 25 年了\n【正文】国家统计局什么时候发布？ 一个来自 GameCube 库的第一党称，很好，而且真正地超越了这个特定的任天堂一代，是 Super Smash Bros。 Melee，今天恰好是游戏在日本 25 周年。 在 1999 年 N64 上引进系列的粉丝后，樱井正弘和 HAL 实验室和任天堂的团队推出了这个新的，改进的，更快的接力全明星任天堂战斗机。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "61%的美国 PS5 所有者在发射日播放 GTA 6，显示 8 小时",
       "url": "https://www.pushsquare.com/news/2026/11/61percent-of-all-us-ps5-owners-played-gta-6-on-launch-day-averaging-8-hours",
-      "summary": "真是个变态 在 GTA 6 的发布中， Circana 的分析师 Mat Piscatella 指出， 在美国， 这真是令人惊叹的数字。",
+      "summary": "真是个变态 在 GTA 6 的发布中， Circana 的分析师 Mat Piscatella 指出，在美国，61%的 PS5 车主在发射日播放了 Rockstar 的最新发行版本。 这真是令人惊叹的数字。",
       "publishedAt": "Sat, 21 Nov 2026 02:00:00 GMT",
       "timestamp": 1795226400000,
       "source": "Push Square",
@@ -57,13 +71,13 @@
       "category": "PlayStation 游戏",
       "originalTitle": "61% of All US PS5 Owners Played GTA 6 on Launch Day, Averaging 8 Hours",
       "originalSummary": "That's a lotta sickies. You’ve seen the staggering 32.5 million pre-launch sales , but now enjoy some console specific data on GTA 6’s release. Analyst Mat Piscatella of Circana reports that in the US, 61% of PS5 owners played Rockstar’s latest release on launch day. That’s an utterly astounding statistic. Read the full article on pushsquare.com",
-      "videoScript": "【开场】61%的美国 PS5 所有者在发射日播放 GTA 6，显示 8 小时\n【正文】真是个变态 在 GTA 6 的发布中， Circana 的分析师 Mat Piscatella 指出， 在美国， 这真是令人惊叹的数字。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】61%的美国 PS5 所有者在发射日播放 GTA 6，显示 8 小时\n【正文】真是个变态 在 GTA 6 的发布中， Circana 的分析师 Mat Piscatella 指出，在美国，61%的 PS5 车主在发射日播放了 Rockstar 的最新发行版本。 这真是令人惊叹的数字。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "谈话点：你在玩什么这个周末？ - 问题 659",
       "url": "https://www.pushsquare.com/news/2026/11/talking-point-what-are-you-playing-this-weekend-issue-659",
-      "summary": "我们需要问吗？ 我本周不需要介绍。 也许这个问题的更好方向是《你不是玩这周末》， 亚伦・拜恩和其他人一样，可能！",
+      "summary": "我们需要问吗？ 我本周不需要做一个介绍。 也许这个问题的更好方向是《你不是玩这个周末》， 亚伦・拜恩和其他人一样，可能！",
       "publishedAt": "Sat, 21 Nov 2026 01:00:00 GMT",
       "timestamp": 1795222800000,
       "source": "Push Square",
@@ -71,11 +85,11 @@
       "category": "PlayStation 游戏",
       "originalTitle": "Talking Point: What Are You Playing This Weekend? - Issue 659",
       "originalSummary": "Do we need to ask? I don’t really need to do an introduction this week. Perhaps a better heading for this issue would have been What Aren’t You Playing This Weekend, because I already know for damn sure what you are . Aaron Bayne Same as everyone else, probably! Read the full article on pushsquare.com",
-      "videoScript": "【开场】谈话点：你在玩什么这个周末？ - 问题 659\n【正文】我们需要问吗？ 我本周不需要介绍。 也许这个问题的更好方向是《你不是玩这周末》， 亚伦・拜恩和其他人一样，可能！\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】谈话点：你在玩什么这个周末？ - 问题 659\n【正文】我们需要问吗？ 我本周不需要做一个介绍。 也许这个问题的更好方向是《你不是玩这个周末》， 亚伦・拜恩和其他人一样，可能！\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "GTA 6 有秘密播放列表，你只需要扫描几张海报就可以解锁",
+      "title": "GTA 6 有秘密播放列表，你只需要扫描一些海报就可以解锁",
       "url": "https://www.pcgamer.com/games/grand-theft-auto/gta-6-unique-playlists/",
       "summary": "Kodak Black 和 Vault 夜总会都有各自独特的播放列表。",
       "publishedAt": "Sat, 21 Nov 2026 00:46:24 +0000",
@@ -85,7 +99,7 @@
       "category": "PC 游戏",
       "originalTitle": "GTA 6 has secret playlists, and all you have to do is scan a few posters to unlock them",
       "originalSummary": "Kodak Black and The Vault nightclub each have their own unique playlist.",
-      "videoScript": "【开场】GTA 6 有秘密播放列表，你只需要扫描几张海报就可以解锁\n【正文】Kodak Black 和 Vault 夜总会都有各自独特的播放列表。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】GTA 6 有秘密播放列表，你只需要扫描一些海报就可以解锁\n【正文】Kodak Black 和 Vault 夜总会都有各自独特的播放列表。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -103,9 +117,9 @@
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "指南：GTA 6： 如何获得最终版项目和命令前的奖金",
+      "title": "指南： GTA 6： 如何获得最终版项目和命令前的奖金",
       "url": "https://www.pushsquare.com/guides/gta-6-how-to-get-ultimate-edition-items-and-pre-order-bonuses",
-      "summary": "百元问题。 GTA 6 的\"终极版\"(Ultimate Edition)主要收藏了包括车辆，武器和化妆品在内的各种物品和订单前奖金。 这些在故事的不同点解锁，有些需要从地图周围的地点收集。 这份 GTA 6 指南包括了如何收集以及何时获得的分步骤指示。 < 块 >",
+      "summary": "百元问题。 GTA 6 的\"终极版\"(Ultimate Edition)主要收藏了包括车辆，武器和化妆品在内的各种物品和订单前奖金。 这些在故事的不同点解锁，有些需要从地图周围的地点收集。 这份 GTA 6 指南包括了如何收集以及何时获得的分步指示。 < 块 >",
       "publishedAt": "Fri, 20 Nov 2026 23:45:00 GMT",
       "timestamp": 1795218300000,
       "source": "Push Square",
@@ -113,7 +127,7 @@
       "category": "PlayStation 游戏",
       "originalTitle": "Guide: GTA 6: How to Get Ultimate Edition Items & Pre-Order Bonuses",
       "originalSummary": "The $100 questions. GTA 6's Ultimate Edition features a collection of different items and pre-order bonuses, including vehicles, weapons, and cosmetics. These are unlocked at different points in the story, and some need to be collected from locations around the map. This GTA 6 guide includes step-by-step instructions on how to collect them and when they become available. <blocks> Read the full article on pushsquare.c",
-      "videoScript": "【开场】指南：GTA 6： 如何获得最终版项目和命令前的奖金\n【正文】百元问题。 GTA 6 的\"终极版\"(Ultimate Edition)主要收藏了包括车辆，武器和化妆品在内的各种物品和订单前奖金。 这些在故事的不同点解锁，有些需要从地图周围的地点收集。 这份 GTA 6 指南包括了如何收集以及何时获得的分步骤指示。 < 块 >\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】指南： GTA 6： 如何获得最终版项目和命令前的奖金\n【正文】百元问题。 GTA 6 的\"终极版\"(Ultimate Edition)主要收藏了包括车辆，武器和化妆品在内的各种物品和订单前奖金。 这些在故事的不同点解锁，有些需要从地图周围的地点收集。 这份 GTA 6 指南包括了如何收集以及何时获得的分步指示。 < 块 >\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -145,7 +159,7 @@
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "Florida Joker 得到他的愿望：他是 Grand Theft Auto 6 的\"特别配音演员\"。",
+      "title": "佛罗里达小丑获得愿望：他是 Grand Theft Auto 6 的\"特别配音演员\"。",
       "url": "https://www.pcgamer.com/games/grand-theft-auto/florida-joker-gets-his-wish-hes-a-special-voice-actor-in-grand-theft-auto-6/",
       "summary": "看来劳伦斯·沙利文解决了与 Rockstar 的分歧。",
       "publishedAt": "Fri, 20 Nov 2026 22:02:48 +0000",
@@ -155,7 +169,7 @@
       "category": "PC 游戏",
       "originalTitle": "Florida Joker gets his wish: He's a 'special voice actor' in Grand Theft Auto 6",
       "originalSummary": "Looks like Lawrence Sullivan settled his differences with Rockstar.",
-      "videoScript": "【开场】Florida Joker 得到他的愿望：他是 Grand Theft Auto 6 的\"特别配音演员\"。\n【正文】看来劳伦斯·沙利文解决了与 Rockstar 的分歧。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】佛罗里达小丑获得愿望：他是 Grand Theft Auto 6 的\"特别配音演员\"。\n【正文】看来劳伦斯·沙利文解决了与 Rockstar 的分歧。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -175,7 +189,7 @@
     {
       "title": "Grand Theft Auto VI 现在是有史以来最大的电子游戏发布会",
       "url": "https://www.gamedeveloper.com/business/grand-theft-auto-vi-is-officially-the-biggest-video-game-launch-ever",
-      "summary": "为 Grand Theft Auto VI 销售的日一零售额突破了 37.9 亿美元，Take-Two 在游戏甚至发行前售出了 3，250 万份。",
+      "summary": "为 Grand Theft Auto VI 销售的日一零售额突破了 37.9 亿美元，Take-Two 在游戏甚至发行前售出 3，250 万份。",
       "publishedAt": "Fri, 20 Nov 2026 21:50:59 GMT",
       "timestamp": 1795211459000,
       "source": "Game Developer",
@@ -183,13 +197,13 @@
       "category": "开发与行业",
       "originalTitle": "Grand Theft Auto VI is now the biggest video game launch in history",
       "originalSummary": "Day-one retails sales for Grand Theft Auto VI crossed $3.79 billion, and Take-Two sold 32.5 million copies before the game even released.",
-      "videoScript": "【开场】Grand Theft Auto VI 现在是有史以来最大的电子游戏发布会\n【正文】为 Grand Theft Auto VI 销售的日一零售额突破了 37.9 亿美元，Take-Two 在游戏甚至发行前售出了 3，250 万份。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Grand Theft Auto VI 现在是有史以来最大的电子游戏发布会\n【正文】为 Grand Theft Auto VI 销售的日一零售额突破了 37.9 亿美元，Take-Two 在游戏甚至发行前售出 3，250 万份。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "1666 年：阿姆斯特丹早期 访问 12 月首次重大更新发射",
       "url": "https://www.gematsu.com/2026/11/1666-amsterdam-early-access-first-major-update-launches-in-december",
-      "summary": "Panache Digital Games 将为早期访问版本 & hellip 发布第一个主要内容更新；",
+      "summary": "Panache Digital Games 将发布早期访问版本 & hellip 的第一个主要内容更新；",
       "publishedAt": "Fri, 20 Nov 2026 21:13:37 +0000",
       "timestamp": 1795209217000,
       "source": "Gematsu",
@@ -197,11 +211,11 @@
       "category": "日本与全球游戏新闻",
       "originalTitle": "1666: Amsterdam Early Access first major update launches in December",
       "originalSummary": "Panache Digital Games will release the first major content update for the Early Access version &hellip;",
-      "videoScript": "【开场】1666 年：阿姆斯特丹早期 访问 12 月首次重大更新发射\n【正文】Panache Digital Games 将为早期访问版本 & hellip 发布第一个主要内容更新；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】1666 年：阿姆斯特丹早期 访问 12 月首次重大更新发射\n【正文】Panache Digital Games 将发布早期访问版本 & hellip 的第一个主要内容更新；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "断裂的 Lore：不要玩游戏 添加 Switch 2 版本",
+      "title": "断裂的洛尔：不要玩游戏增加 Switch 2 版本",
       "url": "https://www.gematsu.com/2026/11/brokenlore-dont-play-adds-switch-2-version",
       "summary": "第一人称心理恐怖游戏 Broken Lore： Don't PLAY 将推出 Switch 2， 并同时推出其先前的 & hellip；",
       "publishedAt": "Fri, 20 Nov 2026 21:06:51 +0000",
@@ -211,11 +225,11 @@
       "category": "日本与全球游戏新闻",
       "originalTitle": "BrokenLore: DON’T PLAY adds Switch 2 version",
       "originalSummary": "First-person psychological horror game BrokenLore: DON’T PLAY will launch for Switch 2 alongside its previously &hellip;",
-      "videoScript": "【开场】断裂的 Lore：不要玩游戏 添加 Switch 2 版本\n【正文】第一人称心理恐怖游戏 Broken Lore： Don't PLAY 将推出 Switch 2， 并同时推出其先前的 & hellip；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】断裂的洛尔：不要玩游戏增加 Switch 2 版本\n【正文】第一人称心理恐怖游戏 Broken Lore： Don't PLAY 将推出 Switch 2， 并同时推出其先前的 & hellip；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "第三人称生存恐怖游戏 Ugly In 内部 由 Serafini Productions 为 PS5， Xbox 系列， Switch 2 和 PC 发行",
+      "title": "第三人称生存恐怖游戏 Ugly In 内部 由 Serafini Productions 为 PS5， Xbox 系列， Switch 2 和 PC 发布",
       "url": "https://www.gematsu.com/2026/11/third-person-survival-horror-game-ugly-within-to-be-published-by-serafini-productions-for-ps5-xbox-series-switch-2-and-pc",
       "summary": "Serafini Productions 将发布 Yamaitachi 开发的第三人称生存恐怖游戏 Ugly Independence，当它发布或 hellip；",
       "publishedAt": "Fri, 20 Nov 2026 21:06:26 +0000",
@@ -225,7 +239,7 @@
       "category": "日本与全球游戏新闻",
       "originalTitle": "Third-person survival horror game Ugly Within to be published by Serafini Productions for PS5, Xbox Series, Switch 2, and PC",
       "originalSummary": "Serafini Productions will publish Yamaitachi-developed third-person survival horror game Ugly Within when it launches or &hellip;",
-      "videoScript": "【开场】第三人称生存恐怖游戏 Ugly In 内部 由 Serafini Productions 为 PS5， Xbox 系列， Switch 2 和 PC 发行\n【正文】Serafini Productions 将发布 Yamaitachi 开发的第三人称生存恐怖游戏 Ugly Independence，当它发布或 hellip；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】第三人称生存恐怖游戏 Ugly In 内部 由 Serafini Productions 为 PS5， Xbox 系列， Switch 2 和 PC 发布\n【正文】Serafini Productions 将发布 Yamaitachi 开发的第三人称生存恐怖游戏 Ugly Independence，当它发布或 hellip；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -245,7 +259,7 @@
     {
       "title": "21%的 Rockstar 员工 被公司雇用超过 10 年 这解释了 GTA 6 的创纪录推出",
       "url": "https://www.pcgamer.com/games/grand-theft-auto/21-percent-of-rockstar-staff-have-been-employed-by-the-company-for-over-10-years-which-explains-a-lot-about-gta-6s-record-breaking-launch/",
-      "summary": "当你抓住那些知道怎么玩的人时，成功游戏就更容易了。",
+      "summary": "当你抓住那些知道怎么玩的人时 游戏就更容易成功",
       "publishedAt": "Fri, 20 Nov 2026 20:41:34 +0000",
       "timestamp": 1795207294000,
       "source": "PC Gamer",
@@ -253,7 +267,7 @@
       "category": "PC 游戏",
       "originalTitle": "21% of Rockstar staff have been employed by the company for over 10 years, which explains a lot about GTA 6's record-breaking launch",
       "originalSummary": "It's easier to make successful games when you hold onto the people who know how.",
-      "videoScript": "【开场】21%的 Rockstar 员工 被公司雇用超过 10 年 这解释了 GTA 6 的创纪录推出\n【正文】当你抓住那些知道怎么玩的人时，成功游戏就更容易了。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】21%的 Rockstar 员工 被公司雇用超过 10 年 这解释了 GTA 6 的创纪录推出\n【正文】当你抓住那些知道怎么玩的人时 游戏就更容易成功\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -315,7 +329,7 @@
     {
       "title": "2027 年 2 月 18 日 Magpie 先生推出的无伤害卡片游戏",
       "url": "https://www.gematsu.com/2026/11/mr-magpies-harmless-card-game-launches-february-18-2027",
-      "summary": "超现实企业恐怖甲板制造者 Magpie 先生的无伤害卡片游戏将推出 PlayStation 5， Xbox & hellip； 游戏中最真实的企业恐怖甲板制造者。",
+      "summary": "超现实企业恐怖甲板制造者 Magpie 先生的无危害卡片游戏将推出 PlayStation 5，Xbox & hellip；",
       "publishedAt": "Fri, 20 Nov 2026 19:50:03 +0000",
       "timestamp": 1795204203000,
       "source": "Gematsu",
@@ -323,13 +337,13 @@
       "category": "日本与全球游戏新闻",
       "originalTitle": "Mr. Magpie’s Harmless Card Game launches February 18, 2027",
       "originalSummary": "Surreal corporate horror deckbuilder Mr. Magpie’s Harmless Card Game will launch for PlayStation 5, Xbox &hellip;",
-      "videoScript": "【开场】2027 年 2 月 18 日 Magpie 先生推出的无伤害卡片游戏\n【正文】超现实企业恐怖甲板制造者 Magpie 先生的无伤害卡片游戏将推出 PlayStation 5， Xbox & hellip； 游戏中最真实的企业恐怖甲板制造者。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】2027 年 2 月 18 日 Magpie 先生推出的无伤害卡片游戏\n【正文】超现实企业恐怖甲板制造者 Magpie 先生的无危害卡片游戏将推出 PlayStation 5，Xbox & hellip；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "Grand Theft Auto VI 在 3 250 万预购后，一天零售额最高 37.9 亿美元",
       "url": "https://www.gematsu.com/2026/11/grand-theft-auto-vi-tops-3-79-billion-in-day-one-retail-sales-after-32-5-million-pre-orders",
-      "summary": "Grand Theft Auto VI 在销售 32.5 & hellip； 之后的第一天零售量达到了 37.9 亿美元；",
+      "summary": "Grand Theft Auto VI 在销售 32.5 & hellip； 之后的第一天零售量中实现了 37.9 亿美元；",
       "publishedAt": "Fri, 20 Nov 2026 19:35:15 +0000",
       "timestamp": 1795203315000,
       "source": "Gematsu",
@@ -337,13 +351,13 @@
       "category": "日本与全球游戏新闻",
       "originalTitle": "Grand Theft Auto VI tops $3.79 billion in day one retail sales after 32.5 million pre-orders",
       "originalSummary": "Grand Theft Auto VI achieved $3.79 billion in day one retail sales after selling 32.5 &hellip;",
-      "videoScript": "【开场】Grand Theft Auto VI 在 3 250 万预购后，一天零售额最高 37.9 亿美元\n【正文】Grand Theft Auto VI 在销售 32.5 & hellip； 之后的第一天零售量达到了 37.9 亿美元；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Grand Theft Auto VI 在 3 250 万预购后，一天零售额最高 37.9 亿美元\n【正文】Grand Theft Auto VI 在销售 32.5 & hellip； 之后的第一天零售量中实现了 37.9 亿美元；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "GTA 6 销售创纪录 3 250 万份",
       "url": "https://www.pushsquare.com/news/2026/11/gta-6-sells-a-record-breaking-32-5-million-copies",
-      "summary": "有史以来最大的娱乐发布会。 我想我们都知道它会是大， 但这个大？ Rockstar 宣布 GTA 6 在预装期售出惊人的 3，250 万份，创下了\"所有平台的新纪录\"。 这个数字现在可能要高一些，因为新闻稿的措辞意味着它不会把发射日的销售额计入上述总数中，而保证这些销售额会增加。",
+      "summary": "有史以来最大的娱乐发布会。 我想我们都知道它会是大， 但这个大？ Rockstar 宣布 GTA 6 在预装期售出惊人的 3，250 万份，创下了\"所有平台的新纪录\"。 这个数字现在可能要高一些，因为新闻稿的措辞意味着它不把发射日的销售额计入上述总数中，而这一总数可以保证充足。",
       "publishedAt": "Fri, 20 Nov 2026 19:30:00 GMT",
       "timestamp": 1795203000000,
       "source": "Push Square",
@@ -351,7 +365,7 @@
       "category": "PlayStation 游戏",
       "originalTitle": "GTA 6 Sells a Record-Breaking 32.5 Million Copies",
       "originalSummary": "The biggest entertainment launch of all time. I think we all knew it was going to be big, but this big? Rockstar has announced that GTA 6 sold a staggering 32.5 million copies during its preload period, setting a “new record across all platforms”. That number is likely higher by now, because the press release’s wording implies it’s not counting launch day sales into the above total, which are guaranteed to be plentif",
-      "videoScript": "【开场】GTA 6 销售创纪录 3 250 万份\n【正文】有史以来最大的娱乐发布会。 我想我们都知道它会是大， 但这个大？ Rockstar 宣布 GTA 6 在预装期售出惊人的 3，250 万份，创下了\"所有平台的新纪录\"。 这个数字现在可能要高一些，因为新闻稿的措辞意味着它不会把发射日的销售额计入上述总数中，而保证这些销售额会增加。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】GTA 6 销售创纪录 3 250 万份\n【正文】有史以来最大的娱乐发布会。 我想我们都知道它会是大， 但这个大？ Rockstar 宣布 GTA 6 在预装期售出惊人的 3，250 万份，创下了\"所有平台的新纪录\"。 这个数字现在可能要高一些，因为新闻稿的措辞意味着它不把发射日的销售额计入上述总数中，而这一总数可以保证充足。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -427,7 +441,7 @@
     {
       "title": "Mixcity Swap 是即将到来的牌手，它答应你这是反加查的",
       "url": "https://www.pocketgamer.com/mixcity-swap/coming-soon-to-mobile/",
-      "summary": "当我提到我写关于移动游戏的事时， 非专业人士和业界人士 不可避免的第一反应就是，“好吧，那只是 gacha，对吧？” 一方面，他们不一定是对的，但也不是错的。 随机绘图系统如此普及，以至于甚至许多开发者都靠着它自找麻烦，就像即将到来的 Mixcity Swap。 自我定位为反加查，混合交换是",
+      "summary": "当我提到我写关于移动游戏的事时， 非专业人士和业界人士 不可避免的第一个反应是，“好吧，那只是 gacha，对不对？” 一方面，他们不一定是对的，但也不是错的。 随机绘图系统如此普及，以至于甚至许多开发人员都与它相对立，就像即将到来的 Mixcity Swap。 自我定位为反加查，混合交换是",
       "publishedAt": "Fri, 20 Nov 2026 17:49:00 +0000",
       "timestamp": 1795196940000,
       "source": "Pocket Gamer",
@@ -435,13 +449,13 @@
       "category": "移动游戏",
       "originalTitle": "Mixcity Swap is an upcoming card battler that promises you it's the anti gacha",
       "originalSummary": "Whenever I mention that I write about mobile gaming, the inevitable first response from laymen and industry people alike is, 'Well, that's all just gacha, right?' And on the one hand, they're not necessarily right, but not wrong either. The random draw system is so pervasive that even many developers pit themselves against it, like with the upcoming Mixcity Swap. Positioning itself as the anti-gacha, Mixcity Swap is ",
-      "videoScript": "【开场】Mixcity Swap 是即将到来的牌手，它答应你这是反加查的\n【正文】当我提到我写关于移动游戏的事时， 非专业人士和业界人士 不可避免的第一反应就是，“好吧，那只是 gacha，对吧？” 一方面，他们不一定是对的，但也不是错的。 随机绘图系统如此普及，以至于甚至许多开发者都靠着它自找麻烦，就像即将到来的 Mixcity Swap。 自我定位为反加查，混合交换是\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Mixcity Swap 是即将到来的牌手，它答应你这是反加查的\n【正文】当我提到我写关于移动游戏的事时， 非专业人士和业界人士 不可避免的第一个反应是，“好吧，那只是 gacha，对不对？” 一方面，他们不一定是对的，但也不是错的。 随机绘图系统如此普及，以至于甚至许多开发人员都与它相对立，就像即将到来的 Mixcity Swap。 自我定位为反加查，混合交换是\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "本周的份额：纹理",
       "url": "https://blog.playstation.com/2026/11/20/share-of-the-week-texture/",
-      "summary": "上周，我们请您分享您所选择的游戏中的纹理，使用#PSshare#PSBlog 来获得一个亮相的机会。 以下为本周的要点： John Varela R 分享了 Arjun 在 Saros Heavenlydemon94 的项链，",
+      "summary": "上星期，我们请您分享您选择的游戏中的纹理，使用#PSshare #PSBlog 来获得亮相的机会。 以下为本周的要点： John Varela R 分享了 Arjun 在 Saros Heavenlydemon94 的项链，",
       "publishedAt": "Fri, 20 Nov 2026 17:00:19 +0000",
       "timestamp": 1795194019000,
       "source": "PlayStation Blog",
@@ -449,13 +463,13 @@
       "category": "平台公告",
       "originalTitle": "Share of the Week: Texture",
       "originalSummary": "Last week, we asked you to share textures from the game of your choice using #PSshare #PSBlog for a chance to be featured. Here are this week’s highlights: John_Varela_R shared a detailed look at Arjun’s necklace in Saros heavenlydemon94 shared the stones beneath water in Ghost of Yōtei den_g shared a stony road covered in […]",
-      "videoScript": "【开场】本周的份额：纹理\n【正文】上周，我们请您分享您所选择的游戏中的纹理，使用#PSshare#PSBlog 来获得一个亮相的机会。 以下为本周的要点： John Varela R 分享了 Arjun 在 Saros Heavenlydemon94 的项链，\n【核实提醒】具体平台、地区和时间安排，请以官方公告为准。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】本周的份额：纹理\n【正文】上星期，我们请您分享您选择的游戏中的纹理，使用#PSshare #PSBlog 来获得亮相的机会。 以下为本周的要点： John Varela R 分享了 Arjun 在 Saros Heavenlydemon94 的项链，\n【核实提醒】具体平台、地区和时间安排，请以官方公告为准。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "6 号人物还没有约会，但 Atlus 说，你不用等很久了",
+      "title": "6 号人物还没有约会，但 Atlus 说，你不用等太久了",
       "url": "https://www.nintendolife.com/news/2026/11/persona-6-doesnt-have-a-date-yet-but-atlus-says-you-wont-have-to-wait-as-long-for-persona-7",
-      "summary": "慢点 关于 GTA 的粉丝们等待最新入围发射的时间有多长的问题，一直有很多讨论，但 Persona 实际上并没有落后那么远。 Persona 5 — — 以最初的状态 — — 于十多年前的 2016 年 9 月 15 日发布，虽然 Persona 6 现在已经正式宣布了，但对于何时真正出品，我们并不明智。 很可能在 2027 年的某个时候降落",
+      "summary": "慢点 关于 GTA 的粉丝们等待最新入围发射的时间有多长的问题，一直有很多讨论，但 Persona 实际上并没有落后那么远。 Persona 5 — — 原版 — — 于十多年前的 2016 年 9 月 15 日发布，虽然 Persona 6 现在已经正式公布，但对于何时真正上映，我们没有比这更明智的了。 可能最终在 2027 年的某个时候着陆",
       "publishedAt": "Fri, 20 Nov 2026 17:00:00 GMT",
       "timestamp": 1795194000000,
       "source": "Nintendo Life",
@@ -463,13 +477,13 @@
       "category": "任天堂游戏",
       "originalTitle": "Persona 6 Doesn't Have A Date Yet, But Atlus Says You Won't Have To Wait As Long For Persona 7",
       "originalSummary": "A'ight, slow down. There's been a lot of talk around how long GTA fans have been waiting for the latest entry to launch, but Persona isn't actually that far behind. Persona 5 – in its original state – released over a decade ago on 15th September 2016, and although Persona 6 has now been officially announced, we're none the wiser as to when it will actually come out. It's likely to finally land at some point in 2027 a",
-      "videoScript": "【开场】6 号人物还没有约会，但 Atlus 说，你不用等很久了\n【正文】慢点 关于 GTA 的粉丝们等待最新入围发射的时间有多长的问题，一直有很多讨论，但 Persona 实际上并没有落后那么远。 Persona 5 — — 以最初的状态 — — 于十多年前的 2016 年 9 月 15 日发布，虽然 Persona 6 现在已经正式宣布了，但对于何时真正出品，我们并不明智。 很可能在 2027 年的某个时候降落\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】6 号人物还没有约会，但 Atlus 说，你不用等太久了\n【正文】慢点 关于 GTA 的粉丝们等待最新入围发射的时间有多长的问题，一直有很多讨论，但 Persona 实际上并没有落后那么远。 Persona 5 — — 原版 — — 于十多年前的 2016 年 9 月 15 日发布，虽然 Persona 6 现在已经正式公布，但对于何时真正上映，我们没有比这更明智的了。 可能最终在 2027 年的某个时候着陆\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "细胞到 Singularity's Future 更新 将你带入空间 重新审视人类的进步",
       "url": "https://www.pocketgamer.com/cell-to-singularity-beyond/future-update-now-available/",
-      "summary": "开发者们对于试图模拟人类进步 有一种奇怪的迷恋。 幸存火星，阿尔法半人马座 当然还有文明 但 in&nbsp；Cell to Singularity，开发商计算机午餐公司一直致力于模拟一切，最新的重大步骤是他们的未来更新。 细胞到 Singularity 基本上就是它在锡上说的 你的目标是探索",
+      "summary": "开发者们对于试图模拟人类进步 有一种奇怪的迷恋。 幸存火星，阿尔法半人马座 当然还有文明 但 in&nbsp；Cell to Singularity，开发商计算机午餐公司一直致力于模拟一切，最新的重大步骤是他们的未来更新。 细胞到 Singularity 基本上就是它所说的 你的目标是探索",
       "publishedAt": "Fri, 20 Nov 2026 17:00:00 +0000",
       "timestamp": 1795194000000,
       "source": "Pocket Gamer",
@@ -477,7 +491,7 @@
       "category": "移动游戏",
       "originalTitle": "Cell to Singularity's Future update takes you into space for a new look at humanity's progress",
       "originalSummary": "There's an odd fascination amongst developers for trying to simulate the progression of humanity. Surviving Mars, Alpha Centauri and, of course, Civilization. But in&nbsp;Cell to Singularity, developer Computer Lunch has been working towards a simulation of everything, with the latest major step being their Future update. Cell to Singularity is, essentially, exactly what it says on the tin. Your goal is to explore an",
-      "videoScript": "【开场】细胞到 Singularity's Future 更新 将你带入空间 重新审视人类的进步\n【正文】开发者们对于试图模拟人类进步 有一种奇怪的迷恋。 幸存火星，阿尔法半人马座 当然还有文明 但 in&nbsp；Cell to Singularity，开发商计算机午餐公司一直致力于模拟一切，最新的重大步骤是他们的未来更新。 细胞到 Singularity 基本上就是它在锡上说的 你的目标是探索\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】细胞到 Singularity's Future 更新 将你带入空间 重新审视人类的进步\n【正文】开发者们对于试图模拟人类进步 有一种奇怪的迷恋。 幸存火星，阿尔法半人马座 当然还有文明 但 in&nbsp；Cell to Singularity，开发商计算机午餐公司一直致力于模拟一切，最新的重大步骤是他们的未来更新。 细胞到 Singularity 基本上就是它所说的 你的目标是探索\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -511,7 +525,7 @@
     {
       "title": "为什么 Bezos 先生，这些早黑星期五的游戏椅交易......你真的毁了我们",
       "url": "https://www.pcgamer.com/hardware/gaming-chairs/why-mr-bezos-with-these-early-black-friday-gaming-chair-deals-you-are-really-spoiling-us/",
-      "summary": "现在有一套惊人的游戏椅 价格低于 300 美元 虽然不只是亚马逊",
+      "summary": "现在有一套惊人的游戏椅子 价格低于 300 美元，尽管它不只是亚马逊。",
       "publishedAt": "Fri, 20 Nov 2026 16:30:25 +0000",
       "timestamp": 1795192225000,
       "source": "PC Gamer",
@@ -519,13 +533,13 @@
       "category": "PC 游戏",
       "originalTitle": "Why Mr. Bezos, with these early Black Friday gaming chair deals you are really spoiling us",
       "originalSummary": "There's an astonishing array of gaming chairs for well under $300 right now, though it's not just Amazon at it.",
-      "videoScript": "【开场】为什么 Bezos 先生，这些早黑星期五的游戏椅交易......你真的毁了我们\n【正文】现在有一套惊人的游戏椅 价格低于 300 美元 虽然不只是亚马逊\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】为什么 Bezos 先生，这些早黑星期五的游戏椅交易......你真的毁了我们\n【正文】现在有一套惊人的游戏椅子 价格低于 300 美元，尽管它不只是亚马逊。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "在 GTA 6 中犯罪时要匿名吗？ 拿着面具",
+      "title": "在 GTA 6 中犯罪时要匿名吗？ 拿个面具来",
       "url": "https://www.pcgamer.com/games/grand-theft-auto/gta-6-mask-location/",
-      "summary": "这种特殊的颈套有助于抢劫",
+      "summary": "这特别的颈服有助于抢劫",
       "publishedAt": "Fri, 20 Nov 2026 16:22:53 +0000",
       "timestamp": 1795191773000,
       "source": "PC Gamer",
@@ -533,13 +547,13 @@
       "category": "PC 游戏",
       "originalTitle": "Want to stay anonymous when doing crimes in GTA 6? Grab yourself a mask",
       "originalSummary": "This special neckwear is helpful in robberies.",
-      "videoScript": "【开场】在 GTA 6 中犯罪时要匿名吗？ 拿着面具\n【正文】这种特殊的颈套有助于抢劫\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】在 GTA 6 中犯罪时要匿名吗？ 拿个面具来\n【正文】这特别的颈服有助于抢劫\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "Atlus 不希望你再等 10 年 给个人再等 7 年",
+      "title": "Atlus 不希望你再等 10 年 给 7 号人物",
       "url": "https://www.pushsquare.com/news/2026/11/atlus-doesnt-want-you-to-wait-yet-another-10-years-for-persona-7",
-      "summary": "出台加快发展规划。 当 Persona 6 发布时，它已经至少 10 年了。 干线分期付款之间的时间很长，开发商 Atlus 不希望你再重复这一过程。",
+      "summary": "出台加快发展规划。 当 Persona 6 推出时，它已经至少 10 年了，Persona 5 的推出。 干线分期付款之间的时间很长，开发商 Atlus 不希望你再重复这个过程。",
       "publishedAt": "Fri, 20 Nov 2026 16:00:00 GMT",
       "timestamp": 1795190400000,
       "source": "Push Square",
@@ -547,7 +561,7 @@
       "category": "PlayStation 游戏",
       "originalTitle": "Atlus Doesn't Want You to Wait Yet Another 10 Years for Persona 7",
       "originalSummary": "Plans in place to speed development up. By the time Persona 6 comes out, it'll have been at least 10 years since the launch of Persona 5 . That's a very long time between mainline instalments, and developer Atlus doesn't want you to have to repeat the process again. Via a new company interview with creative producer Kazuhisa Wada, it's revealed the Persona team within Atlus is working on \"various things\" to make sure",
-      "videoScript": "【开场】Atlus 不希望你再等 10 年 给个人再等 7 年\n【正文】出台加快发展规划。 当 Persona 6 发布时，它已经至少 10 年了。 干线分期付款之间的时间很长，开发商 Atlus 不希望你再重复这一过程。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Atlus 不希望你再等 10 年 给 7 号人物\n【正文】出台加快发展规划。 当 Persona 6 推出时，它已经至少 10 年了，Persona 5 的推出。 干线分期付款之间的时间很长，开发商 Atlus 不希望你再重复这个过程。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -565,9 +579,9 @@
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "Zelda 可玩性和电动 Ocarinas Will 最初只受邀请出售(欧洲)",
+      "title": "Zelda 可玩性和电动 Ocarinas Will 起初只受邀请出售(欧洲)",
       "url": "https://www.nintendolife.com/news/2026/11/zelda-playable-and-electric-ocarinas-will-initially-be-sold-on-an-invite-only-basis-europe",
-      "summary": "而且你需要通过标准 注册利息。 我们一直留意着任天堂的可玩性 和电动的卡丽娜 在欧洲销售的消息 销售额看起来就在拐角处 但你要跳过一些圈子 才能拿到手 任天堂的可玩模式和 HORI 的电动版本最初都会在邀请下发售",
+      "summary": "而且你需要通过标准 注册利息。 我们一直留意着任天堂的可玩性 和电动的卡丽娜 在欧洲销售的消息 销售额看起来就在拐角处 但你要跳过一些圈子 才能拿到手 任天堂的可玩模式和 HORI 的电动版本最初都会在邀请下发售。",
       "publishedAt": "Fri, 20 Nov 2026 15:30:00 GMT",
       "timestamp": 1795188600000,
       "source": "Nintendo Life",
@@ -575,7 +589,7 @@
       "category": "任天堂游戏",
       "originalTitle": "Zelda Playable & Electric Ocarinas Will Initially Be Sold On An Invite-Only Basis (Europe)",
       "originalSummary": "And you'll need to pass the criteria to register interest. We've been keeping an eye out for news of Nintendo's playable and electric ocarinas going on sale in Europe for a good while now. It looks like sales are just around the corner, but you're going to need to jump through some hoops if you want to get your hands on one. Both the Nintendo playable model and HORI electric version will initially be sold on an invit",
-      "videoScript": "【开场】Zelda 可玩性和电动 Ocarinas Will 最初只受邀请出售(欧洲)\n【正文】而且你需要通过标准 注册利息。 我们一直留意着任天堂的可玩性 和电动的卡丽娜 在欧洲销售的消息 销售额看起来就在拐角处 但你要跳过一些圈子 才能拿到手 任天堂的可玩模式和 HORI 的电动版本最初都会在邀请下发售\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Zelda 可玩性和电动 Ocarinas Will 起初只受邀请出售(欧洲)\n【正文】而且你需要通过标准 注册利息。 我们一直留意着任天堂的可玩性 和电动的卡丽娜 在欧洲销售的消息 销售额看起来就在拐角处 但你要跳过一些圈子 才能拿到手 任天堂的可玩模式和 HORI 的电动版本最初都会在邀请下发售。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -623,7 +637,7 @@
     {
       "title": "GTA 6： 首款十亿美元游戏也可能是最后一款 QQ Provinces",
       "url": "https://www.gamesindustry.biz/gta-6-the-first-billion-dollar-game-may-also-be-the-last",
-      "summary": "银幕上亿元是什么样子的？ 或 1.5bn，或也许 2bn；估计只要花多少钱就能创造 GTA6。 和 rsquo；肯定的一件事是，它和 rsquo；是有史以来制作的最昂贵的游戏 &ndash；事实上，迄今为止制作的最昂贵的媒体作品。 更多信息",
+      "summary": "银幕上 10 亿美元是什么样子的？ 或 1.5bn，或也许 2bn；估计只要花多少钱就能创造 GTA6。 和 rsquo；肯定的一件事是，它和 rsquo；是有史以来制作的最昂贵的游戏 &ndash；事实上，迄今为止制作的最昂贵的媒体作品。 更多信息",
       "publishedAt": "Fri, 20 Nov 2026 15:02:20 +0000",
       "timestamp": 1795186940000,
       "source": "GamesIndustry.biz",
@@ -631,13 +645,13 @@
       "category": "行业与商业",
       "originalTitle": "GTA 6: the first billion-dollar game may also be the last | Opinion",
       "originalSummary": "What does a billion dollars look like on screen? Or $1.5bn, or perhaps $2bn; estimates swing around a little for just how much money has been spent creating GTA 6. The one thing that&rsquo;s certain is that it&rsquo;s the most expensive game ever made &ndash; in fact, by far the most expensive piece of media ever made. Read more",
-      "videoScript": "【开场】GTA 6： 首款十亿美元游戏也可能是最后一款 QQ Provinces\n【正文】银幕上亿元是什么样子的？ 或 1.5bn，或也许 2bn；估计只要花多少钱就能创造 GTA6。 和 rsquo；肯定的一件事是，它和 rsquo；是有史以来制作的最昂贵的游戏 &ndash；事实上，迄今为止制作的最昂贵的媒体作品。 更多信息\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】GTA 6： 首款十亿美元游戏也可能是最后一款 QQ Provinces\n【正文】银幕上 10 亿美元是什么样子的？ 或 1.5bn，或也许 2bn；估计只要花多少钱就能创造 GTA6。 和 rsquo；肯定的一件事是，它和 rsquo；是有史以来制作的最昂贵的游戏 &ndash；事实上，迄今为止制作的最昂贵的媒体作品。 更多信息\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "XBOX 的下周：11 月 23 日至 27 日的新游戏",
       "url": "https://news.xbox.com/en-us/2026/11/20/next-week-on-xbox-new-games-for-november-23-to-27/",
-      "summary": "欢迎来到下星期的 XBOX！ 在这个每周的节目中，我们覆盖所有即将到来的游戏 XBOX 系列 QQS，XBOX One，XBOX 在 PC 上，和 Game Pass！ 在下面获取这些即将到来的游戏的更多细节，并点击其配置文件以获取进一步的信息(发布日期有变化)。 让我们跳进去吧！ 杰登工业：舒适[.] 在 XBOX 的下一周：11 月 23 日至 27 日的新游戏中，",
+      "summary": "欢迎来到下星期的 XBOX！ 在这个每周的节目中，我们覆盖所有即将到来的游戏 XBOX 系列 QQS，XBOX One，XBOX 在 PC 上，和 Game Pass！ 获取下面这些即将到来的游戏的更多细节，并点击其配置文件以获取进一步的信息(发布日期有变化)。 让我们跳进去吧！ 杰登工业：舒适[.] 在 XBOX 的下一周：11 月 23 日至 27 日的新游戏，",
       "publishedAt": "Fri, 20 Nov 2026 15:00:00 +0000",
       "timestamp": 1795186800000,
       "source": "Xbox Wire",
@@ -645,13 +659,13 @@
       "category": "平台公告",
       "originalTitle": "Next Week on XBOX: New Games for November 23 to 27",
       "originalSummary": "Welcome to Next Week on XBOX! In this weekly feature we cover all the games coming soon to XBOX Series X|S, XBOX One, XBOX on PC, and Game Pass! Get more details on these upcoming games below and click their profiles for further info (release dates subject to change). Let’s jump in! Jaden Industries: Cozy […] The post Next Week on XBOX: New Games for November 23 to 27 appeared first on XBOX Wire .",
-      "videoScript": "【开场】XBOX 的下周：11 月 23 日至 27 日的新游戏\n【正文】欢迎来到下星期的 XBOX！ 在这个每周的节目中，我们覆盖所有即将到来的游戏 XBOX 系列 QQS，XBOX One，XBOX 在 PC 上，和 Game Pass！ 在下面获取这些即将到来的游戏的更多细节，并点击其配置文件以获取进一步的信息(发布日期有变化)。 让我们跳进去吧！ 杰登工业：舒适[.] 在 XBOX 的下一周：11 月 23 日至 27 日的新游戏中，\n【核实提醒】具体平台、地区和时间安排，请以官方公告为准。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】XBOX 的下周：11 月 23 日至 27 日的新游戏\n【正文】欢迎来到下星期的 XBOX！ 在这个每周的节目中，我们覆盖所有即将到来的游戏 XBOX 系列 QQS，XBOX One，XBOX 在 PC 上，和 Game Pass！ 获取下面这些即将到来的游戏的更多细节，并点击其配置文件以获取进一步的信息(发布日期有变化)。 让我们跳进去吧！ 杰登工业：舒适[.] 在 XBOX 的下一周：11 月 23 日至 27 日的新游戏，\n【核实提醒】具体平台、地区和时间安排，请以官方公告为准。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "这 7 个 PS5 游戏在 GTA 6 的同一天推出",
       "url": "https://www.pushsquare.com/news/2026/11/these-7-ps5-games-launched-on-the-same-day-as-gta-6-like-mad-men",
-      "summary": "勇敢的策略。 疯狂的定义是什么？ 在 GTA 6 的同一天， 然而，七场比赛做到了！",
+      "summary": "勇敢的策略。 疯狂的定义是什么？ 在 GTA 6 的同一天， 然而，有七场比赛！",
       "publishedAt": "Fri, 20 Nov 2026 15:00:00 GMT",
       "timestamp": 1795186800000,
       "source": "Push Square",
@@ -659,13 +673,13 @@
       "category": "PlayStation 游戏",
       "originalTitle": "These 7 PS5 Games Launched on the Same Day as GTA 6 Like Mad Men",
       "originalSummary": "Brave strategy. What’s the definition of insanity? It’s got to be launching your game on the exact same day as GTA 6 , which is likely to be the biggest release in history. And yet, seven games did! Read the full article on pushsquare.com",
-      "videoScript": "【开场】这 7 个 PS5 游戏在 GTA 6 的同一天推出\n【正文】勇敢的策略。 疯狂的定义是什么？ 在 GTA 6 的同一天， 然而，七场比赛做到了！\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】这 7 个 PS5 游戏在 GTA 6 的同一天推出\n【正文】勇敢的策略。 疯狂的定义是什么？ 在 GTA 6 的同一天， 然而，有七场比赛！\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "Pokémon - Like Temtem's Bullet Heaven Spin -Off 明年 Switch 时到达",
       "url": "https://www.nintendolife.com/news/2026/11/pokemon-like-temtems-bullet-heaven-spin-off-arrives-on-switch-next-year",
-      "summary": "甜甜的调味品。 Crema Games' Temtem 是 2022 年运回 Switch 时我们所演奏的比较好的 Pokémon 类作品之一。 Dev 几年前发布了它的最后更新，但很快，我们将有机会发挥它的幸存者式副作用。 Temtem：4 月来到 Steam 后，于 2027 年 1 月 21 日在 Switch 上发射沼泽。 最初的一眼让我们觉得 这是克雷玛对 Pokémon Unite 的看法",
+      "summary": "甜甜的调味品。 Crema Games' Temtem 是 2022 年运回 Switch 时我们玩过的比较好的 Pokémon 类游戏之一。 Dev 几年前发布了它的最后更新，但很快，我们将有机会发挥它的幸存者式副作用。 Temtem：4 月来到 Steam 后，于 2027 年 1 月 21 日在 Switch 上发射 Swarm。 最初的一眼让我们觉得 这是克雷玛对 Pokémon Unite 的看法",
       "publishedAt": "Fri, 20 Nov 2026 14:45:00 GMT",
       "timestamp": 1795185900000,
       "source": "Nintendo Life",
@@ -673,13 +687,13 @@
       "category": "任天堂游戏",
       "originalTitle": "Pokémon-Like Temtem's Bullet Heaven Spin-Off Arrives On Switch Next Year",
       "originalSummary": "Sweet Temtemptations. Crema Games' Temtem was one of the better Pokémon-likes we had played when it arrived on Switch back in 2022. The dev released its final update a couple of years back, but soon, we'll get a chance to play its Survivors-style spinoff. Temtem: Swarm launches on Switch on 21st January 2027 after coming to Steam back in April. An initial glance made us think this was Crema's take on Pokémon Unite , ",
-      "videoScript": "【开场】Pokémon - Like Temtem's Bullet Heaven Spin -Off 明年 Switch 时到达\n【正文】甜甜的调味品。 Crema Games' Temtem 是 2022 年运回 Switch 时我们所演奏的比较好的 Pokémon 类作品之一。 Dev 几年前发布了它的最后更新，但很快，我们将有机会发挥它的幸存者式副作用。 Temtem：4 月来到 Steam 后，于 2027 年 1 月 21 日在 Switch 上发射沼泽。 最初的一眼让我们觉得 这是克雷玛对 Pokémon Unite 的看法\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Pokémon - Like Temtem's Bullet Heaven Spin -Off 明年 Switch 时到达\n【正文】甜甜的调味品。 Crema Games' Temtem 是 2022 年运回 Switch 时我们玩过的比较好的 Pokémon 类游戏之一。 Dev 几年前发布了它的最后更新，但很快，我们将有机会发挥它的幸存者式副作用。 Temtem：4 月来到 Steam 后，于 2027 年 1 月 21 日在 Switch 上发射 Swarm。 最初的一眼让我们觉得 这是克雷玛对 Pokémon Unite 的看法\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "\"不可思议的难以实现\"：Cyberpunk 2077 Boss Pours Cross on 'Masterpiper' GTA 6",
+      "title": "\"不可思议的难以实现\"：Cyberpunk 2077 Boss Pours Cross on 'Masterpic' GTA 6 互联网档案馆的存檔，存档日期 2014-03-02。",
       "url": "https://www.pushsquare.com/news/2026/11/its-unbelievably-hard-to-achieve-cyberpunk-2077-boss-pours-praise-on-masterpiece-gta-6",
-      "summary": "夜城见副城。 从夜城到副城，CDPR 的老板除了 GTA 6 的好话，没什么好说的。 PS5 发行了 Cyberpunk 2077， 波兰工作室把自己树立为一个开放的世界大男孩，",
+      "summary": "夜城见副城。 从夜城到副城 CDPR 的老板除了说 GTA 6 的好话外，没什么好说的 PS5 发行了 Cyberpunk 2077， 波兰工作室将自己确立为一个开放的世界大男孩，",
       "publishedAt": "Fri, 20 Nov 2026 14:30:00 GMT",
       "timestamp": 1795185000000,
       "source": "Push Square",
@@ -687,11 +701,11 @@
       "category": "PlayStation 游戏",
       "originalTitle": "'It's Unbelievably Hard to Achieve': Cyberpunk 2077 Boss Pours Praise on 'Masterpiece' GTA 6",
       "originalSummary": "Night City meets Vice City. From Night City to Vice City, the boss of CDPR has nothing but nice things to say about GTA 6 . With the PS5 release of Cyberpunk 2077 , the Polish studio established itself as an open world big boy, having previously released one of the greatest RPGs ever in The Witcher 3 . Read the full article on pushsquare.com",
-      "videoScript": "【开场】\"不可思议的难以实现\"：Cyberpunk 2077 Boss Pours Cross on 'Masterpiper' GTA 6\n【正文】夜城见副城。 从夜城到副城，CDPR 的老板除了 GTA 6 的好话，没什么好说的。 PS5 发行了 Cyberpunk 2077， 波兰工作室把自己树立为一个开放的世界大男孩，\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】\"不可思议的难以实现\"：Cyberpunk 2077 Boss Pours Cross on 'Masterpic' GTA 6 互联网档案馆的存檔，存档日期 2014-03-02。\n【正文】夜城见副城。 从夜城到副城 CDPR 的老板除了说 GTA 6 的好话外，没什么好说的 PS5 发行了 Cyberpunk 2077， 波兰工作室将自己确立为一个开放的世界大男孩，\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "使用假 PC 端口作为诱饵的“GTA 6 PC 骗局工具箱”，",
+      "title": "使用假 PC 端口作为诱饵的“GTA 6 PC 骗局套装”在暗网上可以买到 200 美元。",
       "url": "https://www.pcgamer.com/games/grand-theft-auto/a-gta-6-pc-scam-kit-using-a-fake-pc-port-as-bait-is-available-for-usd200-on-the-dark-web-says-nordvpn-so-watch-what-you-click/",
       "summary": "还有其它的 PC 游戏，你知道的。",
       "publishedAt": "Fri, 20 Nov 2026 14:29:35 +0000",
@@ -701,13 +715,13 @@
       "category": "PC 游戏",
       "originalTitle": "A 'GTA 6 PC scam kit' using a fake PC port as bait is available for $200 on the dark web, says NordVPN, so watch what you click",
       "originalSummary": "There are other PC games to play, you know.",
-      "videoScript": "【开场】使用假 PC 端口作为诱饵的“GTA 6 PC 骗局工具箱”，\n【正文】还有其它的 PC 游戏，你知道的。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】使用假 PC 端口作为诱饵的“GTA 6 PC 骗局套装”在暗网上可以买到 200 美元。\n【正文】还有其它的 PC 游戏，你知道的。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "传感器塔估计 GTA 6 在订购前和发射日销售中产生 2.36bn 美元",
       "url": "https://www.gamesindustry.biz/sensor-tower-estimates-gta-6-generated-236bn-in-pre-order-and-launch-day-sales",
-      "summary": "传感器塔估计，Grand Theft Auto 6 通过预购和发射日共售出超过 2，450 万份，创收约 23.6 亿美元。 更多信息",
+      "summary": "传感器塔估计，Grand Theft Auto 6 通过预购和发射日共售出超过 2，450 万份，收入约 23.6 亿美元。 更多信息",
       "publishedAt": "Fri, 20 Nov 2026 14:07:30 +0000",
       "timestamp": 1795183650000,
       "source": "GamesIndustry.biz",
@@ -715,11 +729,11 @@
       "category": "行业与商业",
       "originalTitle": "Sensor Tower estimates GTA 6 generated $2.36bn in pre-order and launch-day sales",
       "originalSummary": "Sensor Tower estimates Grand Theft Auto 6 sold over 24.5 million copies through pre-orders and on launch day, generating approximately $2.36 billion in revenue. Read more",
-      "videoScript": "【开场】传感器塔估计 GTA 6 在订购前和发射日销售中产生 2.36bn 美元\n【正文】传感器塔估计，Grand Theft Auto 6 通过预购和发射日共售出超过 2，450 万份，创收约 23.6 亿美元。 更多信息\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】传感器塔估计 GTA 6 在订购前和发射日销售中产生 2.36bn 美元\n【正文】传感器塔估计，Grand Theft Auto 6 通过预购和发射日共售出超过 2，450 万份，收入约 23.6 亿美元。 更多信息\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "Occult 恐怖视觉小说 Resequence： The Orchard，由魔法少女女巫审判开发者 Re；AER 在 Steam 上发布",
+      "title": "Occult 恐怖视觉小说 Resequence：The Orchard，由魔法少女女巫审判开发者 Re；AER 在 Steam 上发布",
       "url": "https://automaton-media.com/en/news/occult-horror-visual-novel-resequence-the-orchard-written-by-magical-girl-witch-trials-developer-reaer-releases-on-steam/",
       "summary": "复序：果园环绕着一个精神科医生转身的学校治疗师辅导生，为怪异现象所困扰。",
       "publishedAt": "Fri, 20 Nov 2026 14:00:00 +0000",
@@ -729,13 +743,13 @@
       "category": "日本游戏新闻",
       "originalTitle": "Occult horror visual novel Resequence: The Orchard, written by Magical Girl Witch Trials developer Re;AER, releases on Steam",
       "originalSummary": "Resequence: The Orchard revolves around a psychiatrist-turned-school-therapist counseling students troubled by strange phenomena.",
-      "videoScript": "【开场】Occult 恐怖视觉小说 Resequence： The Orchard，由魔法少女女巫审判开发者 Re；AER 在 Steam 上发布\n【正文】复序：果园环绕着一个精神科医生转身的学校治疗师辅导生，为怪异现象所困扰。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Occult 恐怖视觉小说 Resequence：The Orchard，由魔法少女女巫审判开发者 Re；AER 在 Steam 上发布\n【正文】复序：果园环绕着一个精神科医生转身的学校治疗师辅导生，为怪异现象所困扰。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "指南：43 Switch 1 & 2 Games 你应该在任天堂的\"冒险等待\" eShop 销售(美国)中检查出来",
       "url": "https://www.nintendolife.com/guides/43-switch-1-and-2-games-you-should-check-out-in-nintendos-adventure-awaits-eshop-sale-us",
-      "summary": "每场比赛我们打出 9/10 或更高的成绩，再加上个人挑球。 随着任天堂本周早些时候在欧洲 eShop 上推出其\"黑色星期五\"(Black Friday)的销售，我们知道，我们北美的朋友只有一段时间才能获得一些自己的储蓄。 你知道什么，他们有！ 任天堂的\"冒险 Awaits\"销量现时在北美店面直播，在一档和三档间打折。",
+      "summary": "每场比赛我们打出 9/10 或更高的成绩，再加上个人挑球。 随着任天堂本周早些时候在欧洲 eShop 上推出其\"黑色星期五\"(Black Friday)的销售，我们知道，我们北美的朋友只有一段时间才能获得一些自己的储蓄。 你知道什么，他们有！ 任天堂的\"冒险 Awaits\"销量现时在北美店面直播，在一档和三档间有折扣。",
       "publishedAt": "Fri, 20 Nov 2026 14:00:00 GMT",
       "timestamp": 1795183200000,
       "source": "Nintendo Life",
@@ -743,11 +757,11 @@
       "category": "任天堂游戏",
       "originalTitle": "Guide: 43 Switch 1 & 2 Games You Should Check Out In Nintendo's 'Adventure Awaits' eShop Sale (US)",
       "originalSummary": "Every game we scored 9/10 or higher, plus a personal pick. With Nintendo launching its Black Friday sale on the European eShop earlier this week, we knew it was only a matter of time before our friends in North America got some savings of their own. And what do you know, they have! Nintendo's ' Adventure Awaits ' sale is now live on the North American storefront, with discounts across a bunch of first- and third-part",
-      "videoScript": "【开场】指南：43 Switch 1 & 2 Games 你应该在任天堂的\"冒险等待\" eShop 销售(美国)中检查出来\n【正文】每场比赛我们打出 9/10 或更高的成绩，再加上个人挑球。 随着任天堂本周早些时候在欧洲 eShop 上推出其\"黑色星期五\"(Black Friday)的销售，我们知道，我们北美的朋友只有一段时间才能获得一些自己的储蓄。 你知道什么，他们有！ 任天堂的\"冒险 Awaits\"销量现时在北美店面直播，在一档和三档间打折。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】指南：43 Switch 1 & 2 Games 你应该在任天堂的\"冒险等待\" eShop 销售(美国)中检查出来\n【正文】每场比赛我们打出 9/10 或更高的成绩，再加上个人挑球。 随着任天堂本周早些时候在欧洲 eShop 上推出其\"黑色星期五\"(Black Friday)的销售，我们知道，我们北美的朋友只有一段时间才能获得一些自己的储蓄。 你知道什么，他们有！ 任天堂的\"冒险 Awaits\"销量现时在北美店面直播，在一档和三档间有折扣。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "Bleach：灵魂共鸣庆祝与苏维埃社会主义共和国完整洞穴化伊奇戈共事一年。",
+      "title": "Bleach：灵魂共鸣庆祝与苏维埃社会主义共和国完整洞房伊奇戈共济一年",
       "url": "https://www.pocketgamer.com/bleach-soul-resonance/1st-year-anniversary-full-hollowfication-ichigo/",
       "summary": "Bleach 终于在几千年的血战中 将空气包裹起来 也许是永久的 我也不会责怪你 感觉你心中有个大洞 幸运的是，如果你在移动，有很多东西可以帮助填补空白，特别是在布莱奇：灵魂共鸣的大规模一周年庆典！ 就算你觉得有点蓝 也不会比以前更糟",
       "publishedAt": "Fri, 20 Nov 2026 14:00:00 +0000",
@@ -757,11 +771,11 @@
       "category": "移动游戏",
       "originalTitle": "Bleach: Soul Resonance celebrates a year of service with the SSR Full Hollowfication Ichigo",
       "originalSummary": "With Bleach having finally wrapped airing, perhaps permanently, with the conclusion of the Thousand-Year Blood War arc, I wouldn't blame you for feeling a big ol' shonen-shaped hole in your heart. Fortunately, if you're on mobile, there's plenty of stuff to help fill the gap, especially in Bleach: Soul Resonance's massive first anniversary celebration! Even if you are feeling a little blue, it can't be worse than for",
-      "videoScript": "【开场】Bleach：灵魂共鸣庆祝与苏维埃社会主义共和国完整洞穴化伊奇戈共事一年。\n【正文】Bleach 终于在几千年的血战中 将空气包裹起来 也许是永久的 我也不会责怪你 感觉你心中有个大洞 幸运的是，如果你在移动，有很多东西可以帮助填补空白，特别是在布莱奇：灵魂共鸣的大规模一周年庆典！ 就算你觉得有点蓝 也不会比以前更糟\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Bleach：灵魂共鸣庆祝与苏维埃社会主义共和国完整洞房伊奇戈共济一年\n【正文】Bleach 终于在几千年的血战中 将空气包裹起来 也许是永久的 我也不会责怪你 感觉你心中有个大洞 幸运的是，如果你在移动，有很多东西可以帮助填补空白，特别是在布莱奇：灵魂共鸣的大规模一周年庆典！ 就算你觉得有点蓝 也不会比以前更糟\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "这台 Ryzen AI Max+ 392 游戏笔记本电脑 装有 32 GB 的内存 比我以前见过的便宜 也是我们真正喜爱的 Asus 模型",
+      "title": "这台 Ryzen AI Max + 392 游戏笔记本电脑 装有 32GB 的内存 比我以前见过的便宜 也是我们真正喜爱的 Asus 模型",
       "url": "https://www.pcgamer.com/hardware/gaming-laptops/this-ryzen-ai-max-392-gaming-laptop-with-32-gb-of-memory-is-cheaper-than-ive-seen-before-and-its-an-asus-model-we-really-love/",
       "summary": "你得到游戏和 AI 切在一个小包。",
       "publishedAt": "Fri, 20 Nov 2026 13:47:00 +0000",
@@ -771,7 +785,7 @@
       "category": "PC 游戏",
       "originalTitle": "This Ryzen AI Max+ 392 gaming laptop with 32 GB of memory is cheaper than I've seen before, and it's an Asus model we really love",
       "originalSummary": "You're getting gaming and AI chops in a wee package.",
-      "videoScript": "【开场】这台 Ryzen AI Max+ 392 游戏笔记本电脑 装有 32 GB 的内存 比我以前见过的便宜 也是我们真正喜爱的 Asus 模型\n【正文】你得到游戏和 AI 切在一个小包。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】这台 Ryzen AI Max + 392 游戏笔记本电脑 装有 32GB 的内存 比我以前见过的便宜 也是我们真正喜爱的 Asus 模型\n【正文】你得到游戏和 AI 切在一个小包。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -789,7 +803,7 @@
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "Zelda Switch 2 Console is Back In Stock Sunly 如果你出局了(美国)",
+      "title": "Zelda Switch 2 Console is Back in Stock Sunly 如果你出局了(美国)，就快回来了",
       "url": "https://www.nintendolife.com/news/2026/11/zelda-switch-2-console-is-back-in-stock-soon-if-you-missed-out-us",
       "summary": "等一会 如果你住在美国，恰巧错过了塞尔达 40 周年纪念 Switch 2 控制台，那么好消息 — — 更多在路上。 这在最近对任天堂拉美副总裁兼总经理比尔·范齐尔的采访中已经得到某种肯定，他在采访中声称任天堂\"估计不足\"硬件会有多受欢迎，但承诺会有更多的东西出现。",
       "publishedAt": "Fri, 20 Nov 2026 13:15:00 GMT",
@@ -799,13 +813,13 @@
       "category": "任天堂游戏",
       "originalTitle": "Zelda Switch 2 Console Is Back In Stock Soon If You Missed Out (US)",
       "originalSummary": "Just hold on a little while longer. If you live in the US and happened to miss out on the Zelda 40th Anniversary Switch 2 console, then good news – more is on the way. This was already kind of confirmed in a recent interview with Nintendo's Latin America Vice President and General Manager Bill van Zyll, in which he claimed Nintendo \"underestimated\" how popular the hardware would be, but promised that more would come ",
-      "videoScript": "【开场】Zelda Switch 2 Console is Back In Stock Sunly 如果你出局了(美国)\n【正文】等一会 如果你住在美国，恰巧错过了塞尔达 40 周年纪念 Switch 2 控制台，那么好消息 — — 更多在路上。 这在最近对任天堂拉美副总裁兼总经理比尔·范齐尔的采访中已经得到某种肯定，他在采访中声称任天堂\"估计不足\"硬件会有多受欢迎，但承诺会有更多的东西出现。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Zelda Switch 2 Console is Back in Stock Sunly 如果你出局了(美国)，就快回来了\n【正文】等一会 如果你住在美国，恰巧错过了塞尔达 40 周年纪念 Switch 2 控制台，那么好消息 — — 更多在路上。 这在最近对任天堂拉美副总裁兼总经理比尔·范齐尔的采访中已经得到某种肯定，他在采访中声称任天堂\"估计不足\"硬件会有多受欢迎，但承诺会有更多的东西出现。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "无天区零版 3.4 更新版 12 月 2 日\"终日\"发布。",
+      "title": "无天区零版 3.4 更新版 12 月 2 日发布日终版。",
       "url": "https://www.gematsu.com/2026/11/zenless-zone-zero-version-3-4-update-the-finality-of-the-day-launches-december-2",
-      "summary": "3.4 版对 Zenless Zone Zero 的更新被誉为“终日，”将 & hellip；",
+      "summary": "3.4 版的 Zenless Zone Zero 更新，被誉为“终日，”将 & hellip；",
       "publishedAt": "Fri, 20 Nov 2026 13:05:15 +0000",
       "timestamp": 1795179915000,
       "source": "Gematsu",
@@ -813,7 +827,7 @@
       "category": "日本与全球游戏新闻",
       "originalTitle": "Zenless Zone Zero version 3.4 update ‘The Finality of the Day’ launches December 2",
       "originalSummary": "The version 3.4 update for Zenless Zone Zero, dubbed “The Finality of the Day,” will &hellip;",
-      "videoScript": "【开场】无天区零版 3.4 更新版 12 月 2 日\"终日\"发布。\n【正文】3.4 版对 Zenless Zone Zero 的更新被誉为“终日，”将 & hellip；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】无天区零版 3.4 更新版 12 月 2 日发布日终版。\n【正文】3.4 版的 Zenless Zone Zero 更新，被誉为“终日，”将 & hellip；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -833,7 +847,7 @@
     {
       "title": "穆迪叙事冒险游戏\"再见汉城\"在地球被小行星摧毁前 6 个月进行。 2027 年初的释放",
       "url": "https://automaton-media.com/en/news/moody-narrative-adventure-game-goodbye-seoul-takes-place-six-months-before-the-earth-is-destroyed-by-an-asteroid-release-set-for-early-2027/",
-      "summary": "游戏近期获得新预告片，并被确认为\"2027 年初\"发行。",
+      "summary": "游戏最近获得新预告片，并被确认为\"2027 年初\"发行。",
       "publishedAt": "Fri, 20 Nov 2026 13:00:00 +0000",
       "timestamp": 1795179600000,
       "source": "AUTOMATON English",
@@ -841,7 +855,7 @@
       "category": "日本游戏新闻",
       "originalTitle": "Moody narrative adventure game Goodbye Seoul takes place six months before the Earth is destroyed by an asteroid. Release set for early 2027",
       "originalSummary": "The game recently got a new trailer and was confirmed for an Early 2027 release.",
-      "videoScript": "【开场】穆迪叙事冒险游戏\"再见汉城\"在地球被小行星摧毁前 6 个月进行。 2027 年初的释放\n【正文】游戏近期获得新预告片，并被确认为\"2027 年初\"发行。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】穆迪叙事冒险游戏\"再见汉城\"在地球被小行星摧毁前 6 个月进行。 2027 年初的释放\n【正文】游戏最近获得新预告片，并被确认为\"2027 年初\"发行。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -859,9 +873,9 @@
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "Lonesome Village 是一个舒适，无战斗力的生活 sim，在 Epic Games Store 上免费移动",
+      "title": "Lonesome Village 是一个舒适，无战斗力的生活模拟器，在 Epic Games Store 上免费移动",
       "url": "https://www.pocketgamer.com/lonesome-village/free-on-the-epic-games-store/",
-      "summary": "我们好像很久没在手机上 写到 Epic Games Store 了 但在背景中，斯威尼之家一直悄悄地与免费的游戏晋级同时进行。 而 Epic Games Store 上最新的免费 bie 就是舒适，无战斗生活 sim Lonesome 村！ 在 Lonesome 村，你扮演一只独居的野狼 参观这个三角形的地方， 它现在失去了它的居民。 页：1",
+      "summary": "我们好像很久没在手机上 写过 Epic Games Store 了 但在背景中，斯威尼之家一直悄悄地与免费的游戏晋级同时进行。 而 Epic Games Store 上最新的免费 bie 就是舒适，无战斗生活 sim Lonesome 村！ 在 Lonesome 村，你扮演一只独居的野狼 来参观这个三角形的地方， 现在已经失去了它的居民。 A 级",
       "publishedAt": "Fri, 20 Nov 2026 12:45:00 +0000",
       "timestamp": 1795178700000,
       "source": "Pocket Gamer",
@@ -869,11 +883,11 @@
       "category": "移动游戏",
       "originalTitle": "Lonesome Village is a cosy, combat-free life sim that's free on the Epic Games Store for mobile",
       "originalSummary": "It seems as though it's been a while since we wrote about the Epic Games Store on mobile. But in the background, the House of Sweeney has been quietly chugging along with its free game promotions. And the latest freebie on the Epic Games Store is none other than cosy, no-combat life sim Lonesome Village! In Lonesome Village, you play a lone coyote visiting the titular place, which is now bereft of its inhabitants. A ",
-      "videoScript": "【开场】Lonesome Village 是一个舒适，无战斗力的生活 sim，在 Epic Games Store 上免费移动\n【正文】我们好像很久没在手机上 写到 Epic Games Store 了 但在背景中，斯威尼之家一直悄悄地与免费的游戏晋级同时进行。 而 Epic Games Store 上最新的免费 bie 就是舒适，无战斗生活 sim Lonesome 村！ 在 Lonesome 村，你扮演一只独居的野狼 参观这个三角形的地方， 它现在失去了它的居民。 页：1\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Lonesome Village 是一个舒适，无战斗力的生活模拟器，在 Epic Games Store 上免费移动\n【正文】我们好像很久没在手机上 写过 Epic Games Store 了 但在背景中，斯威尼之家一直悄悄地与免费的游戏晋级同时进行。 而 Epic Games Store 上最新的免费 bie 就是舒适，无战斗生活 sim Lonesome 村！ 在 Lonesome 村，你扮演一只独居的野狼 来参观这个三角形的地方， 现在已经失去了它的居民。 A 级\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "尼科贝利奇在 GTA 6 吗？",
+      "title": "Niko Bellic 在 GTA 6 吗？",
       "url": "https://www.pcgamer.com/games/grand-theft-auto/gta-6-niko-bellic/",
       "summary": "你能跟他打保龄球吗？",
       "publishedAt": "Fri, 20 Nov 2026 12:44:35 +0000",
@@ -883,7 +897,7 @@
       "category": "PC 游戏",
       "originalTitle": "Is Niko Bellic in GTA 6?",
       "originalSummary": "And can you go bowling with him if so?",
-      "videoScript": "【开场】尼科贝利奇在 GTA 6 吗？\n【正文】你能跟他打保龄球吗？\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Niko Bellic 在 GTA 6 吗？\n【正文】你能跟他打保龄球吗？\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -903,7 +917,7 @@
     {
       "title": "GTA 6 太暗了吗？ 这是如何修复 PS5",
       "url": "https://www.pushsquare.com/news/2026/11/gta-6-too-dark-heres-how-to-fix-it-on-ps5",
-      "summary": "包括最佳人类发展报告校准设置。 如果你玩 GTA 6， 发现它太暗了， 很有可能你的 HDR 校准错误， 由 HDTV 制作的宽广研究视频 测试 — — 在价格昂贵的索尼参考显示器上进行 — — 揭示了游戏的 HDR 校准可能没有达到预期的效果。",
+      "summary": "包括最佳人类发展报告校准设置。 如果你玩 GTA 6， 发现它太暗了， 你很可能误用 HDR 校准， 由 HDTV 拍摄的广泛研究视频 测试 — — 在价格昂贵的索尼参考显示器上进行 — — 揭示了游戏的 HDR 校准可能没有达到预期的效果。",
       "publishedAt": "Fri, 20 Nov 2026 12:30:00 GMT",
       "timestamp": 1795177800000,
       "source": "Push Square",
@@ -911,13 +925,13 @@
       "category": "PlayStation 游戏",
       "originalTitle": "GTA 6 Too Dark? Here's How to Fix It on PS5",
       "originalSummary": "Optimal HDR calibration settings included. If you’re playing GTA 6 and finding it too dark, there’s a good chance you may have your HDR calibration wrong – and no, it’s not your fault! An extensive research video by HDTV Test – performed on a pricey Sony reference monitor – reveals the game’s HDR calibration may not be working quite as intended. Read the full article on pushsquare.com",
-      "videoScript": "【开场】GTA 6 太暗了吗？ 这是如何修复 PS5\n【正文】包括最佳人类发展报告校准设置。 如果你玩 GTA 6， 发现它太暗了， 很有可能你的 HDR 校准错误， 由 HDTV 制作的宽广研究视频 测试 — — 在价格昂贵的索尼参考显示器上进行 — — 揭示了游戏的 HDR 校准可能没有达到预期的效果。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】GTA 6 太暗了吗？ 这是如何修复 PS5\n【正文】包括最佳人类发展报告校准设置。 如果你玩 GTA 6， 发现它太暗了， 你很可能误用 HDR 校准， 由 HDTV 拍摄的广泛研究视频 测试 — — 在价格昂贵的索尼参考显示器上进行 — — 揭示了游戏的 HDR 校准可能没有达到预期的效果。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "欧盟数字公平法案将如何影响游戏设计，",
       "url": "https://www.gamesindustry.biz/how-the-eus-digital-fairness-act-will-impact-game-design-and-why-it-hits-european-indies-particularly-hard",
-      "summary": "欧洲委员会上星期公布的数字公平法案(DFA)草案激起了游戏业的愤怒，许多引人注目的声音坦率地表达了他们的关切。 在更广泛的行业中，人们的意见得到了更多的衡量，可能是因为 DFA &ndash 所针对的一些做法，例如掠夺箱或对赢和 ndash；在经济上是极其成功的，但在其中并没有得到一致的欢迎。",
+      "summary": "欧洲委员会上星期公布的数字公平法案(DFA)草案激起了游戏业的愤怒，许多引人注目的声音坦率地表达了他们的关切。 在更广泛的行业中，人们的意见得到更多的衡量，可能是因为 DFA &ndash 所针对的一些做法，如掠夺箱或对赢和 ndash；在经济上非常成功，但在其中并不普遍。",
       "publishedAt": "Fri, 20 Nov 2026 12:27:00 +0000",
       "timestamp": 1795177620000,
       "source": "GamesIndustry.biz",
@@ -925,7 +939,7 @@
       "category": "行业与商业",
       "originalTitle": "How the EU's Digital Fairness Act will impact game design, and why it hits European indies particularly hard",
       "originalSummary": "The European Commission's publication of its draft Digital Fairness Act (DFA) last week prompted uproar within the games industry, with many notable voices candidly expressing their concerns. Opinions in the wider industry were more measured, possibly because some of the practices targeted by the DFA &ndash; such as loot boxes or pay-to-win &ndash; are wildly successful economically, but not uniformly popular amongst",
-      "videoScript": "【开场】欧盟数字公平法案将如何影响游戏设计，\n【正文】欧洲委员会上星期公布的数字公平法案(DFA)草案激起了游戏业的愤怒，许多引人注目的声音坦率地表达了他们的关切。 在更广泛的行业中，人们的意见得到了更多的衡量，可能是因为 DFA &ndash 所针对的一些做法，例如掠夺箱或对赢和 ndash；在经济上是极其成功的，但在其中并没有得到一致的欢迎。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】欧盟数字公平法案将如何影响游戏设计，\n【正文】欧洲委员会上星期公布的数字公平法案(DFA)草案激起了游戏业的愤怒，许多引人注目的声音坦率地表达了他们的关切。 在更广泛的行业中，人们的意见得到更多的衡量，可能是因为 DFA &ndash 所针对的一些做法，如掠夺箱或对赢和 ndash；在经济上非常成功，但在其中并不普遍。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -943,7 +957,7 @@
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "WoW： 永远的项目设计师想要“ 摆脱 BiS ”， 鼓励那些想出汗的玩家为突袭带来独特的套装",
+      "title": "WoW： 永远的项目设计师想要“ 摆脱 BiS ”， 鼓励那些想出汗的玩家给突袭带来独特的套装",
       "url": "https://www.pcgamer.com/games/world-of-warcraft/wow-forever-item-designer-wants-to-get-rid-of-bis-encouraging-players-who-want-to-sweatily-optimise-to-bring-unique-sets-of-gear-to-raids/",
       "summary": "\"我觉得你的 BIS 应该跟每个老板不一样\"",
       "publishedAt": "Fri, 20 Nov 2026 12:07:57 +0000",
@@ -953,13 +967,13 @@
       "category": "PC 游戏",
       "originalTitle": "WoW: Forever item designer wants to 'get rid of BiS', encouraging players who want to sweatily optimise to bring unique sets of gear to raids",
       "originalSummary": "\"I think your BiS should be different every single boss.\"",
-      "videoScript": "【开场】WoW： 永远的项目设计师想要“ 摆脱 BiS ”， 鼓励那些想出汗的玩家为突袭带来独特的套装\n【正文】\"我觉得你的 BIS 应该跟每个老板不一样\"\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】WoW： 永远的项目设计师想要“ 摆脱 BiS ”， 鼓励那些想出汗的玩家给突袭带来独特的套装\n【正文】\"我觉得你的 BIS 应该跟每个老板不一样\"\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "12 月 17 日，",
       "url": "https://www.gematsu.com/2026/11/chasing-kaleidorider-closed-doki-test-begins-december-17",
-      "summary": "Fizzglee Studio 将为“3D RIDER 女孩 dokidoki 浪漫 RPG”和“hellip”主持封闭的“Doki 测试”；",
+      "summary": "Fizzglee Studio 将为“3D RIDER Girl dokidoki RPG” & hellip 主持封闭的“Doki 测试”；",
       "publishedAt": "Fri, 20 Nov 2026 12:00:13 +0000",
       "timestamp": 1795176013000,
       "source": "Gematsu",
@@ -967,13 +981,13 @@
       "category": "日本与全球游戏新闻",
       "originalTitle": "Chasing Kaleidorider closed ‘Doki Test’ begins December 17",
       "originalSummary": "Fizzglee Studio will host the closed “Doki Test” for “3D RIDER girl dokidoki romance RPG” &hellip;",
-      "videoScript": "【开场】12 月 17 日，\n【正文】Fizzglee Studio 将为“3D RIDER 女孩 dokidoki 浪漫 RPG”和“hellip”主持封闭的“Doki 测试”；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】12 月 17 日，\n【正文】Fizzglee Studio 将为“3D RIDER Girl dokidoki RPG” & hellip 主持封闭的“Doki 测试”；\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "\"我做了一些蠢事\"，WoW 说：永远的 Dev 谁在游戏中添加了独特，有趣的项目：\"有很多他们没看到，我很高兴\"。",
+      "title": "\"我做了一些蠢事\"，WoW 说：永远的 Dev 谁在游戏中添加了独特，有趣的项目：\"有很多他们没有看到，我很高兴\"。",
       "url": "https://www.pcgamer.com/games/world-of-warcraft/ive-done-some-stupid-stuff-says-wow-forever-dev-whos-adding-unique-fun-items-to-the-game-theres-a-lot-theyve-not-seen-that-im-very-happy-with/",
-      "summary": "\"也许有件东西是抢掠者大师\"",
+      "summary": "\"也许有一件东西是抢掠者大师\"",
       "publishedAt": "Fri, 20 Nov 2026 11:52:22 +0000",
       "timestamp": 1795175542000,
       "source": "PC Gamer",
@@ -981,13 +995,13 @@
       "category": "PC 游戏",
       "originalTitle": "'I've done some stupid stuff', says WoW: Forever dev who's adding unique, fun items to the game: 'There's a lot they've not seen that I'm very happy with'",
       "originalSummary": "\"There may be an item that is master looter BiS.\"",
-      "videoScript": "【开场】\"我做了一些蠢事\"，WoW 说：永远的 Dev 谁在游戏中添加了独特，有趣的项目：\"有很多他们没看到，我很高兴\"。\n【正文】\"也许有件东西是抢掠者大师\"\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】\"我做了一些蠢事\"，WoW 说：永远的 Dev 谁在游戏中添加了独特，有趣的项目：\"有很多他们没有看到，我很高兴\"。\n【正文】\"也许有一件东西是抢掠者大师\"\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "Ubisoft 合并了两个创意之家， H1 的结果下降 16.5%； Q2 净预订高于指导， 幸亏刺客的克里德黑旗重制",
       "url": "https://www.gamesindustry.biz/assassins-creed-black-flag-resynced-drives-ubisoft-q2-net-bookings-above-guidance-h1-results-decline-165-to-6447m",
-      "summary": "刺客克里德黑旗续集将 Ubisoft 的 Q2 净预订量增至&euro；3.89 亿，超过了 &euro；3.7 亿的估计制导。 更多信息",
+      "summary": "刺客克里德黑旗续集将 Ubisoft 的 Q2 净预订量增加到 & euro；3.89 亿，超过了 &euro；3.7 亿的估计指导。 更多信息",
       "publishedAt": "Fri, 20 Nov 2026 11:43:40 +0000",
       "timestamp": 1795175020000,
       "source": "GamesIndustry.biz",
@@ -995,7 +1009,7 @@
       "category": "行业与商业",
       "originalTitle": "Ubisoft merges two Creative Houses as H1 results decline 16.5%; Q2 net bookings above guidance thanks to Assassin's Creed Black Flag remake",
       "originalSummary": "Assassin's Creed Black Flag Resynced increased Ubisoft's Q2 net bookings to &euro;389 million, exceeding the estimated guidance of &euro;370 million. Read more",
-      "videoScript": "【开场】Ubisoft 合并了两个创意之家， H1 的结果下降 16.5%； Q2 净预订高于指导， 幸亏刺客的克里德黑旗重制\n【正文】刺客克里德黑旗续集将 Ubisoft 的 Q2 净预订量增至&euro；3.89 亿，超过了 &euro；3.7 亿的估计制导。 更多信息\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Ubisoft 合并了两个创意之家， H1 的结果下降 16.5%； Q2 净预订高于指导， 幸亏刺客的克里德黑旗重制\n【正文】刺客克里德黑旗续集将 Ubisoft 的 Q2 净预订量增加到 & euro；3.89 亿，超过了 &euro；3.7 亿的估计指导。 更多信息\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -1013,7 +1027,7 @@
       "translationStatus": "已转为简体中文"
     },
     {
-      "title": "Atari 2600 上的 E.T.的创作者将 AI 制作的游戏的暴风雨比作 1983 年美国电子游戏崩溃前发行的劣质标题的过剩。",
+      "title": "Atari 2600 上的 E.T.的创造者将 AI 制作的游戏的暴风雨比作 1983 年美国电子游戏崩溃前发布的劣质标题的过剩。",
       "url": "https://www.gamesindustry.biz/the-creator-of-et-on-the-atari-2600-likens-the-deluge-of-ai-made-games-to-the-glut-of-poor-quality-titles-released-ahead-of-the-us-video-game-crash-of-1983",
       "summary": "本周在 DevGAMM Lisbon 会议上，老牌游戏设计师霍华德·斯科特·沃肖(Howard Scott Warshaw)发表了一篇名为\"从阿塔里到 AI\"的演讲。 Warshaw 曾是 Atari 2600 系列系列游戏的一些著名标题的幕后黑手，包括经典的 Yars' Revent，但是他也出名设计了游戏 E.T。 Extra-Terrantial，其劣质被引用为 1983 年美国电子游戏崩溃的一个因素，当时美国游戏行业收入梅花。",
       "publishedAt": "Fri, 20 Nov 2026 11:13:00 +0000",
@@ -1023,7 +1037,7 @@
       "category": "行业与商业",
       "originalTitle": "The creator of E.T. on the Atari 2600 likens the deluge of AI-made games to the glut of poor-quality titles released ahead of the US video game crash of 1983",
       "originalSummary": "At the DevGAMM Lisbon conference this week, veteran game designer Howard Scott Warshaw gave a talk called \"From Atari to AI\". Warshaw was behind a number of famous titles for the Atari 2600, including the classic Yars' Revenge, but infamously he also designed the game E.T. the Extra-Terrestial, the poor quality of which has been cited as a factor in the US video game crash of 1983, when US games industry revenue plum",
-      "videoScript": "【开场】Atari 2600 上的 E.T.的创作者将 AI 制作的游戏的暴风雨比作 1983 年美国电子游戏崩溃前发行的劣质标题的过剩。\n【正文】本周在 DevGAMM Lisbon 会议上，老牌游戏设计师霍华德·斯科特·沃肖(Howard Scott Warshaw)发表了一篇名为\"从阿塔里到 AI\"的演讲。 Warshaw 曾是 Atari 2600 系列系列游戏的一些著名标题的幕后黑手，包括经典的 Yars' Revent，但是他也出名设计了游戏 E.T。 Extra-Terrantial，其劣质被引用为 1983 年美国电子游戏崩溃的一个因素，当时美国游戏行业收入梅花。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】Atari 2600 上的 E.T.的创造者将 AI 制作的游戏的暴风雨比作 1983 年美国电子游戏崩溃前发布的劣质标题的过剩。\n【正文】本周在 DevGAMM Lisbon 会议上，老牌游戏设计师霍华德·斯科特·沃肖(Howard Scott Warshaw)发表了一篇名为\"从阿塔里到 AI\"的演讲。 Warshaw 曾是 Atari 2600 系列系列游戏的一些著名标题的幕后黑手，包括经典的 Yars' Revent，但是他也出名设计了游戏 E.T。 Extra-Terrantial，其劣质被引用为 1983 年美国电子游戏崩溃的一个因素，当时美国游戏行业收入梅花。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -1113,7 +1127,7 @@
     {
       "title": "IGN 与 Rockstar 合作主办 GTA 6 的官方战略指南",
       "url": "https://www.gamesindustry.biz/ign-partners-with-rockstar-to-host-official-strategy-guide-for-gta-6",
-      "summary": "GamesIndustry.biz 的母公司 IGN Entertainment 发布了 GTA 6 的官方在线指南，通过与 Rockstar Games 的直接合作创建。 自由指南在 IGN.com 上发布，内容包括使用事务所的 MapGenie 平台制作的一幅广泛的互动地图，以及任务完成的核对表跟踪器和任务，力学，游戏的巨大开放 wor 的详细指南。",
+      "summary": "GamesIndustry.biz 的母公司 IGN Entertainment 发布了 GTA 6 的官方在线指南，通过与 Rockstar Games 的直接合作创建。 自由指南发布于 IGN.com，内容包括使用事务所的 MapGenie 平台制作的一幅广泛的互动地图，以及任务完成的核对表跟踪器和任务，力学，游戏的庞大开放 wor 的详细指南。",
       "publishedAt": "Fri, 20 Nov 2026 10:07:40 +0000",
       "timestamp": 1795169260000,
       "source": "GamesIndustry.biz",
@@ -1121,13 +1135,13 @@
       "category": "行业与商业",
       "originalTitle": "IGN partners with Rockstar to host Official Strategy Guide for GTA 6",
       "originalSummary": "IGN Entertainment, the parent company of GamesIndustry.biz , has released the Official Online Guide for GTA 6 , created through direct collaboration with Rockstar Games. The free guide, which was published on IGN.com, includes an extensive interactive map built using the firm's MapGenie platform, along with checklist trackers for completed tasks and detailed guides on missions, mechanics, and the game's vast open wor",
-      "videoScript": "【开场】IGN 与 Rockstar 合作主办 GTA 6 的官方战略指南\n【正文】GamesIndustry.biz 的母公司 IGN Entertainment 发布了 GTA 6 的官方在线指南，通过与 Rockstar Games 的直接合作创建。 自由指南在 IGN.com 上发布，内容包括使用事务所的 MapGenie 平台制作的一幅广泛的互动地图，以及任务完成的核对表跟踪器和任务，力学，游戏的巨大开放 wor 的详细指南。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】IGN 与 Rockstar 合作主办 GTA 6 的官方战略指南\n【正文】GamesIndustry.biz 的母公司 IGN Entertainment 发布了 GTA 6 的官方在线指南，通过与 Rockstar Games 的直接合作创建。 自由指南发布于 IGN.com，内容包括使用事务所的 MapGenie 平台制作的一幅广泛的互动地图，以及任务完成的核对表跟踪器和任务，力学，游戏的庞大开放 wor 的详细指南。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
       "title": "最终幻想 VII Tifa Lockhart 的盗贼 导致 13 人被捕 镇压假冒行动",
       "url": "https://automaton-media.com/en/news/final-fantasy-vii-tifa-lockhart-bootleg-figures-lead-to-13-arrests-in-crackdown-on-counterfeit-operation/",
-      "summary": "一群制作和销售走私人物和模型包的人在消费者报告 Tifa Lockhart 人物后在中国被捕。",
+      "summary": "一群制作和销售走私人物和模型包的人在消费者报告 Tifa Lockhart 的一位人物后在中国被捕。",
       "publishedAt": "Fri, 20 Nov 2026 09:49:22 +0000",
       "timestamp": 1795168162000,
       "source": "AUTOMATON English",
@@ -1135,7 +1149,7 @@
       "category": "日本游戏新闻",
       "originalTitle": "Final Fantasy VII Tifa Lockhart bootleg figures lead to 13 arrests in crackdown on counterfeit operation",
       "originalSummary": "A group producing and selling bootleg figures and model kits was busted in China after consumers made reports regarding a Tifa Lockhart figure.",
-      "videoScript": "【开场】最终幻想 VII Tifa Lockhart 的盗贼 导致 13 人被捕 镇压假冒行动\n【正文】一群制作和销售走私人物和模型包的人在消费者报告 Tifa Lockhart 人物后在中国被捕。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】最终幻想 VII Tifa Lockhart 的盗贼 导致 13 人被捕 镇压假冒行动\n【正文】一群制作和销售走私人物和模型包的人在消费者报告 Tifa Lockhart 的一位人物后在中国被捕。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     },
     {
@@ -1155,7 +1169,7 @@
     {
       "title": "指南：GTA 6： 广播歌曲 - 所有音乐，广播电台，艺术家",
       "url": "https://www.pushsquare.com/guides/gta-6-radio-songs-all-music-radio-stations-and-artists",
-      "summary": "GTA 6。 每条赛道。 和系列之前的游戏一样，GTA 6 拥有惊人数量的许可音乐和原声音乐。 有很多东西要听， 无论是在关键的故事时刻还是你开着收音机兜风。 在 GTA 6 的指南中，我们将告诉你 你需要知道的一切 关于 GTA 6 的音乐。",
+      "summary": "GTA6 的每个赛道。 和系列之前的游戏一样，GTA 6 拥有惊人数量的许可音乐和原声音乐。 有很多东西要听， 无论是在关键的故事时刻还是你开着收音机兜风。 在 GTA 6 的指南中，我们将告诉你 你需要知道的一切 关于 GTA 6 的音乐。",
       "publishedAt": "Fri, 20 Nov 2026 09:00:00 GMT",
       "timestamp": 1795165200000,
       "source": "Push Square",
@@ -1163,7 +1177,7 @@
       "category": "PlayStation 游戏",
       "originalTitle": "Guide: GTA 6: Radio Songs - All Music, Radio Stations, & Artists",
       "originalSummary": "Every track in GTA 6. As with the previous games in the series, GTA 6 has a staggering amount of both licensed and original music. There's so much to listen to, whether it's selected tracks during key story moments or you're just driving around with the radio on. In this GTA 6 guide , we're going to tell you everything you need to know about GTA 6's music. Read the full article on pushsquare.com",
-      "videoScript": "【开场】指南：GTA 6： 广播歌曲 - 所有音乐，广播电台，艺术家\n【正文】GTA 6。 每条赛道。 和系列之前的游戏一样，GTA 6 拥有惊人数量的许可音乐和原声音乐。 有很多东西要听， 无论是在关键的故事时刻还是你开着收音机兜风。 在 GTA 6 的指南中，我们将告诉你 你需要知道的一切 关于 GTA 6 的音乐。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
+      "videoScript": "【开场】指南：GTA 6： 广播歌曲 - 所有音乐，广播电台，艺术家\n【正文】GTA6 的每个赛道。 和系列之前的游戏一样，GTA 6 拥有惊人数量的许可音乐和原声音乐。 有很多东西要听， 无论是在关键的故事时刻还是你开着收音机兜风。 在 GTA 6 的指南中，我们将告诉你 你需要知道的一切 关于 GTA 6 的音乐。\n【核实提醒】发布前请对照来源原文，核实人名、数字和发售地区。\n【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。",
       "translationStatus": "已转为简体中文"
     }
   ],
