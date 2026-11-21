@@ -1,0 +1,74 @@
+name: 每三天代码健康检查
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'maintenance_check.py'
+      - 'MAINTENANCE.md'
+      - 'index.html'
+      - 'collect.mjs'
+      - 'server.mjs'
+      - 'translate_news.py'
+      - 'sources.json'
+      - 'package.json'
+      - '.github/workflows/maintenance.yml'
+      - '.github/workflows/game-news.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  health-check:
+    name: 检查项目代码与数据完整性
+    runs-on: ubuntu-latest
+    steps:
+      - name: 判断是否到三天检查周期
+        id: cadence
+        if: github.event_name == 'schedule'
+        run: |
+          epoch_day=$(( $(date -u +%s) / 86400 ))
+          if (( epoch_day % 3 == 0 )); then
+            echo "run_check=true" >> "$GITHUB_OUTPUT"
+            echo "今天进入三天检查周期。"
+          else
+            echo "run_check=false" >> "$GITHUB_OUTPUT"
+            echo "今天不在三天检查周期，跳过完整检查。"
+          fi
+      - name: 获取项目代码
+        if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
+        uses: actions/checkout@v4
+      - name: 配置 Node.js
+        if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 配置 Python
+        if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 检查关键文件、冲突标记、新闻数据、RSS 与网页引用
+        if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
+        run: python maintenance_check.py
+      - name: 检查 JavaScript 语法
+        if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
+        run: |
+          node --check collect.mjs
+          node --check server.mjs
+      - name: 检查 Python 语法
+        if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
+        run: python -m py_compile translate_news.py maintenance_check.py
+      - name: 记录检查摘要
+        if: success() && (github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true')
+        run: |
+          {
+            echo "## 游闻项目代码健康检查"
+            echo
+            echo "- 结果：检查通过"
+            echo "- 范围：冲突标记、关键文件、JSON 与新闻字段、RSS XML、网页引用、Node.js 和 Python 语法"
+            echo "- 时间：香港时间约 09:00，每三天一次；也可手动触发"
+          } >> "$GITHUB_STEP_SUMMARY"
