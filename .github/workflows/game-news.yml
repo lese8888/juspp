@@ -54,7 +54,24 @@ jobs:
             echo 'changed=false' >> "$GITHUB_OUTPUT"
           else
             git commit -m '更新游戏新闻 RSS 数据'
-            git push
+            pushed=false
+            for attempt in 1 2 3; do
+              if git push origin HEAD:main; then
+                pushed=true
+                break
+              fi
+              echo "推送遇到并发提交，尝试同步 main（第 $attempt 次）。"
+              git fetch origin main
+              if ! git rebase origin/main; then
+                git rebase --abort || true
+                echo "新闻数据与 main 分支上的其他更新发生冲突，停止提交。" >&2
+                exit 1
+              fi
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "连续重试后仍无法推送新闻数据。" >&2
+              exit 1
+            fi
             echo 'changed=true' >> "$GITHUB_OUTPUT"
           fi
       - name: 配置 GitHub Pages
