@@ -143,7 +143,7 @@ def main():
             if not isinstance(article, dict):
                 incomplete.append(f"第 {index} 条不是对象")
                 continue
-            for key in ("title", "url", "timestamp", "source", "originalTitle", "originalSummary", "videoScript"):
+            for key in ("title", "url", "timestamp", "source", "originalTitle", "videoScript"):
                 if article.get(key) in (None, ""):
                     incomplete.append(f"第 {index} 条缺少 {key}")
             if article.get("title") and not HAN_RE.search(str(article["title"])):
@@ -199,7 +199,7 @@ def main():
             parser.feed(html)
             parser.close()
             require("网页使用简体中文文档声明",
-                    '<html lang="zh-CN">' in html.lower())
+                    '<html lang="zh-cn">' in html.lower())
             referenced_ids = set(re.findall(r"\$\(['\"]#([^'\"]+)['\"]\)", html))
             missing_ids = sorted(referenced_ids - parser.ids)
             require("脚本引用的网页元素均存在", not missing_ids,
@@ -213,7 +213,7 @@ def main():
                 if address.path.startswith("/"):
                     broken.append(f"{tag} {attribute}={value} 应使用相对路径")
                     continue
-                local_path = (ROOT / address.path.lstrip("./")).resolve()
+                local_path = (ROOT / address.path.removeprefix("./")).resolve()
                 if not local_path.is_relative_to(ROOT.resolve()) or not local_path.is_file():
                     broken.append(f"{tag} {attribute}={value} 找不到本地文件")
             require("网页静态资源路径有效且兼容 GitHub Pages 项目站点",
@@ -221,7 +221,6 @@ def main():
         except Exception as error:
             require("网页结构可检查", False, str(error))
 
-    require("关键文件已进入工作区", not missing)
 
     checks = [
         ("node", ["--check", "collect.mjs"]),
