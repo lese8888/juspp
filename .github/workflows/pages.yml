@@ -1,0 +1,41 @@
+name: 发布游戏情报网页
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'news.json'
+      - 'rss.xml'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: game-intel-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 获取网页文件
+        uses: actions/checkout@v4
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: 准备网页发布目录
+        run: mkdir -p _site && cp index.html news.json rss.xml _site/
+      - name: 上传网页文件
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: 发布 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
