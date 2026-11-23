@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""游闻项目的定期静态健康检查。"""
+"""游闻项目的定期健康检查。"""
 
 import json
 import os
