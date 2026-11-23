@@ -7,9 +7,12 @@ import re
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent
 HAN_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff]")
@@ -60,9 +63,74 @@ def check(label, condition, detail=""):
     return False
 
 
+def local_name(tag):
+    return tag.rsplit("}", 1)[-1].lower()
+
+
+def check_feed(source):
+    """获取并解析一个 RSS 或 Atom 订阅源。"""
+    name = str(source.get("名称") or "未命名来源")
+    feed_url = str(source.get("订阅") or "")
+    request = Request(
+        feed_url,
+        headers={
+            "User-Agent": "GameIntelRSSHealth/1.0",
+            "Accept": "application/rss+xml, application/atom+xml, application/xml, text/xml, */*",
+        },
+    )
+    try:
+        with urlopen(request, timeout=20) as response:
+            status = response.getcode()
+            if not 200 <= status < 300:
+                return {"name": name, "ok": False, "detail": f"HTTP {status}"}
+            payload = response.read(5_000_001)
+        if len(payload) > 5_000_000:
+            return {"name": name, "ok": False, "detail": "订阅内容超过 5 MB"}
+        root = ET.fromstring(payload)
+        root_type = local_name(root.tag)
+        if root_type == "rss":
+            entries = [node for node in root.iter() if local_name(node.tag) == "item"]
+        elif root_type == "feed":
+            entries = [node for node in root if local_name(node.tag) == "entry"]
+        elif root_type == "rdf":
+            entries = [node for node in root.iter() if local_name(node.tag) == "item"]
+        else:
+            return {"name": name, "ok": False, "detail": f"不是 RSS/Atom XML（根节点：{root_type}）"}
+        if not entries:
+            return {"name": name, "ok": False, "detail": "XML 有效，但没有新闻条目"}
+
+        valid_entries = 0
+        for entry in entries:
+            children = [child for child in entry if isinstance(child.tag, str)]
+            title = next(
+                ("".join(child.itertext()).strip() for child in children if local_name(child.tag) == "title"),
+                "",
+            )
+            links = [child for child in children if local_name(child.tag) == "link"]
+            has_link = any(
+                child.attrib.get("href") or "".join(child.itertext()).strip()
+                for child in links
+            )
+            if not has_link:
+                has_link = any(local_name(child.tag) == "guid" for child in children)
+            if title and has_link:
+                valid_entries += 1
+        if not valid_entries:
+            return {"name": name, "ok": False, "detail": "条目缺少标题或链接"}
+        return {"name": name, "ok": True, "detail": f"{valid_entries} 条有效新闻"}
+    except HTTPError as error:
+        return {"name": name, "ok": False, "detail": f"HTTP {error.code}"}
+    except URLError as error:
+        return {"name": name, "ok": False, "detail": f"连接失败：{error.reason}"}
+    except (TimeoutError, ET.ParseError, OSError, ValueError) as error:
+        return {"name": name, "ok": False, "detail": f"{type(error).__name__}：{error}"}
+
+
 def main():
     errors = []
+    warnings = []
     passed = []
+    feed_results = []
 
     def require(label, condition, detail=""):
         if check(label, condition, detail):
@@ -130,6 +198,24 @@ def main():
         ]
         require("RSS 来源配置完整", bool(active) and not invalid_sources,
                 "没有可用订阅源" if not active else "地址无效：" + "、".join(invalid_sources))
+        if active and not invalid_sources:
+            with ThreadPoolExecutor(max_workers=min(6, len(active))) as executor:
+                feed_results = list(executor.map(check_feed, active))
+            for result in feed_results:
+                if result["ok"]:
+                    print(f"通过：RSS 源 {result['name']}（{result['detail']}）")
+                else:
+                    warning = f"{result['name']}：{result['detail']}"
+                    warnings.append(warning)
+                    print(f"警告：RSS 源 {warning}")
+            healthy_count = sum(result["ok"] for result in feed_results)
+            require(
+                "RSS/Atom 订阅源可连接并包含有效新闻",
+                healthy_count > 0,
+                f"{healthy_count}/{len(feed_results)} 个源有效；" + "；".join(
+                    f"{item['name']}：{item['detail']}" for item in feed_results if not item["ok"]
+                ),
+            )
 
     report = parsed.get("news.json")
     articles = report.get("articles") if isinstance(report, dict) else None
@@ -238,17 +324,29 @@ def main():
         except OSError as error:
             require(f"语法检查：{label}", False, str(error))
 
-    print(f"\n检查汇总：{len(passed)} 项通过，{len(errors)} 项失败。")
+    healthy_feeds = sum(result["ok"] for result in feed_results)
+    print(
+        f"\n检查汇总：{len(passed)} 项通过，{len(errors)} 项失败，"
+        f"{len(warnings)} 个 RSS 源需留意（{healthy_feeds}/{len(feed_results)} 个源有效）。"
+    )
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary_path:
         with open(summary_path, "a", encoding="utf-8") as summary:
             summary.write("## 游闻项目健康检查\n\n")
-            summary.write(f"- 通过：{len(passed)} 项\n- 失败：{len(errors)} 项\n")
+            summary.write(
+                f"- 通过：{len(passed)} 项\n- 失败：{len(errors)} 项\n"
+                f"- RSS 源正常：{healthy_feeds}/{len(feed_results)}\n"
+            )
+            if warnings:
+                summary.write("\n### RSS 源需要留意\n\n")
+                summary.writelines(f"- {item}\n" for item in warnings)
             if errors:
                 summary.write("\n### 需要处理\n\n")
                 summary.writelines(f"- {item}\n" for item in errors)
-            else:
-                summary.write("\n冲突标记、关键文件、新闻数据、RSS、网页资源与语法检查均通过。\n")
+            if not errors and not warnings:
+                summary.write("\n冲突标记、关键文件、新闻数据、全部 RSS 源、网页资源与语法检查均通过。\n")
+            elif not errors:
+                summary.write("\n项目检查通过；请查看上方 RSS 源警告，判断是否为临时网络问题。\n")
     return 1 if errors else 0
 
 
