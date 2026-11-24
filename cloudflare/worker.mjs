@@ -1,5 +1,5 @@
 const ORIGIN = 'https://lese8888.github.io/juspp/';
-const CACHE_VERSION = '2';
+const CACHE_NAMESPACE = '2';
 const CACHE_SECONDS = 300;
 
 const ROUTES = new Map([
@@ -44,8 +44,9 @@ export default {
     }
 
     const cache = caches.default;
+    const cacheBucket = Math.floor(Date.now() / (CACHE_SECONDS * 1000));
     const originUrl = new URL(
-      `${asset.path.replace(/^\//, '')}?cache=${CACHE_VERSION}`,
+      `${asset.path.replace(/^\//, '')}?cache=${CACHE_NAMESPACE}-${cacheBucket}`,
       ORIGIN
     );
     const cacheRequest = new Request(originUrl, { method: 'GET' });
