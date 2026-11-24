@@ -4,15 +4,19 @@
   "type": "module",
   "scripts": {
     "collect": "node collect.mjs",
+    "collect:scrapling-shadow": "python scrapling_shadow.py",
     "start": "node server.mjs",
     "test": "node --test test/*.test.mjs",
-    "test:python": "python -m unittest discover -s tests -p \"test_*.py\"",
+    "test:python": "python -m unittest discover -s tests -p \"test_translate_news.py\"",
     "verify:fresh": "node scripts/verify-fresh.mjs",
-    "check:syntax": "node --check collect.mjs && node --check server.mjs && node --check lib/news.mjs && node --check lib/freshness.mjs && node --check lib/collect-summary.mjs && node --check scripts/write-collect-summary.mjs && node --check scripts/verify-fresh.mjs && python -m py_compile translate_news.py",
+    "check:syntax": "node --check collect.mjs && node --check server.mjs && node --check lib/news.mjs && node --check lib/freshness.mjs && node --check lib/collect-summary.mjs && node --check scripts/write-collect-summary.mjs && node --check scripts/verify-fresh.mjs && node --check cloudflare/worker.mjs && python -m py_compile translate_news.py scrapling_shadow.py",
     "check:data": "npm test && npm run test:python",
     "check": "npm run check:syntax && npm run check:data"
   },
   "dependencies": {
     "nodemailer": "^7.0.10"
+  },
+  "devDependencies": {
+    "wrangler": "4.167.0"
   }
 }

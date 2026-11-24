@@ -1,0 +1,4 @@
+name = "youwen-game-news"
+main = "cloudflare/worker.mjs"
+compatibility_date = "2026-11-24"
+workers_dev = true

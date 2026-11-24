@@ -14,6 +14,10 @@ on:
       - 'server.mjs'
       - 'translate_news.py'
       - 'sources.json'
+      - 'sources-scrapling.json'
+      - 'scrapling_shadow.py'
+      - 'requirements-scrapling.txt'
+      - 'cloudflare/worker.mjs'
       - 'package.json'
       - 'requirements.txt'
       - 'lib/**'
@@ -22,6 +26,7 @@ on:
       - '.github/workflows/maintenance.yml'
       - '.github/workflows/game-intel.yml'
       - '.github/workflows/pages.yml'
+      - '.github/workflows/scrapling-shadow.yml'
 
 permissions:
   contents: read
@@ -71,7 +76,7 @@ jobs:
           node --check scripts/verify-fresh.mjs
       - name: 检查 Python 语法
         if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
-        run: python -m py_compile translate_news.py maintenance_check.py
+        run: python -m py_compile translate_news.py scrapling_shadow.py maintenance_check.py
       - name: 记录检查摘要
         if: success() && (github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true')
         run: |

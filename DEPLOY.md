@@ -12,6 +12,33 @@
 
 Actions 摘要会列出新闻总数、过去 24 小时数量、香港当天发布数量、最新原文时间、来源成功数和失败来源，便于确认每日任务是否真正更新。
 
+## Cloudflare Workers 免费发布
+
+Cloudflare 使用一个免费 Worker 反向代理 GitHub Pages，提供 `/`、`/news.json`、`/api/news.json` 和 `/rss.xml`。Worker 在 Cloudflare 边缘缓存内容 5 分钟，因此 GitHub Actions 每天更新 Pages 后，Cloudflare 会自动读取新版本，不需要把 Cloudflare 凭据放进 GitHub，也不需要每次新闻更新都重新部署 Worker。
+
+该方案只使用 Workers Free 计划，不需要 Containers、D1、R2 或常驻服务器。发布地址：
+
+```text
+https://youwen-game-news.game-intel-brief.workers.dev/
+```
+
+首次创建或需要更新 Worker 代码时，在本机执行：
+
+```powershell
+npx wrangler login
+npx wrangler deploy
+```
+
+日常采集与发布仍由 GitHub Actions 和 GitHub Pages 完成。Cloudflare 代理对访客保持同一公开接口，并在上游暂时不可用时返回明确错误；上一份 GitHub Pages 有效数据继续作为回退。
+
+## Scrapling 影子采集
+
+Scrapling 只在 GitHub-hosted runner 中运行，不部署到 Cloudflare Containers，因此保持免费。`.github/workflows/scrapling-shadow.yml` 每天香港时间 08:30 读取公开 sitemap，使用新闻页 JSON-LD、Open Graph、`<time>` 和 sitemap 新闻发布日期生成独立影子报告，不上传或覆盖线上 `news.json`。
+
+影子报告会统计每个来源发现与保留的新闻数量、香港当天数量、与当前 RSS 数据的链接重叠数，以及抓取失败或无法确认发布时间的来源。只有连续验证至少 10 个来源、当天覆盖稳定且发布日期准确后，才把 Scrapling 输出接入正式五语翻译与发布链路。
+
+无法从 JSON-LD、页面元数据或 sitemap 新闻日期确认原文发布时间的文章会被丢弃，不能用抓取时间冒充原文发布时间。
+
 ## 本地预览
 
 建议使用 Python 3.12：

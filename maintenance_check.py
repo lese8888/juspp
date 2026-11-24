@@ -33,8 +33,14 @@ REQUIRED_FILES = [
     "lib/collect-summary.mjs",
     "scripts/verify-fresh.mjs",
     "scripts/write-collect-summary.mjs",
+    "cloudflare/worker.mjs",
+    "scrapling_shadow.py",
+    "sources-scrapling.json",
+    "requirements-scrapling.txt",
+    "wrangler.toml",
     ".github/workflows/game-intel.yml",
     ".github/workflows/pages.yml",
+    ".github/workflows/scrapling-shadow.yml",
     ".github/workflows/maintenance.yml",
     "MAINTENANCE.md",
 ]
@@ -166,7 +172,7 @@ def main():
     require("源代码与配置无合并冲突标记", not conflict_files, "；".join(conflict_files) if conflict_files else "")
 
     parsed = {}
-    for name in ("package.json", "sources.json", "news.json"):
+    for name in ("package.json", "sources.json", "sources-scrapling.json", "news.json"):
         path = ROOT / name
         if not path.is_file():
             continue
@@ -391,7 +397,17 @@ def main():
         ("node", ["--check", "lib/collect-summary.mjs"]),
         ("node", ["--check", "scripts/write-collect-summary.mjs"]),
         ("node", ["--check", "scripts/verify-fresh.mjs"]),
-        (sys.executable, ["-m", "py_compile", "translate_news.py", "maintenance_check.py"]),
+        ("node", ["--check", "cloudflare/worker.mjs"]),
+        (
+            sys.executable,
+            [
+                "-m",
+                "py_compile",
+                "translate_news.py",
+                "scrapling_shadow.py",
+                "maintenance_check.py",
+            ],
+        ),
     ]
     for executable, args in checks:
         label = " ".join([executable, *args])
