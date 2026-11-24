@@ -47,6 +47,10 @@ jobs:
           python-version: '3.11'
       - name: 安装影子任务依赖
         run: python -m pip install --disable-pip-version-check 'opencc-python-reimplemented>=0.1.7,<1'
+      - name: 初始化影子产物
+        run: |
+          mkdir -p .shadow-output
+          printf '%s\n' '{"status":"not_started","shadow":true,"productionFilesModified":false}' > .shadow-output/translation-report.json
       - name: 运行影子任务测试
         run: python -m unittest discover -s tests -p "test_shadow_translation.py"
       - name: 生成影子候选

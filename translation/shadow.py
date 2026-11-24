@@ -148,6 +148,7 @@ def select_articles(articles: list[dict[str, Any]], limit: int) -> list[dict[str
 
 
 def _canonical_number(value: float) -> str:
+    value = float(value)
     if value.is_integer():
         return str(int(value))
     return f"{value:.4f}".rstrip("0").rstrip(".")
