@@ -54,7 +54,7 @@ REDUCE_PROMPT = """根据标题、来源摘要和事实清单，用目标语言�
 FENCE_PATTERN = re.compile(r"```")
 PLACEHOLDER_PATTERN = re.compile(r"Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}|\[{1,4}\s*[A-Z]{5,10}\s*\]{1,4}")
 NUMBER_PATTERN = re.compile(
-    r"(?<![\w.])(\d+(?:[.,]\d+)?)\s*(thousand|million|billion|万|亿|千|%|％)?",
+    r"(?<![A-Za-z0-9.])(\d+(?:[.,]\d+)?)\s*(thousand|million|billion|万|亿|千|%|％)?",
     re.IGNORECASE,
 )
 
@@ -182,6 +182,49 @@ def extract_numbers(text: str) -> set[str]:
     for month, number in month_numbers.items():
         if re.search(rf"\b{re.escape(month)}\.?\b", normalized_text):
             values.add(str(number))
+    number_words = {
+        "zero": 0,
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+        "ten": 10,
+        "eleven": 11,
+        "twelve": 12,
+        "thirteen": 13,
+        "fourteen": 14,
+        "fifteen": 15,
+        "sixteen": 16,
+        "seventeen": 17,
+        "eighteen": 18,
+        "nineteen": 19,
+        "twenty": 20,
+        "first": 1,
+        "second": 2,
+        "third": 3,
+        "fourth": 4,
+        "fifth": 5,
+        "sixth": 6,
+        "seventh": 7,
+        "eighth": 8,
+        "ninth": 9,
+        "tenth": 10,
+    }
+    for word, number in number_words.items():
+        if re.search(rf"\b{re.escape(word)}\b", normalized_text):
+            values.add(str(number))
+    for hour, meridiem in re.findall(r"\b(1[0-2]|0?[1-9])\s*(a\.?m\.?|p\.?m\.?)\b", normalized_text):
+        numeric_hour = int(hour)
+        if meridiem.replace(".", "").startswith("p") and numeric_hour < 12:
+            numeric_hour += 12
+        elif meridiem.replace(".", "").startswith("a") and numeric_hour == 12:
+            numeric_hour = 0
+        values.add(str(numeric_hour))
     return values
 
 

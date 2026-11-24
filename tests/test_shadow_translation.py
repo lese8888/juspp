@@ -146,6 +146,11 @@ class ShadowTranslationTests(unittest.TestCase):
         self.assertIn("39000000", extract_numbers("39 million"))
         self.assertIn("39000000", extract_numbers("3900 万"))
         self.assertIn("11", extract_numbers("November 22, 2026"))
+        self.assertIn("1901", extract_numbers("同时在线创下1,901人纪录"))
+        self.assertNotIn("49", extract_numbers("同时在线创下1,901人纪录"))
+        time_numbers = extract_numbers("1 PM UTC and second place")
+        self.assertIn("13", time_numbers)
+        self.assertIn("2", time_numbers)
 
     def test_missing_key_number_fails_gate(self):
         article = sample_article()
