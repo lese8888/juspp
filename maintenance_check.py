@@ -15,7 +15,6 @@ from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent
-HAN_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff]")
 CONFLICT_RE = re.compile(r"^(?:<<<<<<<(?:\s|$)|=======$|>>>>>>>(?:\s|$))", re.MULTILINE)
 CODE_SUFFIXES = {".mjs", ".js", ".py", ".html", ".yml", ".yaml", ".json"}
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv"}
@@ -28,7 +27,10 @@ REQUIRED_FILES = [
     "server.mjs",
     "translate_news.py",
     "package.json",
-    ".github/workflows/game-news.yml",
+    "requirements.txt",
+    "lib/news.mjs",
+    ".github/workflows/game-intel.yml",
+    ".github/workflows/pages.yml",
     ".github/workflows/maintenance.yml",
     "MAINTENANCE.md",
 ]
@@ -193,6 +195,10 @@ def main():
             str(source.get("名称", "未命名来源"))
             for source in active
             if not source.get("名称")
+            or not source.get("来源键")
+            or source.get("语言") != "en"
+            or source.get("类型键") not in {"official", "media"}
+            or not source.get("分类键")
             or urlsplit(str(source.get("订阅", ""))).scheme not in {"http", "https"}
             or not urlsplit(str(source.get("订阅", ""))).netloc
         ]
@@ -220,24 +226,62 @@ def main():
     report = parsed.get("news.json")
     articles = report.get("articles") if isinstance(report, dict) else None
     if isinstance(report, dict) and isinstance(articles, list):
-        require("新闻报告标记为简体中文", report.get("contentLanguage") == "zh-CN",
-                str(report.get("contentLanguage", "未设置")))
+        languages = ["zh-CN", "zh-TW", "en", "ja", "ko"]
+        require("新闻数据使用 schemaVersion 2", report.get("schemaVersion") == 2,
+                str(report.get("schemaVersion", "未设置")))
+        require("五语支持列表完整", report.get("supportedLanguages") == languages,
+                str(report.get("supportedLanguages", "未设置")))
+        require("默认语言为简体中文", report.get("defaultLanguage") == "zh-CN",
+                str(report.get("defaultLanguage", "未设置")))
+        require("新闻报告标记翻译引擎", bool(report.get("translationEngine")),
+                str(report.get("translationEngine", "未设置")))
         incomplete = []
         duplicate_urls = set()
         seen_urls = set()
+        previous_heat = None
         for index, article in enumerate(articles, start=1):
             if not isinstance(article, dict):
                 incomplete.append(f"第 {index} 条不是对象")
                 continue
-            for key in ("title", "url", "timestamp", "source", "originalTitle", "videoScript"):
+            for key in (
+                "originalTitle",
+                "originalSummary",
+                "sourceLanguage",
+                "sourceKey",
+                "sourceTypeKey",
+                "categoryKey",
+                "source",
+                "url",
+                "timestamp",
+                "heatScore",
+                "translations",
+            ):
                 if article.get(key) in (None, ""):
                     incomplete.append(f"第 {index} 条缺少 {key}")
-            if article.get("title") and not HAN_RE.search(str(article["title"])):
-                incomplete.append(f"第 {index} 条标题没有中文")
-            if article.get("summary") and not HAN_RE.search(str(article["summary"])):
-                incomplete.append(f"第 {index} 条摘要没有中文")
-            if article.get("videoScript") and not HAN_RE.search(str(article["videoScript"])):
-                incomplete.append(f"第 {index} 条口播稿没有中文")
+            if article.get("sourceLanguage") != "en":
+                incomplete.append(f"第 {index} 条原文语言不是英语")
+            if article.get("sourceTypeKey") not in {"official", "media"}:
+                incomplete.append(f"第 {index} 条来源类型键无效")
+            if "videoScript" in article or "translationStatus" in article:
+                incomplete.append(f"第 {index} 条仍包含旧口播字段")
+            serialized = json.dumps(article, ensure_ascii=False)
+            if re.search(r"QZ[A-Z]{5,8}|\[\[\s*\d{5,}", serialized):
+                incomplete.append(f"第 {index} 条包含内部翻译标记")
+            translations = article.get("translations")
+            if not isinstance(translations, dict):
+                incomplete.append(f"第 {index} 条 translations 不是对象")
+            else:
+                if list(translations.keys()) != languages:
+                    incomplete.append(f"第 {index} 条五语顺序或字段不完整")
+                for language in languages:
+                    localized = translations.get(language)
+                    if (
+                        not isinstance(localized, dict)
+                        or set(localized.keys()) != {"title", "summary"}
+                        or not str(localized.get("title", "")).strip()
+                        or not str(localized.get("summary", "")).strip()
+                    ):
+                        incomplete.append(f"第 {index} 条 {language} 标题或摘要为空")
             url = str(article.get("url", "")).rstrip("/").lower()
             if url:
                 if url in seen_urls:
@@ -248,9 +292,15 @@ def main():
                     incomplete.append(f"第 {index} 条来源链接无效")
             if not isinstance(article.get("timestamp"), (int, float)) or article.get("timestamp", 0) <= 0:
                 incomplete.append(f"第 {index} 条时间戳无效")
+            if not isinstance(article.get("heatScore"), (int, float)) or article.get("heatScore", 0) <= 0:
+                incomplete.append(f"第 {index} 条热度值无效")
+            elif previous_heat is not None and article["heatScore"] > previous_heat:
+                incomplete.append(f"第 {index} 条未按 heatScore 降序排列")
+            else:
+                previous_heat = article["heatScore"]
         if duplicate_urls:
             incomplete.append(f"有 {len(duplicate_urls)} 个重复链接")
-        require("新闻条目字段完整且有中文口播稿", not incomplete,
+        require("新闻条目五语字段完整且排序稳定", not incomplete,
                 "；".join(incomplete[:12]) if incomplete else "")
     else:
         require("新闻数据包含 articles 数组", False)
@@ -269,13 +319,18 @@ def main():
             )
             if rss_valid:
                 for item, article in zip(items, articles):
-                    if item.findtext("title") != article.get("title") or item.findtext("link") != article.get("url"):
+                    localized = article.get("translations", {}).get("zh-CN", {})
+                    if (
+                        item.findtext("title") != localized.get("title")
+                        or item.findtext("description") != localized.get("summary")
+                        or item.findtext("link") != article.get("url")
+                    ):
                         rss_valid = False
                         break
-            require("RSS XML 完整且与新闻数据一致", rss_valid,
-                    "XML、语言、条目数量或内容不匹配")
+            require("简体中文 RSS 完整且与五语新闻数据一致", rss_valid,
+                    "XML、语言、条目数量、简体标题摘要或链接不匹配")
         except (ET.ParseError, OSError) as error:
-            require("RSS XML 完整且与新闻数据一致", False, str(error))
+            require("简体中文 RSS 完整且与五语新闻数据一致", False, str(error))
 
     page = ROOT / "index.html"
     if page.is_file():
@@ -290,6 +345,13 @@ def main():
             missing_ids = sorted(referenced_ids - parser.ids)
             require("脚本引用的网页元素均存在", not missing_ids,
                     "缺少 ID：" + "、".join(missing_ids) if missing_ids else "")
+            required_page_ids = {"language-select", "story-list", "search-input", "source-filter", "detail-close"}
+            missing_page_ids = sorted(required_page_ids - parser.ids)
+            require("五语新闻站关键元素齐全", not missing_page_ids,
+                    "缺少 ID：" + "、".join(missing_page_ids) if missing_page_ids else "")
+            require("网页不包含旧口播工作流文案",
+                    not re.search(r"口播稿|视频创作工作流|复制文案", html),
+                    "仍包含旧版产品语义")
 
             broken = []
             for tag, attribute, value in parser.resources:
@@ -311,6 +373,7 @@ def main():
     checks = [
         ("node", ["--check", "collect.mjs"]),
         ("node", ["--check", "server.mjs"]),
+        ("node", ["--check", "lib/news.mjs"]),
         (sys.executable, ["-m", "py_compile", "translate_news.py", "maintenance_check.py"]),
     ]
     for executable, args in checks:

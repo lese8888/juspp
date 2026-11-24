@@ -2,25 +2,24 @@
   "说明": "游戏新闻情报源配置。官方渠道优先用于事实核验，媒体 RSS 用于发现选题；启动采集器后读取此清单。",
   "默认时区": "Asia/Hong_Kong",
   "来源": [
-    { "名称": "Xbox Wire", "类型": "官方", "分类": "平台公告", "网址": "https://news.xbox.com/en-us/", "订阅": "https://news.xbox.com/en-us/feed", "启用": true },
-    { "名称": "PlayStation Blog", "类型": "官方", "分类": "平台公告", "网址": "https://blog.playstation.com/", "订阅": "https://feeds.feedburner.com/psblog", "启用": true },
-    { "名称": "任天堂官方网站", "类型": "官方", "分类": "平台公告", "网址": "https://www.nintendo.com/", "订阅": null, "启用": true },
-    { "名称": "Steam 新闻", "类型": "官方", "分类": "平台公告", "网址": "https://store.steampowered.com/news/", "订阅": "https://store.steampowered.com/feeds/news.xml?l=english", "启用": true },
-    { "名称": "GamesIndustry.biz", "类型": "媒体", "分类": "行业与商业", "网址": "https://www.gamesindustry.biz/", "订阅": "https://www.gamesindustry.biz/rss/gamesindustry_news_feed.rss", "启用": true },
-    { "名称": "Game Developer", "类型": "媒体", "分类": "开发与行业", "网址": "https://www.gamedeveloper.com/", "订阅": "https://www.gamedeveloper.com/rss.xml", "启用": true },
-    { "名称": "Gematsu", "类型": "媒体", "分类": "日本与全球游戏新闻", "网址": "https://www.gematsu.com/", "订阅": "https://www.gematsu.com/feed", "启用": true },
-    { "名称": "AUTOMATON English", "类型": "媒体", "分类": "日本游戏新闻", "网址": "https://automaton-media.com/en/", "订阅": "https://automaton-media.com/en/feed", "启用": true },
-    { "名称": "PC Gamer", "类型": "媒体", "分类": "PC 游戏", "网址": "https://www.pcgamer.com/", "订阅": "https://www.pcgamer.com/feeds.xml", "启用": true },
-    { "名称": "Nintendo Life", "类型": "媒体", "分类": "任天堂游戏", "网址": "https://www.nintendolife.com/", "订阅": "https://www.nintendolife.com/feed", "启用": true },
-    { "名称": "Push Square", "类型": "媒体", "分类": "PlayStation 游戏", "网址": "https://www.pushsquare.com/", "订阅": "https://www.pushsquare.com/feed", "启用": true },
-    { "名称": "Pocket Gamer", "类型": "媒体", "分类": "移动游戏", "网址": "https://www.pocketgamer.com/news/", "订阅": "https://www.pocketgamer.com/news/index.rss", "启用": true }
+    { "名称": "Xbox Wire", "来源键": "xbox-wire", "语言": "en", "类型": "官方", "类型键": "official", "分类": "平台公告", "分类键": "platform", "网址": "https://news.xbox.com/en-us/", "订阅": "https://news.xbox.com/en-us/feed", "启用": true },
+    { "名称": "PlayStation Blog", "来源键": "playstation-blog", "语言": "en", "类型": "官方", "类型键": "official", "分类": "平台公告", "分类键": "platform", "网址": "https://blog.playstation.com/", "订阅": "https://feeds.feedburner.com/psblog", "启用": true },
+    { "名称": "任天堂官方网站", "来源键": "nintendo-official", "语言": "en", "类型": "官方", "类型键": "official", "分类": "平台公告", "分类键": "platform", "网址": "https://www.nintendo.com/", "订阅": null, "启用": true },
+    { "名称": "Steam 新闻", "来源键": "steam-news", "语言": "en", "类型": "官方", "类型键": "official", "分类": "平台公告", "分类键": "platform", "网址": "https://store.steampowered.com/news/", "订阅": "https://store.steampowered.com/feeds/news.xml?l=english", "启用": true },
+    { "名称": "GamesIndustry.biz", "来源键": "gamesindustry-biz", "语言": "en", "类型": "媒体", "类型键": "media", "分类": "行业与商业", "分类键": "industry", "网址": "https://www.gamesindustry.biz/", "订阅": "https://www.gamesindustry.biz/rss/gamesindustry_news_feed.rss", "启用": true },
+    { "名称": "Game Developer", "来源键": "game-developer", "语言": "en", "类型": "媒体", "类型键": "media", "分类": "开发与行业", "分类键": "development", "网址": "https://www.gamedeveloper.com/", "订阅": "https://www.gamedeveloper.com/rss.xml", "启用": true },
+    { "名称": "Gematsu", "来源键": "gematsu", "语言": "en", "类型": "媒体", "类型键": "media", "分类": "日本与全球游戏新闻", "分类键": "japan-global", "网址": "https://www.gematsu.com/", "订阅": "https://www.gematsu.com/feed", "启用": true },
+    { "名称": "AUTOMATON English", "来源键": "automaton-en", "语言": "en", "类型": "媒体", "类型键": "media", "分类": "日本游戏新闻", "分类键": "japan", "网址": "https://automaton-media.com/en/", "订阅": "https://automaton-media.com/en/feed", "启用": true },
+    { "名称": "PC Gamer", "来源键": "pc-gamer", "语言": "en", "类型": "媒体", "类型键": "media", "分类": "PC 游戏", "分类键": "pc", "网址": "https://www.pcgamer.com/", "订阅": "https://www.pcgamer.com/feeds.xml", "启用": true },
+    { "名称": "Nintendo Life", "来源键": "nintendo-life", "语言": "en", "类型": "媒体", "类型键": "media", "分类": "任天堂游戏", "分类键": "nintendo", "网址": "https://www.nintendolife.com/", "订阅": "https://www.nintendolife.com/feed", "启用": true },
+    { "名称": "Push Square", "来源键": "push-square", "语言": "en", "类型": "媒体", "类型键": "media", "分类": "PlayStation 游戏", "分类键": "playstation", "网址": "https://www.pushsquare.com/", "订阅": "https://www.pushsquare.com/feed", "启用": true },
+    { "名称": "Pocket Gamer", "来源键": "pocket-gamer", "语言": "en", "类型": "媒体", "类型键": "media", "分类": "移动游戏", "分类键": "mobile", "网址": "https://www.pocketgamer.com/news/", "订阅": "https://www.pocketgamer.com/news/index.rss", "启用": true }
   ],
   "采集规则": {
     "每日时间": "08:00",
     "时间范围小时": 24,
-    "排序": "官方公告优先，其次按行业影响与来源可信度排序",
+    "排序": "按采集阶段生成的稳定 heatScore 排序",
     "去重": "规范化链接并对标题相似项合并",
     "传闻处理": "单一媒体或未获官方确认的消息须标注待核实，不作为事实陈述"
   }
 }
-

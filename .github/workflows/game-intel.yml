@@ -1,51 +1,83 @@
-name: 游戏情报采集与发布
+name: 游闻多语言新闻采集
 
 on:
+  schedule:
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: game-intel-pages
-  cancel-in-progress: true
+  group: game-news-collect
+  cancel-in-progress: false
 
 jobs:
-  collect-and-deploy:
+  collect:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: 获取项目代码
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
       - name: 配置 Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: 安装邮件发送依赖
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: 缓存离线翻译模型
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/argos-translate
+          key: ${{ runner.os }}-argos-en-zh-ja-ko-${{ hashFiles('requirements.txt') }}
+      - name: 安装翻译与邮件依赖
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+      - name: 安装 Node 依赖
         run: npm install --no-audit --no-fund
-      - name: 采集并生成早报
+      - name: 运行语法与数据校验
+        env:
+          PYTHON_EXECUTABLE: python
+        run: npm run check
+      - name: 采集并生成五语数据
         env:
           SEND_EMAIL: ${{ github.event_name == 'schedule' && 'true' || (github.event_name == 'workflow_dispatch' && 'true' || 'false') }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-          SITE_URL: ${{ vars.SITE_URL }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://lese8888.github.io/juspp/' }}
+          PYTHON_EXECUTABLE: python
         run: npm run collect
-      - name: 配置 GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: 准备网页发布目录
-        run: mkdir -p _site && cp index.html news.json _site/
-      - name: 上传网页文件
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: _site
-      - name: 发布网页
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: 提交更新后的新闻数据
+        id: save
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add news.json rss.xml
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
+          git commit -m '更新游闻五语新闻数据'
+          pushed=false
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              pushed=true
+              break
+            fi
+            echo "推送遇到并发提交，尝试同步 main（第 $attempt 次）。"
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "新闻数据与 main 分支上的其他更新发生冲突，停止提交。" >&2
+              exit 1
+            fi
+          done
+          if [ "$pushed" != "true" ]; then
+            echo "连续重试后仍无法推送新闻数据。" >&2
+            exit 1
+          fi
+          echo 'changed=true' >> "$GITHUB_OUTPUT"

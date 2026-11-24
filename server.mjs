@@ -8,6 +8,7 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 8765);
 const intervalMs = Number(process.env.CRAWL_INTERVAL_MS || 24 * 60 * 60 * 1000);
 const newsFile = process.env.NEWS_FILE || path.join(root, 'news.json');
+const rssFile = process.env.RSS_FILE || path.join(root, 'rss.xml');
 let collecting = false;
 
 async function collect() {
@@ -41,35 +42,16 @@ const server = http.createServer(async (request, response) => {
 
   try {
     let body;
-    if (relativePath === 'api/news.json' || relativePath === 'rss.xml') {
-      try {
-        body = await fs.readFile(newsFile);
-      } catch {
-        body = await fs.readFile(path.join(root, 'news.json'));
-      }
-      if (relativePath === 'rss.xml') {
-        const report = JSON.parse(body.toString('utf8'));
-        const siteUrl = `${request.headers['x-forwarded-proto'] || 'http'}://${request.headers.host}`;
-        const items = (report.articles || []).map(item => `
-    <item>
-      <title>${xmlEscape(item.title)}</title>
-      <link>${xmlEscape(item.url)}</link>
-      <description>${xmlEscape(item.summary || '')}</description>
-      <pubDate>${new Date(item.timestamp).toUTCString()}</pubDate>
-      <guid isPermaLink="true">${xmlEscape(item.url)}</guid>
-      <category>${xmlEscape(item.category || '游戏新闻')}</category>
-    </item>`).join('');
-        body = Buffer.from(`<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"><channel>
-  <title>游闻 · 游戏新闻情报</title>
-  <link>${xmlEscape(siteUrl)}</link>
-  <description>过去 24 小时游戏新闻聚合</description>
-  <language>zh-CN</language>${items}
-</channel></rss>`);
-        response.writeHead(200, { 'content-type': 'application/rss+xml; charset=utf-8', 'cache-control': 'no-store' });
-        response.end(body);
-        return;
-      }
+    if (relativePath === 'api/news.json') {
+      body = await fs.readFile(newsFile);
+    } else if (relativePath === 'rss.xml') {
+      body = await fs.readFile(rssFile);
+      response.writeHead(200, {
+        'content-type': 'application/rss+xml; charset=utf-8',
+        'cache-control': 'no-store'
+      });
+      response.end(body);
+      return;
     } else {
       body = await fs.readFile(path.join(root, relativePath));
     }
@@ -84,14 +66,9 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-function xmlEscape(value) {
-  return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[char]);
-}
-
 server.listen(port, '0.0.0.0', () => {
   console.log(`游戏新闻情报台：http://localhost:${port}`);
   console.log(`RSS 采集间隔：${Math.round(intervalMs / 3600000)} 小时`);
   collect();
   setInterval(collect, intervalMs);
 });
-

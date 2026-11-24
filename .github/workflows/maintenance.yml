@@ -15,8 +15,12 @@ on:
       - 'translate_news.py'
       - 'sources.json'
       - 'package.json'
+      - 'requirements.txt'
+      - 'lib/**'
+      - 'tests/**'
       - '.github/workflows/maintenance.yml'
-      - '.github/workflows/game-news.yml'
+      - '.github/workflows/game-intel.yml'
+      - '.github/workflows/pages.yml'
 
 permissions:
   contents: read
@@ -59,6 +63,7 @@ jobs:
         run: |
           node --check collect.mjs
           node --check server.mjs
+          node --check lib/news.mjs
       - name: 检查 Python 语法
         if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
         run: python -m py_compile translate_news.py maintenance_check.py

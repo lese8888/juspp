@@ -1,218 +1,566 @@
+from __future__ import annotations
+
 import json
+import hashlib
 import os
 import re
+import tempfile
 from datetime import datetime, timezone
 from email.utils import format_datetime
+from html import unescape
 from pathlib import Path
+from typing import Callable, Protocol
+from urllib.parse import urlparse
 from xml.sax.saxutils import escape
-
-import argostranslate.package
-import argostranslate.translate
 
 
 ROOT = Path(__file__).resolve().parent
-NEWS_FILE = Path(os.environ.get("NEWS_FILE", ROOT / "news.json"))
-RSS_FILE = ROOT / "rss.xml"
-SITE_URL = os.environ.get("SITE_URL", "https://lese8888.github.io/juspp/")
-HAN_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff]")
-LATIN_RE = re.compile(r"[A-Za-z]")
-RSS_FOOTER_RE = re.compile(r"\s*Read the full article on\s+\S+\.?\s*$", re.IGNORECASE)
-RSS_INTRO_RE = re.compile(
-    r"^(?:here(?:'s| is| are)\s+the\s+(?:full details|rundown))\s*[:.!,-]*\s*",
-    re.IGNORECASE,
+SUPPORTED_LANGUAGES = ("zh-CN", "zh-TW", "en", "ja", "ko")
+DEFAULT_LANGUAGE = "zh-CN"
+TARGET_MODEL_CODES = {"zh-CN": "zh", "zh-TW": "zh", "ja": "ja", "ko": "ko"}
+DEFAULT_SITE_URL = "https://lese8888.github.io/juspp/"
+LEGACY_CATEGORY_KEYS = {
+    "平台公告": "platform",
+    "行业与商业": "industry",
+    "开发与行业": "development",
+    "日本与全球游戏新闻": "japan-global",
+    "日本游戏新闻": "japan",
+    "PC 游戏": "pc",
+    "任天堂游戏": "nintendo",
+    "PlayStation 游戏": "playstation",
+    "移动游戏": "mobile",
+}
+
+# 长术语放在前面，避免较短术语先替换后破坏完整品牌名。
+GLOSSARY = (
+    "Avatar Legends: The Fighting Game",
+    "The Pokémon Company",
+    "Pokémon Champions",
+    "Nintendo Everything",
+    "Xbox Series X|S",
+    "Nintendo Switch 2",
+    "PlayStation 5",
+    "Grand Theft Auto",
+    "Rockstar Games",
+    "GeForce NOW",
+    "Half-Life 2",
+    "Resistance Crossbow",
+    "Nintendo Switch",
+    "Xbox Series X",
+    "Xbox Series S",
+    "Steam Deck",
+    "Take-Two",
+    "PlayStation",
+    "Nintendo",
+    "Rockstar",
+    "Switch 2",
+    "Switch",
+    "Xbox",
+    "Steam",
+    "GTA 6",
+    "NVIDIA",
+    "DLC",
+    "AI",
 )
-RUMOR_RE = re.compile(r"\b(report(?:ed|edly)?|rumou?r|allegedly|leak|unconfirmed|according to|sources say)\b", re.IGNORECASE)
+
+CHINESE_TERM_FIXES = (
+    (r"下面是倒闭", "详情如下"),
+    (r"(?:Nintendo|Nintendo 公司)\s*每件事", "Nintendo Everything"),
+    (r"阶级", "职业"),
+    (r"特征", "功能"),
+    (r"任天堂(?:的)?\s*开关\s*2", "任天堂 Switch 2"),
+    (r"任天堂(?:的)?\s*开关", "任天堂 Switch"),
+    (r"(?:开关|交换)\s*2", "Switch 2"),
+    (r"(?:开关|交换)", "Switch"),
+    (r"自由(?:转会|对游戏)?(?:移动|手机游戏)?", "免费手游"),
+    (r"(?:字符|人物)", "角色"),
+    (r"余额(更新|补丁|调整)", r"平衡性\1"),
+)
 
 
-def has_chinese(text):
-    han_count = len(HAN_RE.findall(text))
-    latin_count = len(LATIN_RE.findall(text))
-    if han_count and not latin_count:
-        return True
-    return han_count >= 6 and han_count >= latin_count * 0.75
+class TranslationService(Protocol):
+    def prepare(self) -> None: ...
+
+    def translate(self, text: str, target_language: str) -> str: ...
 
 
-def ensure_translation_model():
-    installed = argostranslate.translate.get_installed_languages()
-    english = next((language for language in installed if language.code == "en"), None)
-    chinese = next((language for language in installed if language.code == "zh"), None)
-    if english and chinese and english.get_translation(chinese):
-        return
+class OfflineTranslationService:
+    def __init__(
+        self,
+        model_translator: Callable[[str, str], str] | None = None,
+        zh_tw_converter: Callable[[str], str] | None = None,
+    ) -> None:
+        self._model_translator = model_translator
+        self._zh_tw_converter = zh_tw_converter
+        self._prepared = False
 
-    argostranslate.package.update_package_index()
-    available = argostranslate.package.get_available_packages()
-    package = next(
-        (item for item in available if item.from_code == "en" and item.to_code == "zh"),
-        None,
+    def prepare(self) -> None:
+        if self._prepared:
+            return
+        if self._model_translator is None:
+            self._model_translator = self._install_and_bind_models()
+        if self._zh_tw_converter is None:
+            try:
+                from opencc import OpenCC
+            except ImportError as error:
+                raise RuntimeError("缺少 OpenCC，无法生成繁体中文。") from error
+            converter = OpenCC("s2twp")
+            self._zh_tw_converter = converter.convert
+        self._prepared = True
+
+    def _install_and_bind_models(self) -> Callable[[str, str], str]:
+        try:
+            import argostranslate.package
+            import argostranslate.translate
+        except ImportError as error:
+            raise RuntimeError("缺少 Argos Translate，无法执行离线五语翻译。") from error
+
+        required_codes = {"zh", "ja", "ko"}
+        installed = argostranslate.translate.get_installed_languages()
+        installed_by_code = {language.code: language for language in installed}
+        english = installed_by_code.get("en")
+
+        missing = [
+            code
+            for code in required_codes
+            if not english
+            or code not in installed_by_code
+            or english.get_translation(installed_by_code[code]) is None
+        ]
+        if missing:
+            argostranslate.package.update_package_index()
+            available = argostranslate.package.get_available_packages()
+            for code in missing:
+                package = next(
+                    (
+                        item
+                        for item in available
+                        if item.from_code == "en" and item.to_code == code
+                    ),
+                    None,
+                )
+                if package is None:
+                    raise RuntimeError(f"离线翻译模型索引中缺少英语到 {code} 的模型。")
+                argostranslate.package.install_from_path(package.download())
+
+        installed = argostranslate.translate.get_installed_languages()
+        installed_by_code = {language.code: language for language in installed}
+        english = installed_by_code.get("en")
+        if not english:
+            raise RuntimeError("未安装英语翻译模型。")
+        translators = {}
+        for code in required_codes:
+            target = installed_by_code.get(code)
+            translation = english.get_translation(target) if target else None
+            if translation is None:
+                raise RuntimeError(f"英语到 {code} 的翻译模型不可用。")
+            translators[code] = translation
+
+        def translate_with_models(text: str, target_code: str) -> str:
+            translation = translators.get(target_code)
+            if translation is None:
+                raise RuntimeError(f"不支持目标语言代码：{target_code}")
+            return translation.translate(text)
+
+        return translate_with_models
+
+    def translate(self, text: str, target_language: str) -> str:
+        self.prepare()
+        source = str(text or "").strip()
+        if not source:
+            raise ValueError("翻译源文本为空。")
+        if target_language == "en":
+            return source
+        if target_language not in TARGET_MODEL_CODES:
+            raise ValueError(f"不支持目标语言：{target_language}")
+
+        protected, terms = protect_glossary(source)
+        target_code = TARGET_MODEL_CODES[target_language]
+        translated = self._model_translator(protected, target_code)
+        translated = restore_glossary(translated, terms)
+        if has_unrestored_marker(translated):
+            translated = self._translate_segmented(source, target_code)
+        translated = normalize_translation(translated, target_language)
+        translated = remove_unmatched_square_brackets(translated)
+        if has_unrestored_marker(translated):
+            raise RuntimeError(
+                f"{target_language} 翻译后仍有未恢复的术语占位符：{source[:120]}"
+            )
+        if not translated.strip():
+            raise RuntimeError(f"{target_language} 翻译结果为空：{source[:100]}")
+
+        if target_language == "zh-TW":
+            translated = self._zh_tw_converter(translated).strip()
+            if not translated:
+                raise RuntimeError(f"繁体转换结果为空：{source[:100]}")
+        return translated
+
+    def _translate_segmented(self, source: str, target_code: str) -> str:
+        pattern = glossary_pattern()
+        translated_parts: list[str] = []
+        position = 0
+        for match in pattern.finditer(source):
+            before = source[position : match.start()]
+            if before:
+                translated_parts.append(
+                    translate_segment(self._model_translator, before, target_code)
+                )
+            translated_parts.append(
+                GLOSSARY_CANONICAL.get(match.group(0).lower(), match.group(0))
+            )
+            position = match.end()
+        if position < len(source):
+            translated_parts.append(
+                translate_segment(self._model_translator, source[position:], target_code)
+            )
+        return "".join(translated_parts)
+
+
+GLOSSARY_CANONICAL = {term.lower(): term for term in GLOSSARY}
+
+
+def has_unrestored_marker(text: str) -> bool:
+    return bool(
+        re.search(r"\bQZ[A-Z]{5,8}\b", text)
+        or re.search(r"\[{1,4}\s*[A-Z]{5,10}\s*\]{1,4}", text)
     )
-    if package is None:
-        raise RuntimeError("离线翻译模型索引中没有英语到中文的模型。")
-    argostranslate.package.install_from_path(package.download())
 
 
-def translate_text(text):
-    text = RSS_FOOTER_RE.sub("", str(text or "")).strip()
-    text = RSS_INTRO_RE.sub("", text).strip()
-    text = re.sub(r"\s*\(?\s*via\s+[^)]+\)?\s*", " ", text, flags=re.IGNORECASE).strip()
-    if not text or has_chinese(text):
-        return text, False
-    translated = argostranslate.translate.translate(text, "en", "zh").strip()
-    if not translated:
-        raise RuntimeError(f"翻译结果为空：{text[:100]}")
-    translated = re.sub(r"\s+([,，.!?;:])", r"\1", translated)
-    translated = translated.replace(",", "，").replace("!", "！").replace("?", "？").replace(";", "；").replace(":", "：")
-    translated = re.sub(r"\.(?=\s|$)", "。", translated)
-    translated = re.sub(r"\s+([，。！？；：])", r"\1", translated)
-    return translated, True
-
-
-def localize_game_terms(original, translated):
-    if re.search(r"\bSwitch(?:\s*2)?\b", original):
-        if re.search(r"\bNintendo Switch\b", original, re.IGNORECASE):
-            translated = re.sub(r"任天堂(?:的)?\s*开关\s*2", "任天堂 Switch 2", translated)
-            translated = re.sub(r"任天堂(?:的)?\s*开关", "任天堂 Switch", translated)
-        translated = re.sub(r"(?:开关|交换)\s*2", "Switch 2", translated)
-        translated = re.sub(r"(?:开关|交换)", "Switch", translated)
-        translated = re.sub(r"Switch\s*游戏", "Switch 游戏", translated)
-    if re.search(r"\bFighting Game\b", original, re.IGNORECASE):
-        translated = re.sub(r"战斗游戏", "格斗游戏", translated)
-    if re.search(r"\bimprov(?:e|es|ed|ing)\b", original, re.IGNORECASE):
-        translated = re.sub(r"改善", "提升", translated)
-    if re.search(r"\bAvatar Legends: The Fighting Game\b", original, re.IGNORECASE):
-        translated = re.sub(r"(?:神通|化身|阿凡达)?传说\s*[:：]\s*(?:战斗|格斗)游戏|Avatar Legends", "《Avatar Legends: The Fighting Game》", translated, flags=re.IGNORECASE)
-    elif re.search(r"\bAvatar Legends\b", original, re.IGNORECASE):
-        translated = re.sub(r"神通传说|化身传说|阿凡达传说", "Avatar Legends", translated)
-    if re.search(r"\bPokémon Champions\b", original, re.IGNORECASE):
-        translated = re.sub(r"(?:Pokémon|宝可梦)\s*冠军", "《Pokémon Champions》", translated, flags=re.IGNORECASE)
-        translated = re.sub(r"(?<!《)Pokémon Champions(?!》)", "《Pokémon Champions》", translated, flags=re.IGNORECASE)
-    if re.search(r"\bThe Pokémon Company\b", original, re.IGNORECASE):
-        translated = re.sub(r"(?:Pokémon|宝可梦)\s*公司", "宝可梦公司", translated, flags=re.IGNORECASE)
-    if re.search(r"\bHalf-Life 2\b", original, re.IGNORECASE):
-        translated = re.sub(r"半(?:生|条命)\s*2", "《Half-Life 2》", translated)
-    if re.search(r"\bResistance Crossbow\b", original, re.IGNORECASE):
-        translated = re.sub(r"抵抗十字弓", "Resistance Crossbow", translated)
-    if re.search(r"\bSister Novitiate\b", original, re.IGNORECASE):
-        translated = re.sub(r"(?:新)?修女\s*Novitiate(?:\s*(?:阶级|职业|级))?", "见习修女职业", translated, flags=re.IGNORECASE)
-    if re.search(r"\bbalance\b", original, re.IGNORECASE):
-        translated = re.sub(r"余额(更新|补丁|调整)", r"平衡性\1", translated)
-        translated = re.sub(r"获得平衡性?(更新|补丁)", r"将迎来平衡性\1", translated)
-        if re.search(r"\bnext month\b", original, re.IGNORECASE):
-            translated = re.sub(r"(?:将迎来|获得)?平衡性?补丁\s*下个月更新", "下个月将迎来平衡性补丁更新", translated)
-            date_pattern = r"(\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日)"
-            translated = re.sub(r"(?:将于)?下月(?:将于|于)\s*" + date_pattern + r"\s*将迎来", r"将于 \1 进行", translated)
-            translated = re.sub(r"(?:将于)?下个月(?:将于|于)\s*" + date_pattern + r"\s*将迎来", r"将于 \1 进行", translated)
-    if re.search(r"\bfree.to.play\b", original, re.IGNORECASE):
-        translated = re.sub(r"自由(?:转会|对游戏)?(?:移动|手机游戏)?", "免费手游", translated)
-    if re.search(r"\bmoves?\b", original, re.IGNORECASE):
-        translated = re.sub(r"移动更新(?:和调整)?", "招式调整", translated)
-    if re.search(r"\bfeatures?\b", original, re.IGNORECASE):
-        translated = re.sub(r"特征", "功能", translated)
-    if re.search(r"\bcharacters?\b", original, re.IGNORECASE):
-        translated = re.sub(r"字符", "角色", translated)
-        translated = re.sub(r"人物", "角色", translated)
-    if re.search(r"\bPatch 4\.5 Update\b", original, re.IGNORECASE):
-        translated = re.sub(r"Patch\s*4\.5\s*Update", "4.5 版本更新", translated, flags=re.IGNORECASE)
-    if re.search(r"\brundown\b", original, re.IGNORECASE):
-        translated = re.sub(r"(?:以下是|以下为)?倒数[：:]?", "详情如下：", translated)
-    translated = re.sub(r"阶级", "职业", translated)
-    translated = re.sub(r"见习修女职业职业", "见习修女职业", translated)
-    translated = re.sub(r"[\"“”]\s*(《[^》]+》)\s*[\"“”]", r"\1", translated)
-    translated = re.sub(r"将于\s+((?:\d{4}\s*年\s*)?\d{1,2}\s*月\s*\d{1,2}\s*日)\s+将迎来", r"将于 \1 进行", translated)
-    translated = re.sub(r"(?<=[\u3400-\u9fff])(?=[A-Za-z0-9])", " ", translated)
-    translated = re.sub(r"(?<=[A-Za-z0-9])(?=[\u3400-\u9fff])", " ", translated)
-    translated = re.sub(r"倒闭(?=[，。,:：]|$)", "详情如下", translated)
-    return translated
-
-
-def video_script(article, title, summary):
-    original_text = f"{article.get('originalTitle', '')} {article.get('originalSummary', '')}"
-    if RUMOR_RE.search(original_text):
-        reminder = "这条内容涉及媒体报道或未证实消息，发布前请确认官方是否回应。"
-    elif article.get("sourceType") == "官方":
-        reminder = "具体平台、地区和时间安排，请以官方公告为准。"
-    else:
-        reminder = "发布前请对照来源原文，核实人名、数字和发售地区。"
-    body = summary or "订阅源没有提供摘要，制作视频前请打开原文补充信息。"
-    return (
-        f"【开场】{title}\n"
-        f"【正文】{body}\n"
-        f"【核实提醒】{reminder}\n"
-        "【互动】你最关注这条消息的哪一点？欢迎在评论区聊聊。"
+def glossary_pattern() -> re.Pattern[str]:
+    alternatives = "|".join(
+        re.escape(term) for term in sorted(GLOSSARY, key=len, reverse=True)
+    )
+    return re.compile(
+        rf"(?<![A-Za-z0-9])(?:{alternatives})(?![A-Za-z0-9])",
+        re.IGNORECASE,
     )
 
 
-def xml_text(value):
+def translate_segment(
+    translator: Callable[[str, str], str],
+    segment: str,
+    target_code: str,
+) -> str:
+    if not segment.strip():
+        return segment
+    leading = " " if segment[0].isspace() else ""
+    trailing = " " if segment[-1].isspace() else ""
+    translated = translator(segment.strip(), target_code).strip()
+    return f"{leading}{translated}{trailing}"
+
+
+def protect_glossary(text: str) -> tuple[str, list[tuple[str, str]]]:
+    protected = text
+    terms: list[tuple[str, str]] = []
+    for canonical in GLOSSARY:
+        pattern = re.compile(
+            rf"(?<![A-Za-z0-9]){re.escape(canonical)}(?![A-Za-z0-9])",
+            re.IGNORECASE,
+        )
+
+        def replace(match: re.Match[str]) -> str:
+            # 字母型标记比数字更稳定，Argos 偶尔增删括号但不会改写代码主体。
+            token_id = glossary_code(len(terms))
+            terms.append((token_id, canonical))
+            return f"[[{token_id}]]"
+
+        protected = pattern.sub(replace, protected)
+    return protected, terms
+
+
+def restore_glossary(text: str, terms: list[tuple[str, str]]) -> str:
+    restored = str(text)
+    mapping = dict(terms)
+    token_pattern = re.compile(r"(?:\[\s*)*\s*(QZ[A-Z]{5,8})\s*(?:\s*\])*")
+
+    def replace(match: re.Match[str]) -> str:
+        return mapping.get(match.group(1), match.group(0))
+
+    return token_pattern.sub(replace, restored)
+
+
+def normalize_translation(text: str, target_language: str) -> str:
+    normalized = re.sub(r"\s+", " ", str(text or "")).strip()
+    normalized = re.sub(r"\s+([,，.!?;:。！？；：])", r"\1", normalized)
+    if target_language.startswith("zh"):
+        for pattern, replacement in CHINESE_TERM_FIXES:
+            normalized = re.sub(pattern, replacement, normalized, flags=re.IGNORECASE)
+        normalized = normalized.replace(",", "，").replace("!", "！").replace("?", "？")
+        normalized = normalized.replace(";", "；").replace(":", "：")
+        normalized = re.sub(r"\.(?=\s|$)", "。", normalized)
+        normalized = re.sub(r"(?<=[\u3400-\u9fff])(?=[A-Za-z0-9])", " ", normalized)
+        normalized = re.sub(r"(?<=[A-Za-z0-9])(?=[\u3400-\u9fff])", " ", normalized)
+    return normalized.strip()
+
+
+def glossary_code(index: int) -> str:
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    digest = hashlib.sha1(str(index).encode("ascii")).digest()
+    letters = []
+    for byte in digest:
+        character = alphabet[byte % 26]
+        if character not in letters:
+            letters.append(character)
+        if len(letters) == 6:
+            break
+    return f"QZ{''.join(letters)}"
+
+
+def remove_unmatched_square_brackets(text: str) -> str:
+    stack: list[int] = []
+    unmatched: set[int] = set()
+    for index, character in enumerate(text):
+        if character == "[":
+            stack.append(index)
+        elif character == "]":
+            if stack:
+                stack.pop()
+            else:
+                unmatched.add(index)
+    unmatched.update(stack)
+    return "".join(
+        character for index, character in enumerate(text) if index not in unmatched
+    )
+
+
+def clean_source_text(value: object) -> str:
+    text = re.sub(
+        r"<!\[CDATA\[([\s\S]*?)\]\]>", r"\1", str(value or "")
+    )
+    text = re.sub(r"<\s*br\s*/?>", " ", text, flags=re.IGNORECASE)
+    text = re.sub(r"<[^>]*>", " ", text)
+    text = unescape(text).replace("\u00a0", " ")
+    text = re.sub(r"\s+", " ", text).strip()
+    text = re.sub(
+        r"\s*(?:(?:read|continue reading)\s+(?:the\s+)?(?:full\s+)?(?:article|story|post)(?:\s+(?:on|at)\s+[A-Za-z0-9.-]+)?|read more(?:\s+(?:on|at)\s+[A-Za-z0-9.-]+)?)\s*\.?\s*$",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+    return text.strip()
+
+
+def validate_article(article: dict) -> None:
+    title = str(article.get("originalTitle") or "").strip()
+    summary = str(article.get("originalSummary") or "").strip()
+    url = str(article.get("url") or "").strip()
+    timestamp = int(article.get("timestamp") or 0)
+    if not title:
+        raise ValueError("新闻缺少原始标题。")
+    if not summary:
+        raise ValueError(f"新闻缺少原始摘要：{title}")
+    if urlparse(url).scheme not in {"http", "https"} or not urlparse(url).netloc:
+        raise ValueError(f"新闻原文链接无效：{url}")
+    if timestamp <= 0:
+        raise ValueError(f"新闻时间戳无效：{title}")
+    required_fields = (
+        "sourceLanguage",
+        "sourceKey",
+        "sourceTypeKey",
+        "categoryKey",
+    )
+    missing = [field for field in required_fields if not article.get(field)]
+    if missing:
+        raise ValueError(f"新闻缺少稳定字段 {', '.join(missing)}：{title}")
+    if article["sourceLanguage"] != "en":
+        raise ValueError(f"本轮仅支持英语原文：{title}")
+
+
+def source_key_from_name(value: str) -> str:
+    normalized = re.sub(r"[^a-z0-9]+", "-", str(value).lower()).strip("-")
+    return normalized or "unknown-source"
+
+
+def normalize_article(
+    article: dict, source_configs: dict[str, dict] | None = None
+) -> dict:
+    normalized = dict(article)
+    normalized["originalTitle"] = clean_source_text(
+        normalized.get("originalTitle") or normalized.get("title") or ""
+    )
+    normalized["originalSummary"] = clean_source_text(
+        normalized.get("originalSummary") or normalized.get("summary") or ""
+    )
+    source_name = str(normalized.get("source") or "").strip()
+    source_config = (source_configs or {}).get(source_name, {})
+    normalized["source"] = source_name or source_config.get("名称") or "Unknown"
+    normalized["sourceKey"] = (
+        normalized.get("sourceKey")
+        or source_config.get("来源键")
+        or source_key_from_name(normalized["source"])
+    )
+    normalized["sourceLanguage"] = (
+        normalized.get("sourceLanguage") or source_config.get("语言") or "en"
+    )
+    normalized["sourceTypeKey"] = (
+        normalized.get("sourceTypeKey")
+        or source_config.get("类型键")
+        or ("official" if normalized.get("sourceType") == "官方" else "media")
+    )
+    normalized["categoryKey"] = (
+        normalized.get("categoryKey")
+        or source_config.get("分类键")
+        or LEGACY_CATEGORY_KEYS.get(normalized.get("category"))
+        or source_key_from_name(normalized.get("category") or "other")
+    )
+    normalized["heatScore"] = int(
+        normalized.get("heatScore")
+        or int(normalized.get("timestamp") or 0)
+        + (6 * 60 * 60 * 1000 if normalized["sourceTypeKey"] == "official" else 0)
+    )
+    return normalized
+
+
+def translate_articles(
+    report: dict,
+    service: TranslationService,
+    source_configs: dict[str, dict] | None = None,
+) -> list[dict]:
+    service.prepare()
+    cache: dict[tuple[str, str], str] = {}
+    translated_articles = []
+
+    for raw_article in report.get("articles", []):
+        article = normalize_article(raw_article, source_configs)
+        validate_article(article)
+        original_title = article["originalTitle"].strip()
+        original_summary = article["originalSummary"].strip()
+        translations = {}
+
+        for language in SUPPORTED_LANGUAGES:
+            if language == "en":
+                translations[language] = {
+                    "title": original_title,
+                    "summary": original_summary,
+                }
+                continue
+            translated_title = cached_translation(
+                service, cache, original_title, language
+            )
+            translated_summary = cached_translation(
+                service, cache, original_summary, language
+            )
+            if not translated_title.strip() or not translated_summary.strip():
+                raise RuntimeError(f"{language} 翻译存在空标题或空摘要：{original_title}")
+            translations[language] = {
+                "title": translated_title.strip(),
+                "summary": translated_summary.strip(),
+            }
+
+        translated_articles.append(
+            {
+                "originalTitle": original_title,
+                "originalSummary": original_summary,
+                "sourceLanguage": article["sourceLanguage"],
+                "sourceKey": article["sourceKey"],
+                "sourceTypeKey": article["sourceTypeKey"],
+                "categoryKey": article["categoryKey"],
+                "source": article.get("source") or article["sourceKey"],
+                "url": article["url"].strip(),
+                "publishedAt": article["publishedAt"],
+                "timestamp": int(article["timestamp"]),
+                "heatScore": int(article.get("heatScore") or article["timestamp"]),
+                "translations": translations,
+            }
+        )
+    return sorted(
+        translated_articles,
+        key=lambda article: (
+            -int(article["heatScore"]),
+            -int(article["timestamp"]),
+            article["url"],
+        ),
+    )
+
+
+def cached_translation(
+    service: TranslationService,
+    cache: dict[tuple[str, str], str],
+    text: str,
+    language: str,
+) -> str:
+    key = (language, text)
+    if key not in cache:
+        cache[key] = service.translate(text, language)
+    return cache[key]
+
+
+def xml_text(value: object) -> str:
     return escape(str(value or ""), {'"': "&quot;", "'": "&apos;"})
 
 
-def make_rss(articles, period_hours):
+def make_rss(articles: list[dict], period_hours: int, site_url: str) -> str:
     items = []
     for article in articles:
+        localized = article["translations"]["zh-CN"]
         published = datetime.fromtimestamp(
-            int(article.get("timestamp") or 0) / 1000, timezone.utc
+            int(article["timestamp"]) / 1000, timezone.utc
         )
         items.append(
             "\n    <item>"
-            f"\n      <title>{xml_text(article.get('title'))}</title>"
-            f"\n      <link>{xml_text(article.get('url'))}</link>"
-            f"\n      <description>{xml_text(article.get('summary'))}</description>"
+            f"\n      <title>{xml_text(localized['title'])}</title>"
+            f"\n      <link>{xml_text(article['url'])}</link>"
+            f"\n      <description>{xml_text(localized['summary'])}</description>"
             f"\n      <pubDate>{format_datetime(published, usegmt=True)}</pubDate>"
-            f"\n      <guid isPermaLink=\"true\">{xml_text(article.get('url'))}</guid>"
-            f"\n      <category>{xml_text(article.get('category') or '游戏新闻')}</category>"
+            f"\n      <guid isPermaLink=\"true\">{xml_text(article['url'])}</guid>"
+            f"\n      <category>{xml_text(article['categoryKey'])}</category>"
             "\n    </item>"
         )
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<rss version="2.0"><channel>\n'
-        "  <title>游闻 · 中文游戏新闻</title>\n"
-        f"  <link>{xml_text(SITE_URL)}</link>\n"
-        f"  <description>过去 {period_hours} 小时游戏新闻简体中文摘要与选题</description>\n"
+        "  <title>游闻 · 多语言游戏新闻</title>\n"
+        f"  <link>{xml_text(site_url)}</link>\n"
+        f"  <description>过去 {period_hours} 小时游戏新闻简体中文 RSS</description>\n"
         f"  <language>zh-CN</language>{''.join(items)}\n"
         "</channel></rss>\n"
     )
 
 
-def write_atomic(path, content):
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(content, encoding="utf-8")
-    temporary.replace(path)
-
-
-def main():
-    report = json.loads(NEWS_FILE.read_text(encoding="utf-8"))
-    needs_translation = any(
-        not has_chinese(article.get("originalTitle") or article.get("title") or "")
-        or not has_chinese(article.get("originalSummary") or article.get("summary") or "")
-        for article in report.get("articles", [])
+def write_text_atomic(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
     )
-    if needs_translation:
-        ensure_translation_model()
-    translated_articles = []
-    for article in report.get("articles", []):
-        original_title = article.get("originalTitle") or article.get("title") or ""
-        original_summary = article.get("originalSummary") or article.get("summary") or ""
-        title, title_translated = translate_text(original_title)
-        summary, summary_translated = translate_text(original_summary)
-        title = localize_game_terms(original_title, title)
-        summary = localize_game_terms(original_summary, summary)
-        article["originalTitle"] = original_title
-        article["originalSummary"] = original_summary
-        article["title"] = title
-        article["summary"] = summary
-        article["videoScript"] = video_script(article, title, summary)
-        article["translationStatus"] = (
-            "已转为简体中文" if title_translated or summary_translated else "原文已是中文"
-        )
-        translated_articles.append(article)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(content)
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
-    report["contentLanguage"] = "zh-CN"
-    report["translationEngine"] = "Argos Translate 离线模型"
-    report["articles"] = translated_articles
-    write_atomic(NEWS_FILE, json.dumps(report, ensure_ascii=False, indent=2) + "\n")
-    write_atomic(RSS_FILE, make_rss(translated_articles, report.get("periodHours", 24)))
-    print(f"中文转换完成：{len(translated_articles)} 条新闻，已生成中文摘要与视频口播稿。")
+
+def main(
+    news_file: Path | None = None,
+    rss_file: Path | None = None,
+    service: TranslationService | None = None,
+) -> None:
+    news_path = news_file or Path(os.environ.get("NEWS_FILE", ROOT / "news.json"))
+    rss_path = rss_file or Path(os.environ.get("RSS_FILE", ROOT / "rss.xml"))
+    site_url = os.environ.get("SITE_URL", DEFAULT_SITE_URL)
+    translator = service or OfflineTranslationService()
+    report = json.loads(news_path.read_text(encoding="utf-8"))
+    sources = json.loads((ROOT / "sources.json").read_text(encoding="utf-8"))
+    source_configs = {source["名称"]: source for source in sources.get("来源", [])}
+    translated_articles = translate_articles(report, translator, source_configs)
+
+    output = {
+        "schemaVersion": 2,
+        "supportedLanguages": list(SUPPORTED_LANGUAGES),
+        "defaultLanguage": DEFAULT_LANGUAGE,
+        "generatedAt": report["generatedAt"],
+        "timezone": report["timezone"],
+        "periodHours": int(report["periodHours"]),
+        "sourceCount": int(report["sourceCount"]),
+        "translationEngine": "Argos Translate + OpenCC",
+        "articles": translated_articles,
+    }
+    rss = make_rss(translated_articles, output["periodHours"], site_url)
+    write_text_atomic(news_path, json.dumps(output, ensure_ascii=False, indent=2) + "\n")
+    write_text_atomic(rss_path, rss)
+    print(f"五语翻译完成：{len(translated_articles)} 条新闻，简体中文 RSS 已生成。")
 
 
 if __name__ == "__main__":
     main()
-

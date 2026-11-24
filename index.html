@@ -3,86 +3,544 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>游闻 · 中文游戏创作台</title>
-  <meta name="description" content="过去24小时全球游戏资讯简体中文整理，提供视频口播稿和原文核对入口。">
+  <title>游闻 · 多语言游戏新闻</title>
+  <meta name="description" content="过去 24 小时全球游戏新闻，以 RSS 原文为事实来源，提供简体中文、繁体中文、英语、日语和韩语版本。">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap');
-    :root{--bg:#10110f;--panel:#181a17;--panel2:#20221e;--line:#30332d;--text:#f3f2ec;--muted:#94988d;--lime:#ffb36b;--orange:#ff8066;--blue:#8cc8ff}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,'Noto Sans SC',sans-serif;min-height:100vh}button{font:inherit;color:inherit;cursor:pointer}.app{max-width:1440px;margin:auto;padding:0 36px}.top{height:82px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:19px}.brand i{width:28px;height:28px;border-radius:9px;background:var(--lime);display:grid;place-items:center;color:#151710;font-style:normal}.brand span,.eyebrow,.date,.time,.tag,.source,.rank,.eventtime{font-family:'DM Mono',monospace}.brand span{font-size:10px;letter-spacing:.16em;color:var(--muted);margin-left:6px}.topright{display:flex;align-items:center;gap:20px;color:var(--muted);font-size:12px}.live{display:flex;align-items:center;gap:8px}.dot{width:7px;height:7px;background:var(--lime);border-radius:50%;box-shadow:0 0 12px #d5ff6288}.avatar{width:32px;height:32px;background:#30352a;color:var(--lime);border-radius:50%;display:grid;place-items:center;font-weight:700}.layout{display:grid;grid-template-columns:205px 1fr;gap:42px;padding-top:34px}.side{border-right:1px solid var(--line);padding-right:24px}.side-title{font:500 10px 'DM Mono';letter-spacing:.15em;color:#686d62;margin:14px 0}.nav{width:100%;display:flex;gap:11px;align-items:center;padding:12px 13px;margin:4px 0;color:var(--muted);font-size:13px;border-radius:8px;border:0;background:transparent;text-align:left}.nav:hover,.nav.active{background:#292d20;color:var(--lime)}.nav b{margin-left:auto;font:11px 'DM Mono';opacity:.75}.side-note{margin-top:50px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:11px;line-height:1.7}.side-note strong{color:#dedfd6;display:block;font-size:12px;margin-bottom:7px}.main{padding-bottom:70px}.eyebrow{font-size:10px;color:var(--lime);letter-spacing:.16em}.headline{display:flex;justify-content:space-between;align-items:end;margin:18px 0 26px}.headline h1{font-size:34px;line-height:1.2;margin:0 0 8px}.headline p{margin:0;color:var(--muted);font-size:13px}.date{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:10px 13px;border-radius:8px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:17px 18px}.stat label{color:var(--muted);font-size:11px}.stat strong{font-size:26px;display:block;margin:10px 0 4px}.stat small{font-size:10px;color:var(--lime)}.content{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.85fr);gap:14px;margin-top:16px}.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}.boxhead{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.boxhead h2{font-size:13px;margin:0}.boxhead span{font:10px 'DM Mono';color:var(--muted)}.filters{display:flex;gap:7px;padding:13px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}.list-tools{display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}.list-tools input,.list-tools select{background:#11130f;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:8px 10px;font:11px Manrope,'Noto Sans SC',sans-serif}.list-tools input{flex:1;min-width:180px}.list-tools select{min-width:120px}.heat-tag{display:inline-block;margin-left:5px;padding:3px 6px;border-radius:5px;background:#392719;color:#ffc18c;font:9px 'DM Mono',monospace}.filter{padding:6px 10px;border-radius:20px;background:none;border:1px solid var(--line);font-size:10px;color:var(--muted)}.filter:hover,.filter.sel{background:var(--lime);color:#151710;border-color:var(--lime);font-weight:700}.story{padding:17px 19px;border-bottom:1px solid #292b27;display:grid;grid-template-columns:65px 1fr;gap:14px;cursor:pointer;transition:background .18s}.story:hover,.story:focus{background:#20221e;outline:none}.story:focus-visible{box-shadow:inset 0 0 0 2px var(--lime)}.story:last-child{border:0}.time{font-size:10px;color:#73786d;padding-top:3px}.storybody{min-width:0}.storytop{display:flex;justify-content:space-between;align-items:start;gap:10px}.tag{font-size:9px;padding:4px 7px;border-radius:4px;display:inline-block;background:#253122;color:var(--lime);margin-bottom:8px}.tag.blue{background:#202d38;color:var(--blue)}.story h3{font-size:13px;line-height:1.55;margin:0 0 6px}.story p{font-size:11px;color:var(--muted);line-height:1.65;margin:0}.source{font-size:9px;color:#787d72;margin-top:9px}.save{background:none;border:1px solid var(--line);border-radius:7px;color:var(--muted);padding:4px 8px;font-size:12px;white-space:nowrap}.save:hover,.save.saved{color:var(--lime);border-color:#596342}.empty{padding:30px;text-align:center;color:var(--muted);font-size:12px}.trend{padding:17px 18px}.trendrow{width:100%;display:flex;align-items:center;gap:10px;margin:14px 0;background:none;border:0;text-align:left;padding:0}.trendrow:hover .trendname{color:var(--lime)}.rank{font-size:10px;color:#6e7368;width:14px}.trendname{font-size:11px;flex:1}.bar{height:4px;background:#30332d;border-radius:3px;width:74px;overflow:hidden}.bar i{display:block;height:100%;background:var(--lime);border-radius:3px}.trendrow small{font:9px 'DM Mono';color:var(--muted);width:23px;text-align:right}.schedule{border-top:1px solid var(--line);padding:17px 18px}.schedule h3{font-size:12px;margin:0 0 15px}.event{display:flex;gap:11px;margin:13px 0;padding:0;width:100%;background:none;border:0;text-align:left}.event:hover .eventtitle{color:var(--lime)}.eventtime{font-size:9px;color:var(--lime);width:42px;padding-top:2px}.eventtitle{font-size:10px;line-height:1.5;color:#dedfd6}.eventtitle small{display:block;color:var(--muted);font-size:9px}.foot{font:9px 'DM Mono';color:#666b61;margin-top:17px;text-align:right}.detail{width:min(760px,calc(100% - 28px));max-height:88vh;padding:0;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:14px}.detail::backdrop{background:#080907d9;backdrop-filter:blur(5px)}.detail-head{position:sticky;top:0;background:var(--panel);display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line)}.detail-head span{font:10px 'DM Mono';color:var(--lime);letter-spacing:.12em}.detail-close{background:none;border:1px solid var(--line);border-radius:7px;padding:7px 10px}.detail-body{padding:24px}.detail-body h2{font-size:24px;line-height:1.45;margin:0 0 10px}.detail-meta{font:11px 'DM Mono';color:var(--muted);margin-bottom:20px}.detail-summary{color:#c5c7be;line-height:1.8;font-size:14px}.script-box{white-space:pre-line;background:#11130f;border:1px solid var(--line);border-radius:10px;padding:18px;line-height:1.9;font-size:14px;margin:18px 0}.source-link{color:var(--lime);font-size:13px;text-decoration:none}.detail-hint{font-size:11px;color:var(--muted);margin-top:12px}
-    .rss-link{color:var(--lime);font-size:11px;text-decoration:none;border:1px solid var(--line);border-radius:7px;padding:7px 9px}.rss-link:hover{border-color:var(--lime)}
-    .tag.zh-tag{background:#3b2921;color:#ffc18c}.copy-button{border:0;border-radius:7px;background:var(--lime);color:#17130f;padding:8px 12px;font-size:11px;font-weight:800}.copy-button:hover{filter:brightness(1.08)}.detail-actions{display:flex;align-items:center;gap:8px}.source-original{margin:20px 0 14px;padding:14px 16px;border:1px solid var(--line);border-radius:9px;background:#141612}.source-original summary{cursor:pointer;color:#d7b18d;font-size:12px}.source-original p{color:var(--muted);font-size:12px;line-height:1.7;overflow-wrap:anywhere}.source-original strong{color:#e7e2d8}.translation-note{font-size:10px;color:var(--muted);margin:10px 0 0}
-    @media(max-width:900px){.app{padding:0 20px}.layout{grid-template-columns:1fr;gap:20px}.side{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--line);padding:0 0 10px;gap:4px}.side-title,.side-note{display:none}.nav{white-space:nowrap;margin:0;width:auto}.content{grid-template-columns:1fr}}
-    @media(max-width:600px){.app{padding:0 14px}.top{height:65px}.topright{gap:8px}.topright .live,.topright>span,.avatar,.brand span{display:none}.rss-link{padding:6px 7px}.layout{padding-top:20px}.headline{align-items:start;gap:10px;flex-direction:column}.headline h1{font-size:28px}.stats{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:13px}.stat strong{font-size:22px}.story{grid-template-columns:46px 1fr;padding:14px 13px}.date{font-size:9px}.detail-body{padding:18px}.detail-body h2{font-size:20px}}
+    :root{--bg:#10110f;--panel:#181a17;--panel2:#20221e;--line:#30332d;--text:#f3f2ec;--muted:#94988d;--lime:#ffb36b;--orange:#ff8066;--blue:#8cc8ff;--danger:#ff9e91}
+    *{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,'Noto Sans SC',sans-serif;min-height:100vh;overflow-x:hidden}button,input,select{font:inherit;color:inherit}button,select{cursor:pointer}.app{max-width:1440px;margin:auto;padding:0 36px}.top{min-height:82px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:19px;min-width:0}.brand i{width:28px;height:28px;flex:0 0 auto;border-radius:9px;background:var(--lime);display:grid;place-items:center;color:#151710;font-style:normal}.brand span,.eyebrow,.date,.time,.tag,.source,.rank,.eventtime{font-family:'DM Mono',monospace}.brand span{font-size:10px;letter-spacing:.12em;color:var(--muted);margin-left:6px}.brand-name{overflow-wrap:anywhere}.topright{display:flex;align-items:center;justify-content:flex-end;gap:14px;color:var(--muted);font-size:12px;flex-wrap:wrap}.language-control{display:flex;align-items:center;gap:7px;font-size:10px}.language-control>span{font-family:'DM Mono',monospace;color:#777c71;white-space:nowrap}.language-control select,.source-filter{appearance:none;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 30px 8px 10px;color:var(--text);font-size:11px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 14px) 50%,calc(100% - 10px) 50%;background-size:4px 4px,4px 4px;background-repeat:no-repeat}.live{display:flex;align-items:center;gap:8px;white-space:nowrap}.dot{width:7px;height:7px;background:var(--lime);border-radius:50%;box-shadow:0 0 12px #d5ff6288}.avatar{width:32px;height:32px;background:#30352a;color:var(--lime);border-radius:50%;display:grid;place-items:center;font-weight:700}.rss-link{color:var(--lime);font-size:11px;text-decoration:none;border:1px solid var(--line);border-radius:7px;padding:7px 9px;white-space:nowrap}.rss-link:hover{border-color:var(--lime)}.layout{display:grid;grid-template-columns:205px 1fr;gap:42px;padding-top:34px}.side{border-right:1px solid var(--line);padding-right:24px}.side-title{font:500 10px 'DM Mono';letter-spacing:.15em;color:#686d62;margin:14px 0}.nav{width:100%;display:flex;gap:11px;align-items:center;padding:12px 13px;margin:4px 0;color:var(--muted);font-size:13px;border-radius:8px;border:0;background:transparent;text-align:left}.nav:hover,.nav.active{background:#292d20;color:var(--lime)}.nav b{margin-left:auto;font:11px 'DM Mono';opacity:.75}.side-note{margin-top:50px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:11px;line-height:1.7;white-space:pre-line}.side-note strong{color:#dedfd6;display:block;font-size:12px;margin-bottom:7px}.main{padding-bottom:70px;min-width:0}.eyebrow{font-size:10px;color:var(--lime);letter-spacing:.16em}.headline{display:flex;justify-content:space-between;align-items:end;margin:18px 0 26px;gap:20px}.headline h1{font-size:34px;line-height:1.2;margin:0 0 8px}.headline p{margin:0;color:var(--muted);font-size:13px;line-height:1.7;max-width:720px}.date{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:10px 13px;border-radius:8px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:17px 18px;min-width:0}.stat label{color:var(--muted);font-size:11px}.stat strong{font-size:26px;display:block;margin:10px 0 4px;overflow-wrap:anywhere}.stat small{font-size:10px;color:var(--lime)}.content{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.85fr);gap:14px;margin-top:16px}.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:0}.boxhead{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.boxhead h2{font-size:13px;margin:0}.boxhead span{font:10px 'DM Mono';color:var(--muted);white-space:nowrap}.toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(145px,.38fr);gap:9px;padding:13px 18px 8px}.tool-field{display:grid;gap:5px}.tool-field label{font:9px 'DM Mono';color:#777c71}.search-input{width:100%;background:#121410;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:11px;outline:none}.search-input:focus,.language-control select:focus,.source-filter:focus{border-color:var(--lime);box-shadow:0 0 0 2px #ffb36b22}.source-filter{width:100%;padding-top:9px;padding-bottom:9px}.filters{display:flex;gap:7px;padding:7px 18px 13px;border-bottom:1px solid var(--line);flex-wrap:wrap}.filter{padding:7px 10px;border-radius:20px;background:none;border:1px solid var(--line);font-size:10px;color:var(--muted);white-space:nowrap}.filter:hover,.filter.sel{background:var(--lime);color:#151710;border-color:var(--lime);font-weight:700}.filter b{font:9px 'DM Mono';opacity:.75;margin-left:3px}.story{padding:17px 19px;border-bottom:1px solid #292b27;display:grid;grid-template-columns:65px minmax(0,1fr);gap:14px;transition:background .18s}.story:hover{background:#20221e}.story:last-child{border:0}.time{font-size:10px;color:#73786d;padding-top:5px}.storybody{min-width:0}.storytop{display:flex;justify-content:space-between;align-items:start;gap:10px}.story-main{min-width:0;cursor:pointer;outline:none;border-radius:6px}.story-main:focus-visible{box-shadow:0 0 0 2px var(--lime)}.tag{font-size:9px;padding:4px 7px;border-radius:4px;display:inline-block;background:#253122;color:var(--lime);margin:0 4px 8px 0}.tag.blue{background:#202d38;color:var(--blue)}.story h3{font-size:13px;line-height:1.55;margin:0 0 6px;overflow-wrap:anywhere}.story p{font-size:11px;color:var(--muted);line-height:1.65;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}.source{font-size:9px;color:#787d72;margin-top:9px}.save{min-width:44px;min-height:44px;background:none;border:1px solid var(--line);border-radius:9px;color:var(--muted);padding:0;font-size:19px;white-space:nowrap;flex:0 0 auto}.save:hover,.save:focus-visible,.save.saved{color:var(--lime);border-color:#596342;outline:none}.empty{padding:30px;text-align:center;color:var(--muted);font-size:12px;line-height:1.7}.trend{padding:17px 18px}.trendrow{width:100%;display:flex;align-items:center;gap:10px;margin:14px 0;background:none;border:0;text-align:left;padding:0}.trendrow:hover .trendname{color:var(--lime)}.rank{font-size:10px;color:#6e7368;width:14px;flex:0 0 auto}.trendname{font-size:11px;flex:1;min-width:0;overflow-wrap:anywhere}.bar{height:4px;background:#30332d;border-radius:3px;width:74px;overflow:hidden;flex:0 0 auto}.bar i{display:block;height:100%;background:var(--lime);border-radius:3px}.trendrow small{font:9px 'DM Mono';color:var(--muted);width:23px;text-align:right;flex:0 0 auto}.schedule{border-top:1px solid var(--line);padding:17px 18px}.schedule h3{font-size:12px;margin:0 0 15px}.event{display:flex;gap:11px;margin:13px 0;padding:0;width:100%;background:none;border:0;text-align:left}.event:hover .eventtitle{color:var(--lime)}.eventtime{font-size:9px;color:var(--lime);width:42px;padding-top:2px;flex:0 0 auto}.eventtitle{font-size:10px;line-height:1.5;color:#dedfd6;min-width:0;overflow-wrap:anywhere}.eventtitle small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.foot{font:9px/1.7 'DM Mono';color:#666b61;margin-top:17px;text-align:right}.detail{width:min(760px,calc(100% - 28px));max-height:88vh;padding:0;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:14px}.detail::backdrop{background:#080907d9;backdrop-filter:blur(5px)}.detail-head{position:sticky;top:0;z-index:2;background:var(--panel);display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line);gap:15px}.detail-head span{font:10px 'DM Mono';color:var(--lime);letter-spacing:.12em}.detail-close{background:none;border:1px solid var(--line);border-radius:8px;min-width:44px;min-height:44px;padding:7px 10px}.detail-close:focus-visible{border-color:var(--lime);outline:none}.detail-body{padding:24px}.detail-body h2{font-size:24px;line-height:1.45;margin:0 0 10px;overflow-wrap:anywhere}.detail-meta{font:11px 'DM Mono';color:var(--muted);margin-bottom:20px;line-height:1.7}.detail-summary{color:#c5c7be;line-height:1.8;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}.source-original{margin:22px 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:9px;background:#141612}.source-original summary{cursor:pointer;color:#d7b18d;font-size:12px}.source-original p{color:var(--muted);font-size:12px;line-height:1.75;overflow-wrap:anywhere}.source-original strong{color:#e7e2d8}.source-link{display:inline-block;color:#17130f;background:var(--lime);padding:10px 13px;border-radius:8px;font-size:12px;font-weight:800;text-decoration:none}.source-link:hover{filter:brightness(1.08)}.translation-note{font-size:10px;color:var(--muted);line-height:1.7;margin:14px 0 0}.noscript{padding:24px;text-align:center;color:var(--muted)}
+    @media(max-width:900px){.app{padding:0 20px}.top{align-items:flex-start;padding:14px 0}.topright{gap:9px}.layout{grid-template-columns:1fr;gap:20px}.side{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--line);padding:0 0 10px;gap:4px}.side-title,.side-note{display:none}.nav{white-space:nowrap;margin:0;width:auto}.content{grid-template-columns:1fr}}
+    @media(max-width:600px){.app{padding:0 14px}.top{min-height:0;flex-direction:column;gap:10px}.brand{font-size:17px}.brand span{display:block;margin:3px 0 0}.topright{width:100%;justify-content:space-between;gap:7px}.topright .live,.topright>.update-note,.avatar{display:none}.language-control{min-width:0;flex:1}.language-control>span{display:none}.language-control select{width:100%;min-height:40px}.rss-link{min-height:40px;display:grid;place-items:center}.layout{padding-top:20px}.headline{align-items:start;gap:10px;flex-direction:column}.headline h1{font-size:28px}.stats{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:13px}.stat strong{font-size:22px}.toolbar{grid-template-columns:1fr;padding:12px 13px 6px}.filters{flex-wrap:nowrap;overflow-x:auto;padding:7px 13px 12px}.story{grid-template-columns:44px minmax(0,1fr);padding:14px 13px;gap:8px}.date{font-size:9px;white-space:normal}.detail{width:calc(100% - 18px);max-height:92vh}.detail-head{padding:13px}.detail-body{padding:18px}.detail-body h2{font-size:20px}.eventtitle{font-size:11px}.foot{text-align:left}}
   </style>
 </head>
 <body>
   <div class="app">
-    <header class="top"><div class="brand"><i>游</i> 游闻 <span>中文创作台</span></div><div class="topright"><div class="live"><i class="dot"></i>每日中文选题</div><span>每日 08:00 HKT 更新</span><a class="rss-link" href="./rss.xml">订阅中文 RSS ↗</a><div class="avatar">游</div></div></header>
+    <header class="top">
+      <div class="brand"><i>游</i><div><div class="brand-name" id="brand-name">游闻 · 多语言游戏新闻</div><span id="brand-tag">MULTILINGUAL GAME NEWS</span></div></div>
+      <div class="topright">
+        <label class="language-control" for="language-select"><span id="language-label">界面语言</span><select id="language-select" aria-label="界面语言"><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></label>
+        <div class="live"><i class="dot"></i><span id="live-label">今日游戏新闻</span></div>
+        <span class="update-note" id="schedule-label">每天 08:00 HKT 更新</span>
+        <a class="rss-link" href="./rss.xml" id="rss-link">订阅简体中文 RSS ↗</a>
+      </div>
+    </header>
     <div class="layout">
-      <aside class="side"><div class="side-title">工作台</div>
-        <button class="nav active" data-view="daily">◈　今日选题</button>
-        <button class="nav" data-view="all">▤　全部新闻</button>
-        <button class="nav" data-view="company"><svg class="nav-icon" width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 17.5h15M4 17V8l4-3v12m0 0V3h5v14m0 0V9l3-2v10M6 9h.1M6 12h.1M10 6h.1M10 9h.1M15 11h.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>厂商动态</button>
-        <button class="nav" data-view="releases">◷　新作与发售</button>
-        <button class="nav" data-view="saved">☆　收藏选题 <b id="saved-count">0</b></button>
-        <div class="side-note"><strong>中文创作工作流</strong>全球游戏资讯来源<br>简体中文标题 · 摘要 · 口播稿<br>原文保留，方便核实</div>
+      <aside class="side"><div class="side-title" id="side-title">新闻导航</div>
+        <button class="nav active" data-view="daily" id="nav-daily">◈　今日新闻</button>
+        <button class="nav" data-view="saved" id="nav-saved">☆　收藏新闻 <b id="saved-count">0</b></button>
+        <div class="side-note" id="side-note"><strong>新闻站</strong>RSS 原文标题与摘要
+五种语言本地化
+原文链接始终保留</div>
       </aside>
       <main class="main">
-        <div class="eyebrow">每日游戏选题 · 中文创作者版</div>
-        <div class="headline"><div><h1>今天拍什么游戏新闻？</h1><p>过去 24 小时 RSS 标题与摘要已转成简体中文，并整理为短视频口播稿。点开卡片复制文案、核对原文。</p></div><div class="date">载入中…</div></div>
+        <div class="eyebrow" id="eyebrow">24 小时游戏新闻 · 五语阅读</div>
+        <div class="headline"><div><h1 id="headline">过去 24 小时的全球游戏新闻</h1><p id="intro">内容只来自 RSS 提供的原始标题和摘要。切换语言阅读本地化版本，详情页可以展开原文并前往来源核对。</p></div><div class="date" id="update-date">载入中…</div></div>
         <section class="stats">
-          <div class="stat"><label>今日中文选题</label><strong id="stat-total">—</strong><small>过去 24 小时</small></div>
-          <div class="stat"><label>可用口播稿</label><strong id="stat-scripts">—</strong><small>点开即可复制</small></div>
-          <div class="stat"><label>覆盖新闻来源</label><strong id="stat-sources">—</strong><small>媒体与官方公告</small></div>
-          <div class="stat"><label>输出语言</label><strong>简体中文</strong><small>保留原文供核实</small></div>
+          <div class="stat"><label id="stat-total-label">今日收录</label><strong id="stat-total">—</strong><small id="stat-total-note">当前筛选范围</small></div>
+          <div class="stat"><label id="stat-summary-label">完整摘要</label><strong id="stat-summary">—</strong><small id="stat-summary-note">不截断 RSS 原文</small></div>
+          <div class="stat"><label id="stat-sources-label">覆盖来源</label><strong id="stat-sources">—</strong><small id="stat-sources-note">媒体与官方公告</small></div>
+          <div class="stat"><label id="stat-language-label">当前语言</label><strong id="stat-language">简体中文</strong><small id="stat-language-note">五种语言可切换</small></div>
         </section>
         <div class="content">
-          <section class="box"><div class="boxhead"><h2 id="list-title">今日重点选题</h2><span id="list-count"></span></div>
-            <div class="filters"><button class="filter sel" data-kind="all">全部选题</button><button class="filter" data-kind="industry">媒体报道</button><button class="filter" data-kind="studio">官方公告</button><button class="filter" data-kind="releases">新作与促销</button></div>
-            <div class="list-tools"><input id="search-input" type="search" placeholder="搜索标题、摘要、来源…" aria-label="搜索新闻"><select id="category-filter" aria-label="按分类筛选"><option value="">全部分类</option></select><select id="source-filter" aria-label="按来源筛选"><option value="">全部来源</option></select><label>排序 <select id="sort-select" aria-label="新闻排序"><option value="heat">参考热度</option><option value="newest">最新发布</option><option value="oldest">最早发布</option></select></label><button class="filter" id="reset-filters" type="button">清除筛选</button></div>
-            <div id="story-list"></div><div class="empty" id="empty" hidden>这个分类暂时没有选题。试试“全部新闻”或稍后刷新。</div>
+          <section class="box">
+            <div class="boxhead"><h2 id="list-title">今日新闻</h2><span id="list-count"></span></div>
+            <div class="toolbar">
+              <div class="tool-field"><label for="search-input" id="search-label">搜索</label><input class="search-input" id="search-input" type="search" autocomplete="off" placeholder="搜索标题、摘要或来源"></div>
+              <div class="tool-field"><label for="source-filter" id="source-label">来源</label><select class="source-filter" id="source-filter"></select></div>
+            </div>
+            <div class="filters" id="category-filters" aria-label="新闻分类"></div>
+            <div id="story-list"></div><div class="empty" id="empty" hidden></div>
           </section>
-          <aside class="box"><div class="boxhead"><h2>本期选题分布</h2><span>按新闻分类</span></div><div class="trend" id="trend-list"></div>
-            <div class="schedule"><h3>最新选题速览</h3><div id="follow-list"></div></div>
+          <aside class="box">
+            <div class="boxhead"><h2 id="trend-title">当前新闻分布</h2><span id="trend-note">按分类</span></div><div class="trend" id="trend-list"></div>
+            <div class="schedule"><h3 id="follow-title">最新收录</h3><div id="follow-list"></div></div>
           </aside>
         </div>
-        <div class="foot"></div>
+        <div class="foot" id="foot"></div>
       </main>
     </div>
   </div>
-      <dialog class="detail" aria-labelledby="detail-title"><div class="detail-head"><span>简体中文 · 视频口播稿</span><div class="detail-actions"><button class="copy-button" id="copy-script" type="button">复制口播稿</button><button class="detail-close" type="button">关闭 ×</button></div></div><div class="detail-body"><span class="tag" id="detail-category"></span><h2 id="detail-title"></h2><div class="detail-meta" id="detail-meta"></div><p class="detail-summary" id="detail-summary"></p><div class="script-box" id="detail-script"></div><details class="source-original"><summary>展开查看来源原文（用于核对）</summary><p><strong>原文标题</strong><br><span id="detail-original-title"></span></p><p><strong>原文摘要</strong><br><span id="detail-original-summary"></span></p></details><a class="source-link" id="detail-source" target="_blank" rel="noopener">打开新闻原文 ↗</a><p class="translation-note">中文稿由离线机器翻译整理，游戏名称、人物、数字和传闻请发布前对照来源核实。</p></div></dialog>
+  <dialog class="detail" aria-labelledby="detail-title"><div class="detail-head"><span id="detail-language">简体中文 · 新闻详情</span><button class="detail-close" id="detail-close" type="button">关闭 ×</button></div><div class="detail-body"><span class="tag" id="detail-category"></span><h2 id="detail-title"></h2><div class="detail-meta" id="detail-meta"></div><p class="detail-summary" id="detail-summary"></p><details class="source-original" id="original-panel"><summary id="original-summary-label">展开查看 RSS 原文</summary><p><strong id="original-title-label">原文标题</strong><br><span id="detail-original-title"></span></p><p><strong id="original-body-label">原文摘要</strong><br><span id="detail-original-summary"></span></p></details><a class="source-link" id="detail-source" target="_blank" rel="noopener">打开新闻原文 ↗</a><p class="translation-note" id="translation-note"></p></div></dialog>
+  <noscript><div class="noscript">新闻站需要 JavaScript 才能加载多种语言内容。</div></noscript>
   <script>
-    const $=selector=>document.querySelector(selector);
-    const storyList=$('#story-list');
-    const detail=$('.detail');
-    const esc=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-    let articles=[];
-    let currentKind='all';
-    let currentView='daily';
-    let selectedCategory='';
-    let savedIds=new Set(JSON.parse(localStorage.getItem('game-intel-saved')||'[]'));
-    const idOf=item=>item.url;
-    const releaseCategories=['新作与发售','促销与平台'];
-    function openDetail(item){$('#detail-category').textContent=item.category;$('#detail-title').textContent=item.title;$('#detail-meta').textContent=`${item.source} · ${new Intl.DateTimeFormat('zh-HK',{timeZone:'Asia/Hong_Kong',dateStyle:'medium',timeStyle:'short'}).format(new Date(item.timestamp))} HKT`;$('#detail-summary').textContent=item.summary||'';$('#detail-script').textContent=item.videoScript||`【开场】${item.title}。\n【正文】${item.summary||'打开新闻原文了解详情。'}\n【收尾】以上信息来自${item.source}，具体内容请查看原文。`;$('#detail-original-title').textContent=item.originalTitle||item.title;$('#detail-original-summary').textContent=item.originalSummary||item.summary||'来源没有提供摘要';$('#copy-script').textContent='复制口播稿';$('#detail-source').href=item.url;detail.showModal()}
-    function isRelease(item){return releaseCategories.includes(item.category)}
-    function matches(item){if(currentView==='saved'&&!savedIds.has(idOf(item)))return false;if(currentView==='company'&&!/公司|行业|商业/.test(item.category))return false;if(currentView==='releases'&&!isRelease(item))return false;if(selectedCategory&&item.category!==selectedCategory)return false;if(currentKind==='industry'&&item.sourceType!=='媒体')return false;if(currentKind==='studio'&&item.sourceType!=='官方')return false;if(currentKind==='releases'&&!isRelease(item))return false;const query=$('#search-input').value.trim().toLocaleLowerCase();if(query&&!`${item.title} ${item.summary||''} ${item.source} ${item.category}`.toLocaleLowerCase().includes(query))return false;if($('#category-filter').value&&item.category!==$('#category-filter').value)return false;if($('#source-filter').value&&item.source!==$('#source-filter').value)return false;return true}
-    function heatScore(item){if(Number.isFinite(Number(item.heatScore)))return Number(item.heatScore);const ageHours=Math.max(0,(Date.now()-Number(item.timestamp||0))/3600000);const freshness=Math.max(0,36-ageHours)/36*35;const topic=/发售|发布|上线|延期|销量|收购|裁员|更新|预告|首发|免费|测试|任天堂|PlayStation|Xbox|Steam|GTA|索尼|微软|腾讯|米哈游/i.test(`${item.title} ${item.summary||''}`)?30:0;const official=item.sourceType==='官方'?18:0;const category=/新作|促销|更新/.test(item.category||'')?17:0;return Math.min(100,Math.round(freshness+topic+official+category))}
-    function renderStories(){const sort=$('#sort-select').value;const visible=articles.filter(matches).sort((a,b)=>sort==='newest'?b.timestamp-a.timestamp:sort==='oldest'?a.timestamp-b.timestamp:heatScore(b)-heatScore(a));storyList.replaceChildren();$('#empty').hidden=visible.length>0;$('#list-count').textContent=`${visible.length} 条`;
-      for(const item of visible){const card=document.createElement('article');card.className='story';card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',`打开视频文案：${item.title}`);const time=new Intl.DateTimeFormat('zh-HK',{timeZone:'Asia/Hong_Kong',hour:'2-digit',minute:'2-digit'}).format(new Date(item.timestamp));const saved=savedIds.has(idOf(item));card.innerHTML=`<div class="time">${time}</div><div class="storybody"><div class="storytop"><div><span class="tag ${item.sourceType==='官方'?'blue':''}">${esc(item.category)}</span> <span class="tag zh-tag">中文口播稿</span><span class="heat-tag" title="按时效、主题信号、来源类型估算，不代表实际阅读量">热度 ${heatScore(item)}</span><h3>${esc(item.title)}</h3></div><button class="save ${saved?'saved':''}" type="button" aria-label="${saved?'取消收藏':'收藏选题'}">${saved?'★':'☆'}</button></div><p>${esc(item.summary||'打开来源查看新闻详情。')}</p><div class="source">来源：${esc(item.source)}　·　点击查看与复制视频文案 ↗</div></div>`;card.addEventListener('click',()=>openDetail(item));card.addEventListener('keydown',event=>{if(event.target===card&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openDetail(item)}});card.querySelector('.save').addEventListener('click',event=>{event.stopPropagation();if(savedIds.has(idOf(item)))savedIds.delete(idOf(item));else savedIds.add(idOf(item));localStorage.setItem('game-intel-saved',JSON.stringify([...savedIds]));$('#saved-count').textContent=savedIds.size;renderStories()});storyList.append(card)}
+    const LOCALES = {
+      'zh-CN': {
+        pageTitle: '游闻 · 多语言游戏新闻',
+        description: '过去 24 小时全球游戏新闻，以 RSS 原文为事实来源，提供五种语言版本。',
+        brandName: '游闻 · 多语言游戏新闻', brandTag: 'MULTILINGUAL GAME NEWS', languageLabel: '界面语言', liveLabel: '今日游戏新闻', schedule: '每天 08:00 HKT 更新', rss: '订阅简体中文 RSS ↗',
+        sideTitle: '新闻导航', daily: '今日新闻', saved: '收藏新闻', sideNoteTitle: '新闻站', sideNote: 'RSS 原文标题与摘要\n五种语言本地化\n原文链接始终保留',
+        eyebrow: '24 小时游戏新闻 · 五语阅读', headline: '过去 24 小时的全球游戏新闻', intro: '内容只来自 RSS 提供的原始标题和摘要。切换语言阅读本地化版本，详情页可以展开原文并前往来源核对。',
+        statTotal: '今日收录', statTotalNote: '当前筛选范围', statSummary: '完整摘要', statSummaryNote: '不截断 RSS 原文', statSources: '覆盖来源', statSourcesNote: '媒体与官方公告', statLanguage: '当前语言', statLanguageNote: '五种语言可切换',
+        search: '搜索', searchPlaceholder: '搜索标题、摘要或来源', source: '来源', allSources: '全部来源', allCategories: '全部',
+        trendTitle: '当前新闻分布', trendNote: '按分类', followTitle: '最新收录', updated: '最近更新', footer: '页面每分钟检查新版本 · 新闻每天 08:00 HKT 采集', articleCount: '条',
+        views: { daily: '今日新闻', saved: '收藏新闻' }, empty: '当前筛选下没有新闻。试试更改搜索词、分类或来源。', loading: '载入中…', unavailable: '新闻数据暂不可用，请稍后刷新。',
+        sourcePrefix: '来源：', openArticle: '查看详情 ↗', save: '收藏新闻', unsave: '取消收藏', openDetail: '打开新闻详情：',
+        detailLabel: '简体中文 · 新闻详情', close: '关闭 ×', originalSummary: '展开查看 RSS 原文', originalTitle: '原文标题', originalBody: '原文摘要', openOriginal: '打开新闻原文 ↗', translationNote: '本地化内容由离线模型生成，专有名词、数字和日期请以 RSS 原文为准。',
+        types: { official: '官方', media: '媒体' }, categories: { platform: '平台公告', industry: '行业与商业', development: '开发与行业', 'japan-global': '日本与全球游戏新闻', japan: '日本游戏新闻', pc: 'PC 游戏', nintendo: '任天堂游戏', playstation: 'PlayStation 游戏', mobile: '移动游戏' }
+      },
+      'zh-TW': {
+        pageTitle: '遊聞 · 多語言遊戲新聞',
+        description: '過去 24 小時全球遊戲新聞，以 RSS 原文為事實來源，提供五種語言版本。',
+        brandName: '遊聞 · 多語言遊戲新聞', brandTag: 'MULTILINGUAL GAME NEWS', languageLabel: '介面語言', liveLabel: '今日遊戲新聞', schedule: '每天 08:00 HKT 更新', rss: '訂閱簡體中文 RSS ↗',
+        sideTitle: '新聞導覽', daily: '今日新聞', saved: '收藏新聞', sideNoteTitle: '新聞站', sideNote: 'RSS 原文標題與摘要\n五種語言在地化\n原文連結始終保留',
+        eyebrow: '24 小時遊戲新聞 · 五語閱讀', headline: '過去 24 小時的全球遊戲新聞', intro: '內容只來自 RSS 提供的原始標題和摘要。切換語言閱讀在地化版本，詳情頁可以展開原文並前往來源核對。',
+        statTotal: '今日收錄', statTotalNote: '目前篩選範圍', statSummary: '完整摘要', statSummaryNote: '不截斷 RSS 原文', statSources: '涵蓋來源', statSourcesNote: '媒體與官方公告', statLanguage: '目前語言', statLanguageNote: '五種語言可切換',
+        search: '搜尋', searchPlaceholder: '搜尋標題、摘要或來源', source: '來源', allSources: '全部來源', allCategories: '全部',
+        trendTitle: '目前新聞分布', trendNote: '按分類', followTitle: '最新收錄', updated: '最近更新', footer: '頁面每分鐘檢查新版本 · 新聞每天 08:00 HKT 採集', articleCount: '則',
+        views: { daily: '今日新聞', saved: '收藏新聞' }, empty: '目前篩選下沒有新聞。請嘗試更改搜尋詞、分類或來源。', loading: '載入中…', unavailable: '新聞資料暫時無法使用，請稍後重新整理。',
+        sourcePrefix: '來源：', openArticle: '查看詳情 ↗', save: '收藏新聞', unsave: '取消收藏', openDetail: '開啟新聞詳情：',
+        detailLabel: '繁體中文 · 新聞詳情', close: '關閉 ×', originalSummary: '展開查看 RSS 原文', originalTitle: '原文標題', originalBody: '原文摘要', openOriginal: '開啟新聞原文 ↗', translationNote: '在地化內容由離線模型生成，專有名詞、數字和日期請以 RSS 原文為準。',
+        types: { official: '官方', media: '媒體' }, categories: { platform: '平台公告', industry: '產業與商業', development: '開發與產業', 'japan-global': '日本與全球遊戲新聞', japan: '日本遊戲新聞', pc: 'PC 遊戲', nintendo: '任天堂遊戲', playstation: 'PlayStation 遊戲', mobile: '手機遊戲' }
+      },
+      en: {
+        pageTitle: 'Yuwen · Multilingual Game News',
+        description: 'Global game news from the last 24 hours, sourced from RSS titles and summaries in five languages.',
+        brandName: 'Yuwen · Multilingual Game News', brandTag: 'MULTILINGUAL GAME NEWS', languageLabel: 'Language', liveLabel: 'Today’s game news', schedule: 'Updated daily at 08:00 HKT', rss: 'Simplified Chinese RSS ↗',
+        sideTitle: 'Navigation', daily: 'Today’s news', saved: 'Saved news', sideNoteTitle: 'Newsroom', sideNote: 'Original RSS titles and summaries\nFive localized editions\nSource links always included',
+        eyebrow: '24-HOUR GAME NEWS · FIVE LANGUAGES', headline: 'Global game news from the last 24 hours', intro: 'Only the original titles and summaries supplied by RSS are used. Switch languages to read a localized edition, then open the source to verify.',
+        statTotal: 'Stories today', statTotalNote: 'Current filter', statSummary: 'Full summaries', statSummaryNote: 'No RSS truncation', statSources: 'Sources', statSourcesNote: 'Media and official feeds', statLanguage: 'Language', statLanguageNote: 'Five editions available',
+        search: 'Search', searchPlaceholder: 'Search titles, summaries or sources', source: 'Source', allSources: 'All sources', allCategories: 'All',
+        trendTitle: 'News mix', trendNote: 'By category', followTitle: 'Latest stories', updated: 'Last updated', footer: 'Page checks for updates every minute · News collected daily at 08:00 HKT', articleCount: 'stories',
+        views: { daily: 'Today’s news', saved: 'Saved news' }, empty: 'No stories match these filters. Try another search, category or source.', loading: 'Loading…', unavailable: 'News data is temporarily unavailable. Please refresh later.',
+        sourcePrefix: 'Source: ', openArticle: 'View details ↗', save: 'Save story', unsave: 'Remove from saved', openDetail: 'Open story details: ',
+        detailLabel: 'English · Story details', close: 'Close ×', originalSummary: 'Show the original RSS text', originalTitle: 'Original title', originalBody: 'Original summary', openOriginal: 'Open the original story ↗', translationNote: 'This localized text was generated by an offline model. Verify names, numbers and dates against the original RSS text.',
+        types: { official: 'Official', media: 'Media' }, categories: { platform: 'Platform news', industry: 'Industry & business', development: 'Development', 'japan-global': 'Japan & global', japan: 'Japan', pc: 'PC games', nintendo: 'Nintendo', playstation: 'PlayStation', mobile: 'Mobile games' }
+      },
+      ja: {
+        pageTitle: '游聞 · 多言語ゲームニュース',
+        description: '過去24時間の世界のゲームニュースを、RSSの原文タイトルと概要から5言語で提供します。',
+        brandName: '游聞 · 多言語ゲームニュース', brandTag: 'MULTILINGUAL GAME NEWS', languageLabel: '表示言語', liveLabel: '今日のゲームニュース', schedule: '毎日 08:00 HKT 更新', rss: '簡体字中国語 RSS ↗',
+        sideTitle: 'ナビゲーション', daily: '今日のニュース', saved: '保存したニュース', sideNoteTitle: 'ニュースサイト', sideNote: 'RSS 原文のタイトルと概要\n5言語にローカライズ\n原文リンクを常に掲載',
+        eyebrow: '24時間ゲームニュース · 5言語', headline: '過去24時間の世界のゲームニュース', intro: '掲載内容は RSS が提供する原文タイトルと概要のみです。言語を切り替えてローカライズ版を読み、原文リンクから情報を確認できます。',
+        statTotal: '今日の記事', statTotalNote: '現在の絞り込み', statSummary: '完全な概要', statSummaryNote: 'RSS 原文を省略しません', statSources: '情報源', statSourcesNote: 'メディアと公式発表', statLanguage: '表示言語', statLanguageNote: '5言語を切り替え可能',
+        search: '検索', searchPlaceholder: 'タイトル、概要、情報源を検索', source: '情報源', allSources: 'すべての情報源', allCategories: 'すべて',
+        trendTitle: '現在のニュース構成', trendNote: 'カテゴリ別', followTitle: '最新記事', updated: '最終更新', footer: '1分ごとに更新を確認 · 毎日 08:00 HKT に収集', articleCount: '件',
+        views: { daily: '今日のニュース', saved: '保存したニュース' }, empty: '条件に一致するニュースはありません。検索語、カテゴリ、情報源を変更してください。', loading: '読み込み中…', unavailable: 'ニュースデータを利用できません。後でもう一度更新してください。',
+        sourcePrefix: '情報源：', openArticle: '詳細を見る ↗', save: 'ニュースを保存', unsave: '保存を解除', openDetail: 'ニュース詳細を開く：',
+        detailLabel: '日本語 · ニュース詳細', close: '閉じる ×', originalSummary: 'RSS 原文を表示', originalTitle: '原文タイトル', originalBody: '原文概要', openOriginal: '元の記事を開く ↗', translationNote: 'ローカライズ文はオフラインモデルで生成されています。固有名詞、数字、日付は RSS 原文で確認してください。',
+        types: { official: '公式', media: 'メディア' }, categories: { platform: 'プラットフォーム', industry: '業界・ビジネス', development: '開発・業界', 'japan-global': '日本・世界', japan: '日本', pc: 'PCゲーム', nintendo: 'Nintendo', playstation: 'PlayStation', mobile: 'モバイルゲーム' }
+      },
+      ko: {
+        pageTitle: '유문 · 다국어 게임 뉴스',
+        description: '지난 24시간의 글로벌 게임 뉴스를 RSS 원문 제목과 요약으로 다섯 언어로 제공합니다.',
+        brandName: '유문 · 다국어 게임 뉴스', brandTag: 'MULTILINGUAL GAME NEWS', languageLabel: '표시 언어', liveLabel: '오늘의 게임 뉴스', schedule: '매일 08:00 HKT 업데이트', rss: '중국어 간체 RSS ↗',
+        sideTitle: '뉴스 탐색', daily: '오늘의 뉴스', saved: '저장한 뉴스', sideNoteTitle: '뉴스룸', sideNote: 'RSS 원문 제목과 요약\n5개 언어로 현지화\n원문 링크 항상 제공',
+        eyebrow: '24시간 게임 뉴스 · 5개 언어', headline: '지난 24시간의 글로벌 게임 뉴스', intro: 'RSS가 제공한 원문 제목과 요약만 사용합니다. 언어를 바꿔 현지화된 내용을 읽고 원문 링크에서 정보를 확인할 수 있습니다.',
+        statTotal: '오늘의 기사', statTotalNote: '현재 필터 범위', statSummary: '전체 요약', statSummaryNote: 'RSS 원문을 자르지 않음', statSources: '뉴스 출처', statSourcesNote: '미디어와 공식 발표', statLanguage: '현재 언어', statLanguageNote: '5개 언어 지원',
+        search: '검색', searchPlaceholder: '제목, 요약 또는 출처 검색', source: '출처', allSources: '모든 출처', allCategories: '전체',
+        trendTitle: '현재 뉴스 분포', trendNote: '카테고리별', followTitle: '최신 기사', updated: '최근 업데이트', footer: '1분마다 새 버전 확인 · 매일 08:00 HKT 수집', articleCount: '건',
+        views: { daily: '오늘의 뉴스', saved: '저장한 뉴스' }, empty: '현재 필터에 맞는 뉴스가 없습니다. 검색어, 카테고리 또는 출처를 바꿔 보세요.', loading: '불러오는 중…', unavailable: '뉴스 데이터를 사용할 수 없습니다. 나중에 다시 새로고침하세요.',
+        sourcePrefix: '출처: ', openArticle: '상세 보기 ↗', save: '뉴스 저장', unsave: '저장 취소', openDetail: '뉴스 상세 열기: ',
+        detailLabel: '한국어 · 뉴스 상세', close: '닫기 ×', originalSummary: 'RSS 원문 보기', originalTitle: '원문 제목', originalBody: '원문 요약', openOriginal: '원문 기사 열기 ↗', translationNote: '현지화 문장은 오프라인 모델로 생성됩니다. 고유명사, 숫자와 날짜는 RSS 원문에서 확인하세요.',
+        types: { official: '공식', media: '미디어' }, categories: { platform: '플랫폼 공지', industry: '산업·비즈니스', development: '개발·산업', 'japan-global': '일본·글로벌', japan: '일본 게임', pc: 'PC 게임', nintendo: 'Nintendo', playstation: 'PlayStation', mobile: '모바일 게임' }
+      }
+    };
+
+    const SUPPORTED_LANGUAGES = ['zh-CN', 'zh-TW', 'en', 'ja', 'ko'];
+    const DATE_LOCALES = { 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', en: 'en-HK', ja: 'ja-JP', ko: 'ko-KR' };
+    const LEGACY_CATEGORY_KEYS = { '平台公告': 'platform', '行业与商业': 'industry', '开发与行业': 'development', '日本与全球游戏新闻': 'japan-global', '日本游戏新闻': 'japan', 'PC 游戏': 'pc', '任天堂游戏': 'nintendo', 'PlayStation 游戏': 'playstation', '移动游戏': 'mobile' };
+    const $ = selector => document.querySelector(selector);
+    const storyList = $('#story-list');
+    const detail = $('.detail');
+    const searchInput = $('#search-input');
+    const sourceFilter = $('#source-filter');
+    const esc = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    let articles = [];
+    let reportLoaded = false;
+    let currentKind = 'daily';
+    let selectedCategory = '';
+    let selectedSource = '';
+    let query = '';
+    let currentLanguage = resolveInitialLanguage();
+    let previousFocus = null;
+    let savedIds = new Set(readStoredSaved());
+
+    function safeStorageGet(key) {
+      try { return localStorage.getItem(key); } catch { return null; }
     }
-    function renderFilterOptions(){const category=$('#category-filter');const source=$('#source-filter');const oldCategory=category.value;const oldSource=source.value;category.replaceChildren(new Option('全部分类',''));source.replaceChildren(new Option('全部来源',''));[...new Set(articles.map(item=>item.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-CN')).forEach(value=>category.add(new Option(value,value)));[...new Set(articles.map(item=>item.source).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-CN')).forEach(value=>source.add(new Option(value,value)));if([...category.options].some(option=>option.value===oldCategory))category.value=oldCategory;if([...source.options].some(option=>option.value===oldSource))source.value=oldSource}
-    function renderTrends(){const counts=new Map();for(const item of articles)counts.set(item.category,(counts.get(item.category)||0)+1);const sorted=[...counts].sort((a,b)=>b[1]-a[1]);$('#trend-list').replaceChildren();for(const [index,[category,count]] of sorted.entries()){const row=document.createElement('button');row.className='trendrow';row.innerHTML=`<span class="rank">${String(index+1).padStart(2,'0')}</span><span class="trendname">${esc(category)}</span><span class="bar"><i style="width:${Math.round(count/Math.max(1,sorted[0][1])*100)}%"></i></span><small>${count}</small>`;row.addEventListener('click',()=>{selectedCategory=category;currentKind='all';currentView='all';$('#category-filter').value=category;$('#list-title').textContent=category;document.querySelectorAll('.nav').forEach(nav=>nav.classList.toggle('active',nav.dataset.view==='all'));document.querySelectorAll('.filter').forEach(button=>button.classList.toggle('sel',button.dataset.kind==='all'));renderStories()});$('#trend-list').append(row)}}
-    function renderFollow(){const follow=articles.slice(0,3);$('#follow-list').replaceChildren();for(const [index,item] of follow.entries()){const row=document.createElement('button');row.className='event';row.innerHTML=`<span class="eventtime">${String(index+1).padStart(2,'0')}</span><span class="eventtitle">${esc(item.title)}<small>${esc(item.category)} · 查看视频文案</small></span>`;row.addEventListener('click',()=>openDetail(item));$('#follow-list').append(row)}}
-    function setView(view){currentView=view;selectedCategory='';currentKind='all';$('#category-filter').value='';$('#source-filter').value='';$('#search-input').value='';$('#sort-select').value='heat';const labels={daily:'今日重点选题',all:'全部新闻',company:'厂商动态',releases:'新作与发售',saved:'收藏选题'};$('#list-title').textContent=labels[view];document.querySelectorAll('.nav').forEach(nav=>nav.classList.toggle('active',nav.dataset.view===view));document.querySelectorAll('.filter').forEach(button=>button.classList.toggle('sel',button.dataset.kind==='all'));renderStories()}
-    document.querySelectorAll('.nav').forEach(nav=>nav.addEventListener('click',()=>setView(nav.dataset.view)));
-    document.querySelectorAll('.filter').forEach(button=>button.addEventListener('click',()=>{currentKind=button.dataset.kind;selectedCategory='';$('#category-filter').value='';document.querySelectorAll('.filter').forEach(item=>item.classList.toggle('sel',item===button));renderStories()}));
-    $('#search-input').addEventListener('input',renderStories);$('#category-filter').addEventListener('change',event=>{selectedCategory=event.target.value;renderStories()});$('#source-filter').addEventListener('change',renderStories);$('#sort-select').addEventListener('change',renderStories);$('#reset-filters').addEventListener('click',()=>setView(currentView));
-    $('.detail-close').addEventListener('click',()=>detail.close());detail.addEventListener('click',event=>{if(event.target===detail)detail.close()});$('#copy-script').addEventListener('click',async()=>{const button=$('#copy-script');try{await navigator.clipboard.writeText($('#detail-script').textContent);button.textContent='已复制';}catch{button.textContent='复制失败，请手动复制';}setTimeout(()=>button.textContent='复制口播稿',1600)});
-    let lastReportAt='';
-    function applyReport(report){if(report.generatedAt===lastReportAt)return;lastReportAt=report.generatedAt;articles=report.articles||[];$('#stat-total').textContent=articles.length;$('#stat-scripts').textContent=articles.filter(item=>item.videoScript).length;$('#stat-sources').textContent=new Set(articles.map(item=>item.source)).size;$('#saved-count').textContent=savedIds.size;$('.date').textContent=`${new Intl.DateTimeFormat('zh-HK',{timeZone:'Asia/Hong_Kong',dateStyle:'medium',timeStyle:'short'}).format(new Date(report.generatedAt))} HKT`;$('.foot').textContent=`最近更新：${$('.date').textContent} · ${articles.length} 条中文选题 · 页面每分钟检查新版本，新闻每日 08:00 HKT 采集`;renderFilterOptions();renderStories();renderTrends();renderFollow()}
-    async function refreshNews(allowStaticFallback=false){try{let response=await fetch('./api/news.json',{cache:'no-store'});if(!response.ok&&allowStaticFallback)response=await fetch('./news.json',{cache:'no-store'});if(!response.ok)throw new Error('新闻数据暂不可用');applyReport(await response.json())}catch{if(!lastReportAt){$('#empty').hidden=false;$('#empty').textContent='新闻数据暂不可用，请稍后刷新。'}}}
-    refreshNews(true);setInterval(()=>refreshNews(true),60*1000);
+
+    function safeStorageSet(key, value) {
+      try { localStorage.setItem(key, value); } catch { /* 隐私模式允许继续浏览，只是不持久化。 */ }
+    }
+
+    function readStoredSaved() {
+      try {
+        const stored = JSON.parse(safeStorageGet('game-intel-saved') || '[]');
+        return Array.isArray(stored) ? stored : [];
+      } catch { return []; }
+    }
+
+    function resolveInitialLanguage() {
+      const requested = new URLSearchParams(location.search).get('lang');
+      if (SUPPORTED_LANGUAGES.includes(requested)) return requested;
+      const stored = safeStorageGet('game-intel-language');
+      return SUPPORTED_LANGUAGES.includes(stored) ? stored : 'zh-CN';
+    }
+
+    const copy = () => LOCALES[currentLanguage] || LOCALES['zh-CN'];
+    const idOf = item => item.url;
+    const sourceKeyOf = item => item.sourceKey || item.source || '';
+    const categoryKeyOf = item => item.categoryKey || LEGACY_CATEGORY_KEYS[item.category] || item.category || 'other';
+    const sourceTypeOf = item => item.sourceTypeKey || (item.sourceType === '官方' ? 'official' : 'media');
+    const categoryLabel = key => copy().categories[key] || key;
+    const typeLabel = key => copy().types[key] || key;
+    const languageLabel = code => $(`#language-select option[value="${code}"]`)?.textContent || code;
+
+    function localized(item) {
+      const requested = item.translations?.[currentLanguage];
+      if (requested?.title && requested?.summary) return requested;
+      if (currentLanguage !== 'zh-CN' && item.translations?.['zh-CN']?.title) return item.translations['zh-CN'];
+      if (currentLanguage === 'en' && item.originalTitle) return { title: item.originalTitle, summary: item.originalSummary || '' };
+      return { title: item.title || item.originalTitle || '', summary: item.summary || item.originalSummary || '' };
+    }
+
+    function formatDate(value, options = { dateStyle: 'medium', timeStyle: 'short' }) {
+      const numeric = typeof value === 'number' || /^\d+$/.test(String(value || '').trim());
+      const date = new Date(numeric ? Number(value) : value);
+      if (Number.isNaN(date.getTime())) return '—';
+      return new Intl.DateTimeFormat(DATE_LOCALES[currentLanguage], { timeZone: 'Asia/Hong_Kong', ...options }).format(date);
+    }
+
+    function normalize(value) {
+      return String(value || '').normalize('NFKC').toLocaleLowerCase(DATE_LOCALES[currentLanguage]).trim();
+    }
+
+    function matchesSearch(item) {
+      if (!query) return true;
+      const text = localized(item);
+      return normalize([text.title, text.summary, item.originalTitle, item.originalSummary, item.source].join(' ')).includes(query);
+    }
+
+    function matchesBase(item) {
+      if (currentKind === 'saved' && !savedIds.has(idOf(item))) return false;
+      if (selectedSource && sourceKeyOf(item) !== selectedSource) return false;
+      return matchesSearch(item);
+    }
+
+    function visibleArticles() {
+      return articles.filter(item => matchesBase(item) && (!selectedCategory || categoryKeyOf(item) === selectedCategory));
+    }
+
+    function updateStaticCopy() {
+      const text = copy();
+      document.documentElement.lang = currentLanguage;
+      document.title = text.pageTitle;
+      document.querySelector('meta[name="description"]').content = text.description;
+      $('#language-select').value = currentLanguage;
+      $('#brand-name').textContent = text.brandName;
+      $('#brand-tag').textContent = text.brandTag;
+      $('#language-label').textContent = text.languageLabel;
+      $('#live-label').textContent = text.liveLabel;
+      $('#schedule-label').textContent = text.schedule;
+      $('#rss-link').textContent = text.rss;
+      $('#rss-link').setAttribute('aria-label', text.rss);
+      $('#side-title').textContent = text.sideTitle;
+      $('#nav-daily').childNodes[0].textContent = `◈　${text.daily}`;
+      $('#nav-saved').childNodes[0].textContent = `☆　${text.saved} `;
+      $('#side-note').innerHTML = `<strong>${esc(text.sideNoteTitle)}</strong>${esc(text.sideNote)}`;
+      $('#eyebrow').textContent = text.eyebrow;
+      $('#headline').textContent = text.headline;
+      $('#intro').textContent = text.intro;
+      $('#stat-total-label').textContent = text.statTotal;
+      $('#stat-total-note').textContent = text.statTotalNote;
+      $('#stat-summary-label').textContent = text.statSummary;
+      $('#stat-summary-note').textContent = text.statSummaryNote;
+      $('#stat-sources-label').textContent = text.statSources;
+      $('#stat-sources-note').textContent = text.statSourcesNote;
+      $('#stat-language-label').textContent = text.statLanguage;
+      $('#stat-language-note').textContent = text.statLanguageNote;
+      $('#stat-language').textContent = languageLabel(currentLanguage);
+      $('#search-label').textContent = text.search;
+      searchInput.placeholder = text.searchPlaceholder;
+      $('#source-label').textContent = text.source;
+      $('#trend-title').textContent = text.trendTitle;
+      $('#trend-note').textContent = text.trendNote;
+      $('#follow-title').textContent = text.followTitle;
+      $('#detail-close').textContent = text.close;
+      $('#original-summary-label').textContent = text.originalSummary;
+      $('#original-title-label').textContent = text.originalTitle;
+      $('#original-body-label').textContent = text.originalBody;
+      $('#detail-source').textContent = text.openOriginal;
+      $('#translation-note').textContent = text.translationNote;
+      if (!reportLoaded) {
+        $('#update-date').textContent = text.loading;
+        $('#empty').textContent = text.loading;
+      }
+    }
+
+    function setLanguage(language) {
+      if (!SUPPORTED_LANGUAGES.includes(language) || language === currentLanguage) return;
+      currentLanguage = language;
+      safeStorageSet('game-intel-language', language);
+      const url = new URL(location.href);
+      url.searchParams.set('lang', language);
+      history.replaceState(null, '', url);
+      updateStaticCopy();
+      if (reportLoaded) renderAll();
+      if (detail.open && detail.dataset.url) {
+        const item = articles.find(article => article.url === detail.dataset.url);
+        if (item) populateDetail(item);
+      }
+    }
+
+    function renderSources() {
+      const counts = new Map();
+      for (const item of articles.filter(matchesSearch)) {
+        const key = sourceKeyOf(item);
+        counts.set(key, (counts.get(key) || 0) + 1);
+      }
+      sourceFilter.replaceChildren();
+      const allOption = document.createElement('option');
+      allOption.value = '';
+      allOption.textContent = copy().allSources;
+      sourceFilter.append(allOption);
+      [...counts].sort((left, right) => left[1] < right[1] ? 1 : -1).forEach(([key, count]) => {
+        const option = document.createElement('option');
+        option.value = key;
+        const sourceName = articles.find(item => sourceKeyOf(item) === key)?.source || key;
+        option.textContent = `${sourceName} (${count})`;
+        sourceFilter.append(option);
+      });
+      if (!counts.has(selectedSource)) selectedSource = '';
+      sourceFilter.value = selectedSource;
+    }
+
+    function renderCategories() {
+      const base = articles.filter(matchesBase);
+      const counts = new Map();
+      for (const item of base) {
+        const key = categoryKeyOf(item);
+        counts.set(key, (counts.get(key) || 0) + 1);
+      }
+      if (selectedCategory && !counts.has(selectedCategory)) selectedCategory = '';
+      $('#category-filters').replaceChildren();
+      const makeButton = (key, label, count) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `filter ${selectedCategory === key ? 'sel' : ''}`;
+        button.dataset.category = key;
+        button.innerHTML = `${esc(label)} <b>${count}</b>`;
+        button.addEventListener('click', () => {
+          selectedCategory = key;
+          renderAll();
+        });
+        return button;
+      };
+      $('#category-filters').append(makeButton('', copy().allCategories, base.length));
+      [...counts].sort((left, right) => right[1] - left[1]).forEach(([key, count]) => {
+        $('#category-filters').append(makeButton(key, categoryLabel(key), count));
+      });
+    }
+
+    function renderStats(visible) {
+      $('#stat-total').textContent = visible.length;
+      $('#stat-summary').textContent = visible.filter(item => localized(item).summary.trim()).length;
+      $('#stat-sources').textContent = new Set(visible.map(sourceKeyOf)).size;
+      $('#saved-count').textContent = savedIds.size;
+      $('#list-count').textContent = `${visible.length} ${copy().articleCount}`;
+      const title = selectedCategory ? categoryLabel(selectedCategory) : copy().views[currentKind];
+      $('#list-title').textContent = title;
+    }
+
+    function renderStories(visible) {
+      storyList.replaceChildren();
+      $('#empty').hidden = visible.length > 0;
+      $('#empty').textContent = copy().empty;
+      for (const item of visible) {
+        const text = localized(item);
+        const article = document.createElement('article');
+        article.className = 'story';
+        const main = document.createElement('div');
+        main.className = 'story-main';
+        main.tabIndex = 0;
+        main.dataset.url = item.url;
+        main.setAttribute('role', 'button');
+        main.setAttribute('aria-label', `${copy().openDetail}${text.title}`);
+        main.innerHTML = `<div class="storytop"><div><span class="tag ${sourceTypeOf(item) === 'official' ? 'blue' : ''}">${esc(typeLabel(sourceTypeOf(item)))}</span><span class="tag">${esc(categoryLabel(categoryKeyOf(item)))}</span><h3>${esc(text.title)}</h3></div></div><p>${esc(text.summary)}</p><div class="source">${esc(copy().sourcePrefix)}${esc(item.source)}　·　${esc(copy().openArticle)}</div>`;
+        const time = document.createElement('div');
+        time.className = 'time';
+        time.textContent = formatDate(item.timestamp, { timeZone: 'Asia/Hong_Kong', hour: '2-digit', minute: '2-digit' });
+        const save = document.createElement('button');
+        const saved = savedIds.has(idOf(item));
+        save.type = 'button';
+        save.className = `save ${saved ? 'saved' : ''}`;
+        save.textContent = saved ? '★' : '☆';
+        save.setAttribute('aria-pressed', String(saved));
+        save.setAttribute('aria-label', saved ? copy().unsave : copy().save);
+        save.addEventListener('click', event => {
+          event.stopPropagation();
+          if (savedIds.has(idOf(item))) savedIds.delete(idOf(item)); else savedIds.add(idOf(item));
+          safeStorageSet('game-intel-saved', JSON.stringify([...savedIds]));
+          renderAll();
+        });
+        const body = document.createElement('div');
+        body.className = 'storybody';
+        const line = document.createElement('div');
+        line.className = 'storytop';
+        line.append(main, save);
+        body.append(line);
+        article.append(time, body);
+        main.addEventListener('click', () => openDetail(item, main));
+        main.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openDetail(item, main);
+          }
+        });
+        storyList.append(article);
+      }
+    }
+
+    function renderTrends(visible) {
+      const counts = new Map();
+      for (const item of visible) {
+        const key = categoryKeyOf(item);
+        counts.set(key, (counts.get(key) || 0) + 1);
+      }
+      const sorted = [...counts].sort((left, right) => right[1] - left[1]);
+      $('#trend-list').replaceChildren();
+      for (const [index, [key, count]] of sorted.entries()) {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'trendrow';
+        row.innerHTML = `<span class="rank">${String(index + 1).padStart(2, '0')}</span><span class="trendname">${esc(categoryLabel(key))}</span><span class="bar"><i style="width:${Math.round(count / Math.max(1, sorted[0][1]) * 100)}%"></i></span><small>${count}</small>`;
+        row.addEventListener('click', () => {
+          currentKind = 'daily';
+          selectedSource = '';
+          query = '';
+          searchInput.value = '';
+          selectedCategory = key;
+          document.querySelectorAll('.nav').forEach(nav => nav.classList.toggle('active', nav.dataset.view === 'daily'));
+          renderAll();
+        });
+        $('#trend-list').append(row);
+      }
+    }
+
+    function renderFollow(visible) {
+      $('#follow-list').replaceChildren();
+      for (const [index, item] of visible.slice(0, 3).entries()) {
+        const text = localized(item);
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'event';
+        row.innerHTML = `<span class="eventtime">${String(index + 1).padStart(2, '0')}</span><span class="eventtitle">${esc(text.title)}<small>${esc(categoryLabel(categoryKeyOf(item)))} · ${esc(copy().openArticle)}</small></span>`;
+        row.addEventListener('click', () => openDetail(item, row));
+        $('#follow-list').append(row);
+      }
+    }
+
+    function renderAll() {
+      renderSources();
+      renderCategories();
+      const visible = visibleArticles();
+      renderStats(visible);
+      renderStories(visible);
+      renderTrends(visible);
+      renderFollow(visible);
+    }
+
+    function populateDetail(item) {
+      const text = localized(item);
+      detail.dataset.url = item.url;
+      $('#detail-language').textContent = copy().detailLabel;
+      $('#detail-category').textContent = `${typeLabel(sourceTypeOf(item))} · ${categoryLabel(categoryKeyOf(item))}`;
+      $('#detail-title').textContent = text.title;
+      $('#detail-meta').textContent = `${item.source} · ${formatDate(item.timestamp)} HKT`;
+      $('#detail-summary').textContent = text.summary;
+      $('#original-panel').open = false;
+      $('#detail-original-title').textContent = item.originalTitle || item.title || '';
+      $('#detail-original-summary').textContent = item.originalSummary || item.summary || '';
+      $('#detail-source').href = item.url;
+      $('#detail-source').setAttribute('aria-label', copy().openOriginal);
+    }
+
+    function openDetail(item, trigger) {
+      previousFocus = trigger || document.activeElement;
+      populateDetail(item);
+      detail.showModal();
+      $('#detail-close').focus();
+    }
+
+    function closeDetail() {
+      if (detail.open) detail.close();
+    }
+
+    function renderUpdateMeta(report) {
+      const updated = formatDate(report.generatedAt);
+      $('#update-date').textContent = `${updated} HKT`;
+      $('#foot').textContent = `${copy().updated}：${updated} HKT · ${articles.length} ${copy().articleCount} · ${copy().footer}`;
+    }
+
+    function applyReport(report) {
+      articles = [...(report.articles || [])].sort((left, right) => {
+        const heat = Number(right.heatScore || 0) - Number(left.heatScore || 0);
+        if (heat) return heat;
+        return Number(right.timestamp || 0) - Number(left.timestamp || 0);
+      });
+      reportLoaded = true;
+      updateStaticCopy();
+      renderAll();
+      renderUpdateMeta(report);
+    }
+
+    async function refreshNews(allowStaticFallback = false) {
+      try {
+        let response = await fetch('./api/news.json', { cache: 'no-store' });
+        if (!response.ok && allowStaticFallback) response = await fetch('./news.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error('新闻数据暂不可用');
+        applyReport(await response.json());
+      } catch {
+        if (!reportLoaded) {
+          $('#empty').hidden = false;
+          $('#empty').textContent = copy().unavailable;
+          $('#update-date').textContent = copy().unavailable;
+        }
+      }
+    }
+
+    document.querySelectorAll('.nav').forEach(nav => nav.addEventListener('click', () => {
+      currentKind = nav.dataset.view;
+      selectedCategory = '';
+      document.querySelectorAll('.nav').forEach(item => item.classList.toggle('active', item === nav));
+      renderAll();
+    }));
+    searchInput.addEventListener('input', () => {
+      query = normalize(searchInput.value);
+      selectedCategory = '';
+      renderAll();
+    });
+    sourceFilter.addEventListener('change', () => {
+      selectedSource = sourceFilter.value;
+      selectedCategory = '';
+      renderAll();
+    });
+    $('#language-select').addEventListener('change', event => setLanguage(event.target.value));
+    $('#detail-close').addEventListener('click', closeDetail);
+    detail.addEventListener('click', event => { if (event.target === detail) closeDetail(); });
+    detail.addEventListener('cancel', event => { event.preventDefault(); closeDetail(); });
+    detail.addEventListener('close', () => {
+      delete detail.dataset.url;
+      if (previousFocus?.isConnected) previousFocus.focus();
+    });
+    detail.addEventListener('keydown', event => {
+      if (event.key !== 'Tab') return;
+      const focusable = [...detail.querySelectorAll('button:not([disabled]),a[href],summary,[tabindex]:not([tabindex="-1"])')].filter(element => element.offsetParent !== null);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    updateStaticCopy();
+    refreshNews(true);
+    setInterval(() => refreshNews(true), 60 * 1000);
   </script>
 </body>
 </html>
-
