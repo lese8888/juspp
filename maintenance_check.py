@@ -34,6 +34,12 @@ REQUIRED_FILES = [
     "collect.mjs",
     "server.mjs",
     "translate_news.py",
+    "shadow_translate.py",
+    "translation/__init__.py",
+    "translation/glossary.json",
+    "translation/glossary.py",
+    "translation/llm.py",
+    "translation/shadow.py",
     "package.json",
     "requirements.txt",
     "lib/news.mjs",
@@ -47,6 +53,8 @@ REQUIRED_FILES = [
     ".github/workflows/game-intel.yml",
     ".github/workflows/pages.yml",
     ".github/workflows/maintenance.yml",
+    ".github/workflows/translation-shadow.yml",
+    "SHADOW.md",
     "MAINTENANCE.md",
 ]
 
@@ -424,8 +432,10 @@ def main():
                 "translate_news.py",
                 "scrapling_collector.py",
                 "maintenance_check.py",
+                "shadow_translate.py",
             ],
         ),
+        (sys.executable, ["-m", "compileall", "-q", "translation"]),
     ]
     for executable, args in checks:
         label = " ".join([executable, *args])

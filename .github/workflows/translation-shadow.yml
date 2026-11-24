@@ -1,0 +1,95 @@
+name: 游闻 LLM 影子验证
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 影子抽样文章数
+        required: true
+        default: '20'
+      engine:
+        description: 生成引擎
+        required: true
+        default: llm
+        type: choice
+        options:
+          - llm
+          - mock
+      language:
+        description: 仅生成一种目标语言
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - zh-CN
+          - en
+          - ja
+          - ko
+
+permissions:
+  contents: read
+
+concurrency:
+  group: game-intel-translation-shadow
+  cancel-in-progress: false
+
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: 获取项目代码
+        uses: actions/checkout@v4
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安装影子任务依赖
+        run: python -m pip install --disable-pip-version-check 'opencc-python-reimplemented>=0.1.7,<1'
+      - name: 运行影子任务测试
+        run: python -m unittest discover -s tests -p "test_shadow_translation.py"
+      - name: 生成影子候选
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL || 'https://api.deepseek.com/v1' }}
+          LLM_MODEL: ${{ vars.LLM_MODEL || 'deepseek-chat' }}
+          LLM_TIMEOUT_SECONDS: '120'
+          LLM_MAX_RETRIES: '3'
+          LLM_CONCURRENCY: '4'
+          LLM_JSON_MODE: '1'
+          LLM_ARTICLE_OUTPUT_TOKENS: '1600'
+          LLM_TEMPERATURE: '0.2'
+          LLM_PRICE_INPUT_CNY_PER_M: ${{ vars.LLM_PRICE_INPUT_CNY_PER_M || '2.0' }}
+          LLM_PRICE_OUTPUT_CNY_PER_M: ${{ vars.LLM_PRICE_OUTPUT_CNY_PER_M || '8.0' }}
+        run: |
+          if [ "${{ inputs.language }}" != "all" ]; then
+            python shadow_translate.py \
+              --engine "${{ inputs.engine }}" \
+              --limit "${{ inputs.limit }}" \
+              --language "${{ inputs.language }}"
+          else
+            python shadow_translate.py \
+              --engine "${{ inputs.engine }}" \
+              --limit "${{ inputs.limit }}"
+          fi
+      - name: 上传影子候选与报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: translation-shadow-${{ github.run_id }}
+          path: .shadow-output/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: 写入影子任务摘要
+        if: always()
+        run: |
+          {
+            echo "## 游闻 LLM 影子验证"
+            echo
+            echo "- 引擎：${{ inputs.engine }}"
+            echo "- 抽样数：${{ inputs.limit }}"
+            echo "- 生产文件：未修改"
+            echo "- 发布动作：未执行"
+            echo "- 候选数据：请下载本次 artifact 查看"
+          } >> "$GITHUB_STEP_SUMMARY"
