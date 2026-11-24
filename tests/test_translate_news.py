@@ -80,6 +80,15 @@ class TranslationTests(unittest.TestCase):
             "性能提高",
         )
 
+    def test_hyphenated_marker_is_restored(self):
+        protected, terms = translate_news.protect_glossary("PlayStation and Xbox")
+        token, canonical = terms[0]
+        corrupted = protected.replace(token, f"{token[:4]}-{token[4:]}")
+        restored = translate_news.restore_glossary(corrupted, terms)
+        self.assertIn(canonical, restored)
+        self.assertNotIn(token[:4], restored)
+        self.assertFalse(translate_news.has_unrestored_marker(restored))
+
     def test_corrupted_marker_falls_back_to_segmented_translation(self):
         service = translate_news.OfflineTranslationService(
             model_translator=lambda text, target: text.replace("QZ", "XX"),

@@ -49,8 +49,19 @@ test('每条新闻包含合法稳定字段与完整五语标题、摘要和正�
 test('不发布旧口播、翻译状态或内部术语标记', () => {
   const serialized = JSON.stringify(report);
   assert.doesNotMatch(serialized, /"videoScript"|"translationStatus"|口播稿/);
-  assert.doesNotMatch(serialized, /QZ[A-Z]{5,8}|\[\[\s*\d{5,}/);
   assert.doesNotMatch(serialized, /Read the full article|Continue reading|Read more at/i);
+
+  const machineLocalized = JSON.stringify(
+    report.articles.flatMap((article) =>
+      ['zh-CN', 'zh-TW', 'ja', 'ko'].flatMap((language) =>
+        Object.values(article.translations[language])
+      )
+    )
+  );
+  assert.doesNotMatch(
+    machineLocalized,
+    /Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}|\[\[\s*\d{5,}/
+  );
 });
 
 test('新闻按采集阶段 heatScore 稳定降序排列', () => {

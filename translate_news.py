@@ -221,7 +221,7 @@ GLOSSARY_CANONICAL = {term.lower(): term for term in GLOSSARY}
 
 def has_unrestored_marker(text: str) -> bool:
     return bool(
-        re.search(r"\bQZ[A-Z]{5,8}\b", text)
+        re.search(r"\bQ[\s-]*Z(?:[\s-]*[A-Z]){5,8}\b", text)
         or re.search(r"\[{1,4}\s*[A-Z]{5,10}\s*\]{1,4}", text)
     )
 
@@ -271,10 +271,13 @@ def protect_glossary(text: str) -> tuple[str, list[tuple[str, str]]]:
 def restore_glossary(text: str, terms: list[tuple[str, str]]) -> str:
     restored = str(text)
     mapping = dict(terms)
-    token_pattern = re.compile(r"(?:\[\s*)*\s*(QZ[A-Z]{5,8})\s*(?:\s*\])*")
+    token_pattern = re.compile(
+        r"(?:\[\s*)*\s*(?P<token>Q[\s-]*Z(?:[\s-]*[A-Z]){5,8})\s*(?:\s*\])*"
+    )
 
     def replace(match: re.Match[str]) -> str:
-        return mapping.get(match.group(1), match.group(0))
+        token = re.sub(r"[^A-Z]", "", match.group("token"))
+        return mapping.get(token, match.group(0))
 
     return token_pattern.sub(replace, restored)
 

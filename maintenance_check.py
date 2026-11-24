@@ -284,9 +284,6 @@ def main():
                 incomplete.append(f"第 {index} 条来源类型键无效")
             if "videoScript" in article or "translationStatus" in article:
                 incomplete.append(f"第 {index} 条仍包含旧口播字段")
-            serialized = json.dumps(article, ensure_ascii=False)
-            if re.search(r"QZ[A-Z]{5,8}|\[\[\s*\d{5,}", serialized):
-                incomplete.append(f"第 {index} 条包含内部翻译标记")
             translations = article.get("translations")
             if not isinstance(translations, dict):
                 incomplete.append(f"第 {index} 条 translations 不是对象")
@@ -303,6 +300,13 @@ def main():
                         or not str(localized.get("content", "")).strip()
                     ):
                         incomplete.append(f"第 {index} 条 {language} 标题或摘要为空")
+                    elif language != "en" and re.search(
+                        r"Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}|\[\[\s*\d{5,}",
+                        json.dumps(localized, ensure_ascii=False),
+                    ):
+                        incomplete.append(
+                            f"第 {index} 条 {language} 包含内部翻译标记"
+                        )
             url = str(article.get("url", "")).rstrip("/").lower()
             if url:
                 if url in seen_urls:
