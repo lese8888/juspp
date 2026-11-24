@@ -15,8 +15,6 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    env:
-      COLLECT_SUMMARY_FILE: ${{ runner.temp }}/collect-summary.json
     steps:
       - name: 获取项目代码
         uses: actions/checkout@v4
@@ -43,6 +41,7 @@ jobs:
         run: npm run check:syntax
       - name: 采集并生成五语数据
         env:
+          COLLECT_SUMMARY_FILE: /tmp/collect-summary.json
           SEND_EMAIL: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -56,6 +55,8 @@ jobs:
         run: npm run check:data
       - name: 写入采集摘要
         if: always()
+        env:
+          COLLECT_SUMMARY_FILE: /tmp/collect-summary.json
         run: node scripts/write-collect-summary.mjs
       - name: 提交更新后的新闻数据
         id: save
