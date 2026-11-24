@@ -141,6 +141,8 @@ def extract_numbers(text: str) -> set[str]:
     }
     values: set[str] = set()
     for match in NUMBER_PATTERN.finditer(str(text or "")):
+        if match.start() > 0 and str(text)[match.start() - 1] == ":":
+            continue
         raw = match.group(1).replace(",", "")
         if "." in raw and "," not in raw:
             number = float(raw)

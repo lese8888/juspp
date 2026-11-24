@@ -151,6 +151,9 @@ class ShadowTranslationTests(unittest.TestCase):
         time_numbers = extract_numbers("1 PM UTC and second place")
         self.assertIn("13", time_numbers)
         self.assertIn("2", time_numbers)
+        clock_numbers = extract_numbers("13:00 UTC")
+        self.assertIn("13", clock_numbers)
+        self.assertNotIn("0", clock_numbers)
 
     def test_missing_key_number_fails_gate(self):
         article = sample_article()
