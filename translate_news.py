@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parent
 SUPPORTED_LANGUAGES = ("zh-CN", "zh-TW", "en", "ja", "ko")
 DEFAULT_LANGUAGE = "zh-CN"
 TARGET_MODEL_CODES = {"zh-CN": "zh", "zh-TW": "zh", "ja": "ja", "ko": "ko"}
-DEFAULT_SITE_URL = "https://lese8888.github.io/juspp/"
+DEFAULT_SITE_URL = "https://youwen-game-news.game-intel-brief.workers.dev/"
 LEGACY_CATEGORY_KEYS = {
     "平台公告": "platform",
     "行业与商业": "industry",

@@ -1,10 +1,10 @@
 import unittest
 from datetime import datetime, timezone
 
-import scrapling_shadow as shadow
+import scrapling_collector as collector
 
 
-class ScraplingShadowTests(unittest.TestCase):
+class ScraplingCollectorTests(unittest.TestCase):
     def test_parse_sitemap_preserves_publication_date(self):
         body = """<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -17,7 +17,7 @@ class ScraplingShadowTests(unittest.TestCase):
             </news:news>
           </url>
         </urlset>""".encode("utf-8")
-        kind, entries = shadow.parse_sitemap(body)
+        kind, entries = collector.parse_sitemap(body)
         self.assertEqual(kind, "urlset")
         self.assertEqual(entries[0]["publication_date"], "2026-11-24T03:00:00Z")
         self.assertEqual(entries[0]["title"], "公开新闻标题")
@@ -28,7 +28,7 @@ class ScraplingShadowTests(unittest.TestCase):
         "datePublished":"2026-11-24T01:02:03Z",
         "description":"公开摘要内容。"}]}</script></head>
         <body><h1>备用标题</h1></body></html>""".encode("utf-8")
-        metadata = shadow.extract_article_metadata(page)
+        metadata = collector.extract_article_metadata(page)
         self.assertEqual(metadata["title"], "JSON-LD 标题")
         self.assertEqual(metadata["published"], "2026-11-24T01:02:03Z")
         self.assertEqual(metadata["summary"], "公开摘要内容。")
@@ -41,18 +41,18 @@ class ScraplingShadowTests(unittest.TestCase):
           {"@type":"WebPage","name":"真正的文章标题",
            "dateCreated":"2026-11-24T02:00:00Z","description":"文章摘要"}
         ]}</script></head><body></body></html>""".encode("utf-8")
-        metadata = shadow.extract_article_metadata(page)
+        metadata = collector.extract_article_metadata(page)
         self.assertEqual(metadata["title"], "真正的文章标题")
         self.assertEqual(metadata["published"], "2026-11-24T02:00:00Z")
         self.assertEqual(metadata["summary"], "文章摘要")
 
     def test_parse_datetime_normalizes_timezone(self):
-        parsed = shadow.parse_datetime("2026-11-24T11:00:00+08:00")
+        parsed = collector.parse_datetime("2026-11-24T11:00:00+08:00")
         self.assertEqual(parsed, datetime(2026, 11, 24, 3, 0, tzinfo=timezone.utc))
 
     def test_resolve_monthly_sitemap_template(self):
         now = datetime(2026, 11, 24, 4, 0, tzinfo=timezone.utc)
-        resolved = shadow.resolve_sitemap_url(
+        resolved = collector.resolve_sitemap_url(
             "https://www.gamedeveloper.com/news/archive/{year}/{month}.xml",
             now,
         )
@@ -68,7 +68,7 @@ class ScraplingShadowTests(unittest.TestCase):
             "sourceTypeKey": "official",
             "timestamp": 1_700_000_000_000,
         }
-        self.assertEqual(shadow.heat_score(article), shadow.heat_score(dict(article)))
+        self.assertEqual(collector.heat_score(article), collector.heat_score(dict(article)))
 
 
 if __name__ == "__main__":

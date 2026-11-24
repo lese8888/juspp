@@ -14,7 +14,7 @@ let collecting = false;
 async function collect() {
   if (collecting) return;
   collecting = true;
-  console.log(`[${new Date().toISOString()}] 开始采集 RSS 新闻`);
+  console.log(`[${new Date().toISOString()}] 开始采集公开新闻来源`);
   const child = spawn(process.execPath, ['collect.mjs'], {
     cwd: root,
     stdio: 'inherit',
@@ -68,7 +68,7 @@ const server = http.createServer(async (request, response) => {
 
 server.listen(port, '0.0.0.0', () => {
   console.log(`游戏新闻情报台：http://localhost:${port}`);
-  console.log(`RSS 采集间隔：${Math.round(intervalMs / 3600000)} 小时`);
+  console.log(`新闻采集间隔：${Math.round(intervalMs / 3600000)} 小时`);
   collect();
   setInterval(collect, intervalMs);
 });

@@ -14,9 +14,7 @@ on:
       - 'server.mjs'
       - 'translate_news.py'
       - 'sources.json'
-      - 'sources-scrapling.json'
-      - 'scrapling_shadow.py'
-      - 'requirements-scrapling.txt'
+      - 'scrapling_collector.py'
       - 'cloudflare/worker.mjs'
       - 'package.json'
       - 'requirements.txt'
@@ -26,7 +24,6 @@ on:
       - '.github/workflows/maintenance.yml'
       - '.github/workflows/game-intel.yml'
       - '.github/workflows/pages.yml'
-      - '.github/workflows/scrapling-shadow.yml'
 
 permissions:
   contents: read
@@ -61,7 +58,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: 检查关键文件、冲突标记、新闻数据、RSS 与网页引用
+      - name: 检查关键文件、冲突标记、新闻数据、Scrapling 来源配置与网页引用
         if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
         run: python maintenance_check.py
       - name: 检查 JavaScript 语法
@@ -76,7 +73,7 @@ jobs:
           node --check scripts/verify-fresh.mjs
       - name: 检查 Python 语法
         if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
-        run: python -m py_compile translate_news.py scrapling_shadow.py maintenance_check.py
+        run: python -m py_compile translate_news.py scrapling_collector.py maintenance_check.py
       - name: 记录检查摘要
         if: success() && (github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true')
         run: |
@@ -84,6 +81,6 @@ jobs:
             echo "## 游闻项目代码健康检查"
             echo
             echo "- 结果：检查通过"
-            echo "- 范围：冲突标记、关键文件、JSON 与新闻字段、RSS XML、网页引用、Node.js 和 Python 语法"
+            echo "- 范围：冲突标记、关键文件、JSON 与新闻字段、Scrapling 来源、RSS 输出、网页引用、Node.js 和 Python 语法"
             echo "- 时间：香港时间约 09:00，每三天一次；也可手动触发"
           } >> "$GITHUB_STEP_SUMMARY"

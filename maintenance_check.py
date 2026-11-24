@@ -8,16 +8,22 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 ROOT = Path(__file__).resolve().parent
 CONFLICT_RE = re.compile(r"^(?:<<<<<<<(?:\s|$)|=======$|>>>>>>>(?:\s|$))", re.MULTILINE)
 CODE_SUFFIXES = {".mjs", ".js", ".py", ".html", ".yml", ".yaml", ".json"}
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv"}
+try:
+    HONG_KONG_TIME_ZONE = ZoneInfo("Asia/Hong_Kong")
+except ZoneInfoNotFoundError:
+    HONG_KONG_TIME_ZONE = timezone(timedelta(hours=8), name="Asia/Hong_Kong")
 REQUIRED_FILES = [
     "index.html",
     "news.json",
@@ -34,13 +40,10 @@ REQUIRED_FILES = [
     "scripts/verify-fresh.mjs",
     "scripts/write-collect-summary.mjs",
     "cloudflare/worker.mjs",
-    "scrapling_shadow.py",
-    "sources-scrapling.json",
-    "requirements-scrapling.txt",
+    "scrapling_collector.py",
     "wrangler.toml",
     ".github/workflows/game-intel.yml",
     ".github/workflows/pages.yml",
-    ".github/workflows/scrapling-shadow.yml",
     ".github/workflows/maintenance.yml",
     "MAINTENANCE.md",
 ]
@@ -79,15 +82,30 @@ def local_name(tag):
     return tag.rsplit("}", 1)[-1].lower()
 
 
-def check_feed(source):
-    """获取并解析一个 RSS 或 Atom 订阅源。"""
+def resolved_source_url(source):
+    """解析当前月份对应的列表页或 sitemap 地址。"""
+    template = str(source.get("列表页") or source.get("Sitemap") or "")
+    now = datetime.now(HONG_KONG_TIME_ZONE)
+    return template.format(year=now.year, month=now.strftime("%B").lower())
+
+
+def valid_source_pattern(source):
+    try:
+        re.compile(str(source.get("文章URL模式") or ""))
+        return True
+    except re.error:
+        return False
+
+
+def check_source(source):
+    """检查 Scrapling 来源的列表页或 sitemap 是否可访问。"""
     name = str(source.get("名称") or "未命名来源")
-    feed_url = str(source.get("订阅") or "")
+    source_url = resolved_source_url(source)
     request = Request(
-        feed_url,
+        source_url,
         headers={
-            "User-Agent": "GameIntelRSSHealth/1.0",
-            "Accept": "application/rss+xml, application/atom+xml, application/xml, text/xml, */*",
+            "User-Agent": "GameIntelBriefHealth/2.0",
+            "Accept": "text/html, application/xml, text/xml, */*",
         },
     )
     try:
@@ -97,39 +115,24 @@ def check_feed(source):
                 return {"name": name, "ok": False, "detail": f"HTTP {status}"}
             payload = response.read(5_000_001)
         if len(payload) > 5_000_000:
-            return {"name": name, "ok": False, "detail": "订阅内容超过 5 MB"}
+            return {"name": name, "ok": False, "detail": "来源页面超过 5 MB"}
+        if source.get("列表页"):
+            text = payload.decode("utf-8", errors="replace")
+            if "<a" not in text.lower():
+                return {"name": name, "ok": False, "detail": "列表页没有可识别的链接"}
+            return {"name": name, "ok": True, "detail": "列表页可访问"}
+
         root = ET.fromstring(payload)
         root_type = local_name(root.tag)
-        if root_type == "rss":
-            entries = [node for node in root.iter() if local_name(node.tag) == "item"]
-        elif root_type == "feed":
-            entries = [node for node in root if local_name(node.tag) == "entry"]
-        elif root_type == "rdf":
-            entries = [node for node in root.iter() if local_name(node.tag) == "item"]
+        if root_type == "sitemapindex":
+            entries = [node for node in root.iter() if local_name(node.tag) == "sitemap"]
+        elif root_type == "urlset":
+            entries = [node for node in root.iter() if local_name(node.tag) == "url"]
         else:
-            return {"name": name, "ok": False, "detail": f"不是 RSS/Atom XML（根节点：{root_type}）"}
+            return {"name": name, "ok": False, "detail": f"不是有效 sitemap（根节点：{root_type}）"}
         if not entries:
-            return {"name": name, "ok": False, "detail": "XML 有效，但没有新闻条目"}
-
-        valid_entries = 0
-        for entry in entries:
-            children = [child for child in entry if isinstance(child.tag, str)]
-            title = next(
-                ("".join(child.itertext()).strip() for child in children if local_name(child.tag) == "title"),
-                "",
-            )
-            links = [child for child in children if local_name(child.tag) == "link"]
-            has_link = any(
-                child.attrib.get("href") or "".join(child.itertext()).strip()
-                for child in links
-            )
-            if not has_link:
-                has_link = any(local_name(child.tag) == "guid" for child in children)
-            if title and has_link:
-                valid_entries += 1
-        if not valid_entries:
-            return {"name": name, "ok": False, "detail": "条目缺少标题或链接"}
-        return {"name": name, "ok": True, "detail": f"{valid_entries} 条有效新闻"}
+            return {"name": name, "ok": False, "detail": "sitemap 没有条目"}
+        return {"name": name, "ok": True, "detail": f"{len(entries)} 个 sitemap 条目"}
     except HTTPError as error:
         return {"name": name, "ok": False, "detail": f"HTTP {error.code}"}
     except URLError as error:
@@ -142,7 +145,7 @@ def main():
     errors = []
     warnings = []
     passed = []
-    feed_results = []
+    source_results = []
 
     def require(label, condition, detail=""):
         if check(label, condition, detail):
@@ -172,7 +175,7 @@ def main():
     require("源代码与配置无合并冲突标记", not conflict_files, "；".join(conflict_files) if conflict_files else "")
 
     parsed = {}
-    for name in ("package.json", "sources.json", "sources-scrapling.json", "news.json"):
+    for name in ("package.json", "sources.json", "news.json"):
         path = ROOT / name
         if not path.is_file():
             continue
@@ -199,7 +202,9 @@ def main():
         source_list = sources.get("来源")
         active = [
             source for source in source_list
-            if isinstance(source, dict) and source.get("启用") and source.get("订阅")
+            if isinstance(source, dict)
+            and source.get("启用")
+            and (source.get("列表页") or source.get("Sitemap"))
         ] if isinstance(source_list, list) else []
         invalid_sources = [
             str(source.get("名称", "未命名来源"))
@@ -209,27 +214,31 @@ def main():
             or source.get("语言") != "en"
             or source.get("类型键") not in {"official", "media"}
             or not source.get("分类键")
-            or urlsplit(str(source.get("订阅", ""))).scheme not in {"http", "https"}
-            or not urlsplit(str(source.get("订阅", ""))).netloc
+            or not source.get("文章URL模式")
+            or (
+                urlsplit(resolved_source_url(source)).scheme not in {"http", "https"}
+                or not urlsplit(resolved_source_url(source)).netloc
+            )
+            or not valid_source_pattern(source)
         ]
-        require("RSS 来源配置完整", bool(active) and not invalid_sources,
-                "没有可用订阅源" if not active else "地址无效：" + "、".join(invalid_sources))
+        require("Scrapling 来源配置完整", bool(active) and not invalid_sources,
+                "没有可用来源" if not active else "配置无效：" + "、".join(invalid_sources))
         if active and not invalid_sources:
             with ThreadPoolExecutor(max_workers=min(6, len(active))) as executor:
-                feed_results = list(executor.map(check_feed, active))
-            for result in feed_results:
+                source_results = list(executor.map(check_source, active))
+            for result in source_results:
                 if result["ok"]:
-                    print(f"通过：RSS 源 {result['name']}（{result['detail']}）")
+                    print(f"通过：Scrapling 来源 {result['name']}（{result['detail']}）")
                 else:
                     warning = f"{result['name']}：{result['detail']}"
                     warnings.append(warning)
-                    print(f"警告：RSS 源 {warning}")
-            healthy_count = sum(result["ok"] for result in feed_results)
+                    print(f"警告：Scrapling 来源 {warning}")
+            healthy_count = sum(result["ok"] for result in source_results)
             require(
-                "RSS/Atom 订阅源可连接并包含有效新闻",
+                "Scrapling 列表页或 sitemap 可连接",
                 healthy_count > 0,
-                f"{healthy_count}/{len(feed_results)} 个源有效；" + "；".join(
-                    f"{item['name']}：{item['detail']}" for item in feed_results if not item["ok"]
+                f"{healthy_count}/{len(source_results)} 个源有效；" + "；".join(
+                    f"{item['name']}：{item['detail']}" for item in source_results if not item["ok"]
                 ),
             )
 
@@ -404,7 +413,7 @@ def main():
                 "-m",
                 "py_compile",
                 "translate_news.py",
-                "scrapling_shadow.py",
+                "scrapling_collector.py",
                 "maintenance_check.py",
             ],
         ),
@@ -420,10 +429,11 @@ def main():
         except OSError as error:
             require(f"语法检查：{label}", False, str(error))
 
-    healthy_feeds = sum(result["ok"] for result in feed_results)
+    healthy_sources = sum(result["ok"] for result in source_results)
     print(
         f"\n检查汇总：{len(passed)} 项通过，{len(errors)} 项失败，"
-        f"{len(warnings)} 个 RSS 源需留意（{healthy_feeds}/{len(feed_results)} 个源有效）。"
+        f"{len(warnings)} 个 Scrapling 来源需留意"
+        f"（{healthy_sources}/{len(source_results)} 个源有效）。"
     )
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary_path:
@@ -431,18 +441,18 @@ def main():
             summary.write("## 游闻项目健康检查\n\n")
             summary.write(
                 f"- 通过：{len(passed)} 项\n- 失败：{len(errors)} 项\n"
-                f"- RSS 源正常：{healthy_feeds}/{len(feed_results)}\n"
+                f"- Scrapling 来源正常：{healthy_sources}/{len(source_results)}\n"
             )
             if warnings:
-                summary.write("\n### RSS 源需要留意\n\n")
+                summary.write("\n### Scrapling 来源需要留意\n\n")
                 summary.writelines(f"- {item}\n" for item in warnings)
             if errors:
                 summary.write("\n### 需要处理\n\n")
                 summary.writelines(f"- {item}\n" for item in errors)
             if not errors and not warnings:
-                summary.write("\n冲突标记、关键文件、新闻数据、全部 RSS 源、网页资源与语法检查均通过。\n")
+                summary.write("\n冲突标记、关键文件、新闻数据、全部 Scrapling 来源、网页资源与语法检查均通过。\n")
             elif not errors:
-                summary.write("\n项目检查通过；请查看上方 RSS 源警告，判断是否为临时网络问题。\n")
+                summary.write("\n项目检查通过；请查看上方 Scrapling 来源警告，判断是否为临时网络问题。\n")
     return 1 if errors else 0
 
 

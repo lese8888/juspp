@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""使用 Scrapling 对固定新闻来源做影子采集，不修改线上新闻数据。"""
+"""使用 Scrapling 从固定新闻来源采集标题、摘要和原文发布时间。"""
 
 from __future__ import annotations
 
@@ -21,12 +21,12 @@ from lxml import etree, html as lxml_html
 from scrapling.fetchers import Fetcher
 
 ROOT = Path(__file__).resolve().parent
-CONFIG = json.loads((ROOT / "sources-scrapling.json").read_text(encoding="utf-8"))
+CONFIG = json.loads((ROOT / "sources.json").read_text(encoding="utf-8"))
 RULE = CONFIG["采集规则"]
 USER_AGENT = RULE["用户代理"]
 TIMEOUT = float(os.environ.get("SCRAPLING_TIMEOUT_SECONDS", "25"))
 SOURCE_LIMIT = int(os.environ.get("SCRAPLING_SOURCE_LIMIT", "0"))
-OUTPUT_FILE = Path(os.environ.get("SCRAPLING_OUTPUT_FILE", ROOT / "scrapling-shadow.json"))
+OUTPUT_FILE = Path(os.environ.get("SCRAPLING_OUTPUT_FILE", ROOT / "scrapling-raw.json"))
 COMPARE_FILE = Path(os.environ.get("COMPARE_NEWS_FILE", ROOT / "news.json"))
 try:
     TIMEZONE = ZoneInfo(CONFIG["默认时区"])
@@ -467,17 +467,17 @@ def compare_with_current(report: dict[str, Any]) -> dict[str, Any]:
     current_urls = {
         normalize_url(item.get("url", "")) for item in current.get("articles", [])
     }
-    shadow_urls = {normalize_url(item.get("url", "")) for item in report["articles"]}
+    collected_urls = {normalize_url(item.get("url", "")) for item in report["articles"]}
     now = parse_datetime(report["generatedAt"])
     today = now.astimezone(TIMEZONE).date() if now else None
     return {
         "available": True,
         "currentArticles": len(current_urls),
-        "shadowArticles": len(shadow_urls),
-        "overlap": len(current_urls & shadow_urls),
-        "shadowOnly": len(shadow_urls - current_urls),
-        "currentOnly": len(current_urls - shadow_urls),
-        "shadowHongKongToday": sum(
+        "collectedArticles": len(collected_urls),
+        "overlap": len(current_urls & collected_urls),
+        "collectorOnly": len(collected_urls - current_urls),
+        "currentOnly": len(current_urls - collected_urls),
+        "collectedHongKongToday": sum(
             1
             for article in report["articles"]
             if datetime.fromtimestamp(article["timestamp"] / 1000, TIMEZONE).date()
@@ -490,13 +490,13 @@ def write_summary(report: dict[str, Any]) -> None:
     comparison = report["comparison"]
     failed = [source for source in report["sourceResults"] if not source["ok"]]
     lines = [
-        "## Scrapling 影子采集",
+        "## Scrapling 正式采集",
         "",
         f"- 保留新闻：{len(report['articles'])} 条",
         f"- 来源成功：{report['sourceCount'] - len(failed)}/{report['sourceCount']}",
-        f"- 香港当天：{comparison.get('shadowHongKongToday', 0)} 条",
-        f"- 与当前 RSS 数据重叠：{comparison.get('overlap', 0)} 条",
-        f"- 仅 Scrapling 发现：{comparison.get('shadowOnly', 0)} 条",
+        f"- 香港当天：{comparison.get('collectedHongKongToday', 0)} 条",
+        f"- 与当前已发布数据重叠：{comparison.get('overlap', 0)} 条",
+        f"- 本次新增：{comparison.get('collectorOnly', 0)} 条",
     ]
     if failed:
         lines.extend(["", "### 失败来源", ""])
