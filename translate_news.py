@@ -340,15 +340,34 @@ def clean_source_text(value: object) -> str:
     return text.strip()
 
 
+def clean_source_content(value: object) -> str:
+    text = re.sub(
+        r"<!\[CDATA\[([\s\S]*?)\]\]>", r"\1", str(value or "")
+    )
+    text = re.sub(r"<\s*br\s*/?>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"</(?:p|div|h[1-6]|li)>", "\n\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"<[^>]*>", " ", text)
+    text = unescape(text).replace("\u00a0", " ")
+    paragraphs = []
+    for paragraph in re.split(r"\n\s*\n", text):
+        normalized = re.sub(r"\s+", " ", paragraph).strip()
+        if normalized:
+            paragraphs.append(normalized)
+    return "\n\n".join(paragraphs)
+
+
 def validate_article(article: dict) -> None:
     title = str(article.get("originalTitle") or "").strip()
     summary = str(article.get("originalSummary") or "").strip()
+    content = str(article.get("originalContent") or "").strip()
     url = str(article.get("url") or "").strip()
     timestamp = int(article.get("timestamp") or 0)
     if not title:
         raise ValueError("新闻缺少原始标题。")
     if not summary:
         raise ValueError(f"新闻缺少原始摘要：{title}")
+    if not content:
+        raise ValueError(f"新闻缺少原始正文：{title}")
     if urlparse(url).scheme not in {"http", "https"} or not urlparse(url).netloc:
         raise ValueError(f"新闻原文链接无效：{url}")
     if timestamp <= 0:
@@ -380,6 +399,11 @@ def normalize_article(
     )
     normalized["originalSummary"] = clean_source_text(
         normalized.get("originalSummary") or normalized.get("summary") or ""
+    )
+    normalized["originalContent"] = clean_source_content(
+        normalized.get("originalContent")
+        or normalized.get("content")
+        or normalized["originalSummary"]
     )
     source_name = str(normalized.get("source") or "").strip()
     source_config = (source_configs or {}).get(source_name, {})
@@ -425,6 +449,7 @@ def translate_articles(
         validate_article(article)
         original_title = article["originalTitle"].strip()
         original_summary = article["originalSummary"].strip()
+        original_content = article["originalContent"].strip()
         translations = {}
 
         for language in SUPPORTED_LANGUAGES:
@@ -432,6 +457,7 @@ def translate_articles(
                 translations[language] = {
                     "title": original_title,
                     "summary": original_summary,
+                    "content": original_content,
                 }
                 continue
             translated_title = cached_translation(
@@ -440,17 +466,28 @@ def translate_articles(
             translated_summary = cached_translation(
                 service, cache, original_summary, language
             )
-            if not translated_title.strip() or not translated_summary.strip():
-                raise RuntimeError(f"{language} 翻译存在空标题或空摘要：{original_title}")
+            translated_content = cached_content_translation(
+                service, cache, original_content, language
+            )
+            if (
+                not translated_title.strip()
+                or not translated_summary.strip()
+                or not translated_content.strip()
+            ):
+                raise RuntimeError(
+                    f"{language} 翻译存在空标题、摘要或正文：{original_title}"
+                )
             translations[language] = {
                 "title": translated_title.strip(),
                 "summary": translated_summary.strip(),
+                "content": translated_content.strip(),
             }
 
         translated_articles.append(
             {
                 "originalTitle": original_title,
                 "originalSummary": original_summary,
+                "originalContent": original_content,
                 "sourceLanguage": article["sourceLanguage"],
                 "sourceKey": article["sourceKey"],
                 "sourceTypeKey": article["sourceTypeKey"],
@@ -483,6 +520,43 @@ def cached_translation(
     if key not in cache:
         cache[key] = service.translate(text, language)
     return cache[key]
+
+
+def split_translation_units(text: str, max_chars: int = 1200) -> list[str]:
+    """把正文拆成适合离线模型处理的段落或句子组。"""
+    units: list[str] = []
+    for paragraph in re.split(r"\n\s*\n", str(text or "")):
+        paragraph = re.sub(r"\s+", " ", paragraph).strip()
+        if not paragraph:
+            continue
+        if len(paragraph) <= max_chars:
+            units.append(paragraph)
+            continue
+        current = ""
+        for sentence in re.split(r"(?<=[.!?。！？])\s+", paragraph):
+            if not sentence:
+                continue
+            if current and len(current) + len(sentence) + 1 > max_chars:
+                units.append(current.strip())
+                current = sentence
+            else:
+                current = f"{current} {sentence}".strip()
+        if current:
+            units.append(current.strip())
+    return units
+
+
+def cached_content_translation(
+    service: TranslationService,
+    cache: dict[tuple[str, str], str],
+    text: str,
+    language: str,
+) -> str:
+    translated = [
+        cached_translation(service, cache, unit, language)
+        for unit in split_translation_units(text)
+    ]
+    return "\n\n".join(part.strip() for part in translated if part.strip())
 
 
 def xml_text(value: object) -> str:

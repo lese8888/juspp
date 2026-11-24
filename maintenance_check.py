@@ -265,6 +265,7 @@ def main():
             for key in (
                 "originalTitle",
                 "originalSummary",
+                "originalContent",
                 "sourceLanguage",
                 "sourceKey",
                 "sourceTypeKey",
@@ -296,9 +297,10 @@ def main():
                     localized = translations.get(language)
                     if (
                         not isinstance(localized, dict)
-                        or set(localized.keys()) != {"title", "summary"}
+                        or set(localized.keys()) != {"title", "summary", "content"}
                         or not str(localized.get("title", "")).strip()
                         or not str(localized.get("summary", "")).strip()
+                        or not str(localized.get("content", "")).strip()
                     ):
                         incomplete.append(f"第 {index} 条 {language} 标题或摘要为空")
             url = str(article.get("url", "")).rstrip("/").lower()

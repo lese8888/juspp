@@ -26,12 +26,32 @@ class ScraplingCollectorTests(unittest.TestCase):
         page = """<html><head><script type="application/ld+json">
         {"@graph":[{"headline":"JSON-LD 标题",
         "datePublished":"2026-11-24T01:02:03Z",
-        "description":"公开摘要内容。"}]}</script></head>
+        "description":"公开摘要内容。",
+        "articleBody":"第一段完整正文内容。\\n\\n第二段完整正文内容。"}]}</script></head>
         <body><h1>备用标题</h1></body></html>""".encode("utf-8")
         metadata = collector.extract_article_metadata(page)
         self.assertEqual(metadata["title"], "JSON-LD 标题")
         self.assertEqual(metadata["published"], "2026-11-24T01:02:03Z")
         self.assertEqual(metadata["summary"], "公开摘要内容。")
+        self.assertIn("第二段完整正文内容", metadata["content"])
+
+    def test_extract_article_body_uses_source_selector(self):
+        paragraphs = [
+            f"这是文章正文第{index}段，包含足够长度以通过正文过滤并保留完整内容，同时确保每个段落都超过最低长度要求。"
+            for index in range(1, 5)
+        ]
+        page = (
+            "<html><body><article>"
+            + "".join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
+            + "</article></body></html>"
+        ).encode("utf-8")
+        metadata = collector.extract_article_metadata(
+            page,
+            "utf-8",
+            {"正文选择器": "//article//p"},
+        )
+        self.assertIn(paragraphs[0], metadata["content"])
+        self.assertGreater(len(metadata["content"]), 200)
 
     def test_extract_json_ld_prefers_article_over_website(self):
         page = """<html><head><script type="application/ld+json">

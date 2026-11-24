@@ -19,6 +19,7 @@
       "分类键": "platform",
       "Sitemap": "https://news.xbox.com/en-us/post-sitemap.xml",
       "列表页": "https://news.xbox.com/en-us/recent-news/",
+      "正文选择器": "//article//p",
       "文章URL模式": "^https://news\\.xbox\\.com/en-us/\\d{4}/\\d{2}/\\d{2}/[^/?#]+/?$",
       "启用": true
     },
@@ -31,6 +32,7 @@
       "分类": "平台公告",
       "分类键": "platform",
       "Sitemap": "https://blog.playstation.com/wp-sitemap-posts-recent.xml",
+      "正文选择器": "//article//p",
       "文章URL模式": "^https://blog\\.playstation\\.com/\\d{4}/\\d{2}/\\d{2}/[^/?#]+/?$",
       "启用": true
     },
@@ -43,6 +45,7 @@
       "分类": "行业与商业",
       "分类键": "industry",
       "Sitemap": "https://www.gamesindustry.biz/sitemap-news.xml",
+      "正文选择器": "//article//p",
       "文章URL模式": "^https://www\\.gamesindustry\\.biz/[^/?#]+$",
       "启用": true
     },
@@ -56,6 +59,7 @@
       "分类键": "platform",
       "Sitemap": "https://www.nintendo.com/us/sitemap.xml",
       "列表页": "https://www.nintendo.com/us/whatsnew/",
+      "正文选择器": "//article//p",
       "文章URL模式": "^https://www\\.nintendo\\.com/us/whatsnew/[^/?#]+/?$",
       "启用": true
     },
@@ -68,6 +72,7 @@
       "分类": "开发与行业",
       "分类键": "development",
       "Sitemap": "https://www.gamedeveloper.com/news/archive/{year}/{month}.xml",
+      "正文选择器": "//main//p",
       "文章URL模式": "^https://www\\.gamedeveloper\\.com/[^/?#]+/[^/?#]+$",
       "启用": true
     },
@@ -80,6 +85,7 @@
       "分类": "日本与全球游戏新闻",
       "分类键": "japan-global",
       "Sitemap": "https://www.gematsu.com/sitemap.xml",
+      "正文选择器": "//article//p",
       "文章URL模式": "^https://www\\.gematsu\\.com/\\d{4}/\\d{2}/[^/?#]+$",
       "启用": true
     },
@@ -94,6 +100,7 @@
       "Sitemap": "https://automaton-media.com/en/sitemap_index.xml",
       "Sitemap匹配": "^https://automaton-media\\.com/en/post-sitemap\\d*\\.xml$",
       "列表页": "https://automaton-media.com/en/news/",
+      "正文选择器": "//article//p",
       "文章URL模式": "^https://automaton-media\\.com/en/news/[^/?#]+/?$",
       "启用": true
     },
@@ -106,6 +113,7 @@
       "分类": "PC 游戏",
       "分类键": "pc",
       "Sitemap": "https://www.pcgamer.com/sitemap-news.xml",
+      "正文选择器": "//*[@id='article-body']//p",
       "文章URL模式": "^https://www\\.pcgamer\\.com/.+",
       "启用": true
     },
@@ -119,6 +127,7 @@
       "分类键": "nintendo",
       "Sitemap": "https://www.nintendolife.com/sitemap.xml",
       "Sitemap匹配": "^https://www\\.nintendolife\\.com/sitemap\\.news\\.xml$",
+      "正文选择器": "//*[contains(concat(' ', normalize-space(@class), ' '), ' body-text ')]//p",
       "文章URL模式": "^https://www\\.nintendolife\\.com/news/\\d{4}/\\d{2}/[^/?#]+$",
       "启用": true
     },
@@ -132,6 +141,7 @@
       "分类键": "playstation",
       "Sitemap": "https://www.pushsquare.com/sitemap.xml",
       "Sitemap匹配": "^https://www\\.pushsquare\\.com/sitemap\\.news\\.xml$",
+      "正文选择器": "//*[contains(concat(' ', normalize-space(@class), ' '), ' body-text ')]//p",
       "文章URL模式": "^https://www\\.pushsquare\\.com/news/\\d{4}/\\d{2}/[^/?#]+$",
       "启用": true
     },
@@ -145,6 +155,7 @@
       "分类键": "mobile",
       "Sitemap": "https://www.pocketgamer.com/sitemap.xml",
       "Sitemap匹配": "^https://www\\.pocketgamer\\.com/sitemap/articles-1\\.xml$",
+      "正文选择器": "//article//p",
       "文章URL模式": "^https://www\\.pocketgamer\\.com/[^/?#]+/[^/?#]+/?$",
       "启用": true
     }

@@ -18,11 +18,12 @@ test('新闻数据使用 schemaVersion 2 与固定五语顺序', () => {
   assert.ok(report.articles.length > 0);
 });
 
-test('每条新闻包含合法稳定字段与完整五语标题摘要', () => {
+test('每条新闻包含合法稳定字段与完整五语标题、摘要和正文', () => {
   const urls = new Set();
   for (const article of report.articles) {
     assert.ok(article.originalTitle.trim());
     assert.ok(article.originalSummary.trim());
+    assert.ok(article.originalContent.trim());
     assert.equal(article.sourceLanguage, 'en');
     assert.ok(article.sourceKey);
     assert.ok(['official', 'media'].includes(article.sourceTypeKey));
@@ -36,9 +37,10 @@ test('每条新闻包含合法稳定字段与完整五语标题摘要', () => {
     for (const language of languages) {
       assert.ok(article.translations[language].title.trim());
       assert.ok(article.translations[language].summary.trim());
+      assert.ok(article.translations[language].content.trim());
       assert.deepEqual(
         Object.keys(article.translations[language]).sort(),
-        ['summary', 'title']
+        ['content', 'summary', 'title']
       );
     }
   }

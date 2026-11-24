@@ -17,6 +17,7 @@ def sample_report():
             {
                 "originalTitle": "PlayStation and Switch update",
                 "originalSummary": "Xbox and Steam add a complete summary for players.",
+                "originalContent": "Xbox and Steam add a complete summary for players.\n\nThe update is available now.",
                 "url": "https://example.com/news",
                 "publishedAt": "2026-11-24T00:00:00.000Z",
                 "timestamp": 1795478400000,
@@ -97,6 +98,11 @@ class TranslationTests(unittest.TestCase):
         self.assertEqual(
             list(translations.keys()), ["zh-CN", "zh-TW", "en", "ja", "ko"]
         )
+        self.assertEqual(
+            set(translations["zh-CN"].keys()), {"title", "summary", "content"}
+        )
+        self.assertIn("The update is available now", translated[0]["originalContent"])
+        self.assertIn("The update is available now", translations["en"]["content"])
         self.assertNotIn("videoScript", translated[0])
         self.assertNotIn("translationStatus", translated[0])
 

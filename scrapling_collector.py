@@ -170,11 +170,62 @@ def find_json_ld_article(value: Any) -> tuple[int, dict[str, str]]:
                 "title": title,
                 "published": published,
                 "summary": summary,
+                "content": clean_text(node.get("articleBody") or ""),
             }
     return best_score, best
 
 
-def extract_article_metadata(page_body: bytes, encoding: str = "utf-8") -> dict[str, str]:
+def clean_article_content(value: Any) -> str:
+    """保留正文段落，同时清理站点模板与多余空白。"""
+    text = html.unescape(str(value or ""))
+    text = re.sub(r"<\s*br\s*/?>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"</(?:p|div|h[1-6]|li)>", "\n\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"<[^>]+>", " ", text).replace("\u00a0", " ")
+    paragraphs = []
+    for paragraph in re.split(r"\n\s*\n", text):
+        normalized = re.sub(r"\s+", " ", paragraph).strip()
+        if normalized:
+            paragraphs.append(normalized)
+    return "\n\n".join(paragraphs)
+
+
+def extract_article_body(page: lxml_html.HtmlElement, source: dict[str, Any]) -> str:
+    """按来源选择器提取文章正文段落。"""
+    selectors = [source.get("正文选择器"), "//article//p", "//main//p"]
+    ignored_fragments = (
+        "subscribe to ",
+        "sign up",
+        "newsletter",
+        "follow us",
+        "all rights reserved",
+        "read more",
+        "related",
+        "comments",
+        "affiliate commission",
+    )
+    for selector in [item for item in selectors if item]:
+        paragraphs = []
+        seen: set[str] = set()
+        for node in page.xpath(selector):
+            value = clean_text(" ".join(node.xpath(".//text()")))
+            lower = value.lower()
+            if len(value) < 35 or any(fragment in lower for fragment in ignored_fragments):
+                continue
+            if value in seen:
+                continue
+            seen.add(value)
+            paragraphs.append(value)
+        body = "\n\n".join(paragraphs)
+        if len(body) >= 200:
+            return body
+    return ""
+
+
+def extract_article_metadata(
+    page_body: bytes,
+    encoding: str = "utf-8",
+    source: dict[str, Any] | None = None,
+) -> dict[str, str]:
     """从新闻页 JSON-LD、Open Graph 和语义 HTML 中提取公开元数据。"""
     page = lxml_html.fromstring(
         page_body,
@@ -229,10 +280,16 @@ def extract_article_metadata(page_body: bytes, encoding: str = "utf-8") -> dict[
         )
         or meta('//time[@datetime]/@datetime')
     )
+    content = clean_article_content(json_ld.get("content") or "")
+    if not content:
+        content = clean_article_content(extract_article_body(page, source or {}))
+    if not content:
+        content = clean_text(summary)
     return {
         "title": clean_text(title),
         "summary": clean_text(summary)[:2000],
         "published": published,
+        "content": content,
     }
 
 
@@ -412,6 +469,7 @@ def collect_source(source: dict[str, Any], now: datetime) -> tuple[list[dict[str
                 metadata = extract_article_metadata(
                     response.body,
                     getattr(response, "encoding", None) or "utf-8",
+                    source,
                 )
                 published = parse_datetime(metadata["published"]) or candidate.sitemap_published
                 if not published or published < cutoff:
@@ -422,6 +480,7 @@ def collect_source(source: dict[str, Any], now: datetime) -> tuple[list[dict[str
                 article = {
                     "originalTitle": title,
                     "originalSummary": metadata["summary"],
+                    "originalContent": metadata["content"],
                     "url": candidate.url,
                     "publishedAt": published.isoformat().replace("+00:00", "Z"),
                     "timestamp": int(published.timestamp() * 1000),
