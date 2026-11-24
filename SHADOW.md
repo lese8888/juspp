@@ -35,7 +35,9 @@ language=空（生成 zh-CN、en、ja、ko，zh-TW 由 OpenCC 生成）
 任何单篇硬失败都会让工作流失败，但候选和报告仍会上传，供定位问题。
 
 `deepseek-flash` 可能先产生推理内容再返回最终 JSON，因此影子工作流默认允许
-`6000` 个输出 token。若供应商模型调整，可通过 `LLM_ARTICLE_OUTPUT_TOKENS` 重新校准。
+`10000` 个输出 token。若单篇仍因闸门失败，会额外执行一次定向修复；修复仍失败
+时任务保持失败，不会放宽校验。若供应商模型调整，可通过
+`LLM_ARTICLE_OUTPUT_TOKENS` 重新校准。
 
 ## 当前边界
 

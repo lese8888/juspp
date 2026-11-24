@@ -7,6 +7,7 @@ import json
 import os
 import re
 import time
+import unicodedata
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -51,10 +52,29 @@ REDUCE_PROMPT = """根据标题、来源摘要和事实清单，用目标语言�
 只使用给出的事实，不得新增数字或结论。
 只输出 JSON：{"title":"...","summary":"...","content":"..."}"""
 
+REPAIR_PROMPT = """你是资深游戏媒体编辑，正在修复一条未通过质量闸门的候选内容。
+你会收到来源信息、当前候选和失败原因。请修复全部失败原因后返回同样结构的 JSON：
+{"title":"...","summary":"...","content":"..."}
+
+要求：
+1. 只能使用来源信息中已有的事实、数字、日期、平台和专名。
+2. 不得新增来源没有的数字，不得删除标题或来源摘要中的关键数字。
+3. 中文、日文、韩文 content 控制在 450–580 字，英文控制在 250–380 词。
+4. 保持目标语言自然、完整、非逐字复制。
+5. 只输出 JSON，不输出解释或 Markdown。"""
+
 FENCE_PATTERN = re.compile(r"```")
 PLACEHOLDER_PATTERN = re.compile(r"Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}|\[{1,4}\s*[A-Z]{5,10}\s*\]{1,4}")
+NUMBER_TOKEN_PATTERN = r"(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)"
+COMPOSITE_NUMBER_PATTERN = re.compile(
+    rf"(?<![A-Za-z0-9.])(?P<major>{NUMBER_TOKEN_PATTERN})\s*"
+    rf"(?P<major_unit>亿|億|억)\s*"
+    rf"(?:(?P<minor>{NUMBER_TOKEN_PATTERN})\s*(?P<minor_unit>万|萬|만))?",
+    re.IGNORECASE,
+)
 NUMBER_PATTERN = re.compile(
-    r"(?<![A-Za-z0-9.])(\d+(?:[.,]\d+)?)\s*(thousand|million|billion|万|亿|千|%|％)?",
+    rf"(?<![A-Za-z0-9.])(?P<number>{NUMBER_TOKEN_PATTERN})\s*"
+    rf"(?P<unit>thousand|million|billion|万|萬|亿|億|千|천|만|억|%|％)?",
     re.IGNORECASE,
 )
 
@@ -127,33 +147,69 @@ def select_articles(articles: list[dict[str, Any]], limit: int) -> list[dict[str
     return selected
 
 
-def extract_numbers(text: str) -> set[str]:
-    """将常见英文和中文数量换算为可比较的绝对数值。"""
+def _canonical_number(value: float) -> str:
+    if value.is_integer():
+        return str(int(value))
+    return f"{value:.4f}".rstrip("0").rstrip(".")
+
+
+def _parse_number_token(value: str) -> float:
+    return float(value.replace(",", ""))
+
+
+def _explicit_numbers(text: str) -> set[str]:
+    """提取显式数字和复合单位，用于关键数字比对。"""
+    normalized = unicodedata.normalize("NFKC", str(text or ""))
     multipliers = {
         "thousand": 1_000,
         "million": 1_000_000,
         "billion": 1_000_000_000,
         "千": 1_000,
+        "천": 1_000,
         "万": 10_000,
+        "萬": 10_000,
+        "만": 10_000,
         "亿": 100_000_000,
+        "億": 100_000_000,
+        "억": 100_000_000,
         "%": 1,
-        "％": 1,
     }
     values: set[str] = set()
-    for match in NUMBER_PATTERN.finditer(str(text or "")):
-        if match.start() > 0 and str(text)[match.start() - 1] == ":":
+    consumed: list[tuple[int, int]] = []
+    for match in COMPOSITE_NUMBER_PATTERN.finditer(normalized):
+        major = _parse_number_token(match.group("major"))
+        major_unit = multipliers.get(match.group("major_unit").lower(), 1)
+        value = major * major_unit
+        if match.group("minor"):
+            minor = _parse_number_token(match.group("minor"))
+            minor_unit = multipliers.get(match.group("minor_unit").lower(), 1)
+            value += minor * minor_unit
+        values.add(_canonical_number(value))
+        consumed.append(match.span())
+
+    for match in NUMBER_PATTERN.finditer(normalized):
+        if any(start <= match.start() < end for start, end in consumed):
             continue
-        raw = match.group(1).replace(",", "")
-        if "." in raw and "," not in raw:
-            number = float(raw)
-        else:
-            number = float(raw)
-        unit = (match.group(2) or "").lower()
+        if match.start() > 0 and normalized[match.start() - 1] == ":":
+            continue
+        number = _parse_number_token(match.group("number"))
+        unit = (match.group("unit") or "").lower()
         number *= multipliers.get(unit, 1)
-        if number.is_integer():
-            values.add(str(int(number)))
-        else:
-            values.add(f"{number:.4f}".rstrip("0").rstrip("."))
+        values.add(_canonical_number(number))
+    if re.search(r"\bGTA\s*(?:VI|6)\b|Grand Theft Auto VI", normalized, re.IGNORECASE):
+        values.add("6")
+    return values
+
+
+def extract_required_numbers(text: str) -> set[str]:
+    """只取标题和摘要中的显式数字，避免把 one/second 等普通措辞当作硬要求。"""
+    return _explicit_numbers(text)
+
+
+def extract_numbers(text: str) -> set[str]:
+    """将常见中英日韩数量、日期、时间和序数换算为可比较的绝对数值。"""
+    normalized_text = unicodedata.normalize("NFKC", str(text or "")).lower()
+    values = _explicit_numbers(normalized_text)
     month_numbers = {
         "january": 1,
         "jan": 1,
@@ -180,7 +236,6 @@ def extract_numbers(text: str) -> set[str]:
         "december": 12,
         "dec": 12,
     }
-    normalized_text = str(text or "").lower()
     for month, number in month_numbers.items():
         if re.search(rf"\b{re.escape(month)}\.?\b", normalized_text):
             values.add(str(number))
@@ -220,6 +275,35 @@ def extract_numbers(text: str) -> set[str]:
     for word, number in number_words.items():
         if re.search(rf"\b{re.escape(word)}\b", normalized_text):
             values.add(str(number))
+    for word, number in number_words.items():
+        for unit, multiplier in (
+            ("thousand", 1_000),
+            ("million", 1_000_000),
+            ("billion", 1_000_000_000),
+        ):
+            if re.search(rf"\b{word}\s+{unit}\b", normalized_text):
+                values.add(_canonical_number(number * multiplier))
+        if re.search(rf"\b{word}\s+decades?\b", normalized_text):
+            values.add(_canonical_number(number * 10))
+    if re.search(r"\bhalf\b", normalized_text):
+        values.add("50")
+    chinese_number_map = {
+        "一": 1,
+        "二": 2,
+        "三": 3,
+        "四": 4,
+        "五": 5,
+        "六": 6,
+        "七": 7,
+        "八": 8,
+        "九": 9,
+        "十": 10,
+    }
+    for match in re.finditer(
+        r"([一二三四五六七八九十])(?=次|个|名|款|代|年|位|家|月|日|大|周|小时|分钟)",
+        normalized_text,
+    ):
+        values.add(str(chinese_number_map[match.group(1)]))
     for hour, meridiem in re.findall(r"\b(1[0-2]|0?[1-9])\s*(a\.?m\.?|p\.?m\.?)\b", normalized_text):
         numeric_hour = int(hour)
         if meridiem.replace(".", "").startswith("p") and numeric_hour < 12:
@@ -284,11 +368,9 @@ def validate_result(
 
     failures.extend(_language_failures(language, result.content))
     source = f"{article.get('originalTitle', '')}\n{article.get('originalSummary', '')}"
-    source_numbers = extract_numbers(
-        f"{source}\n{article.get('originalContent', '')}"
-    )
+    source_numbers = extract_numbers(f"{source}\n{article.get('originalContent', '')}")
     output_numbers = extract_numbers(serialized)
-    required_numbers = extract_numbers(source)
+    required_numbers = extract_required_numbers(source)
     missing = sorted(required_numbers - output_numbers)
     if missing:
         failures.append(f"关键数字缺失：{', '.join(missing[:8])}")
@@ -576,6 +658,55 @@ def generate_article(
     )
 
 
+def repair_article(
+    *,
+    client: OpenAICompatibleClient,
+    article: dict[str, Any],
+    language: str,
+    initial: GenerationResult,
+    failures: list[str],
+    glossary: Glossary,
+    config: ShadowConfig,
+) -> GenerationResult:
+    """对未通过闸门的单篇单语结果执行一次定向修复。"""
+    body = str(article.get("originalContent") or "")
+    if len(body) > config.max_body_chars:
+        body = f"{body[: config.max_body_chars - 3000]}\n\n[...]\n\n{body[-3000:]}"
+    repair_input = json.dumps(
+        {
+            "目标语言": language,
+            "来源信息": {
+                "title": article.get("originalTitle", ""),
+                "summary": article.get("originalSummary", ""),
+                "body": body,
+            },
+            "当前候选": {
+                "title": initial.title,
+                "summary": initial.summary,
+                "content": initial.content,
+            },
+            "失败原因": failures,
+            "术语对照": glossary.prompt_lines(
+                f"{article.get('originalTitle', '')}\n{article.get('originalSummary', '')}",
+                language,
+            ),
+        },
+        ensure_ascii=False,
+    )
+    repaired, usage = client.complete_json(
+        system_prompt=f"{REPAIR_PROMPT}\n目标语言：{language}",
+        user_prompt=repair_input,
+    )
+    return GenerationResult(
+        title=str(repaired.get("title") or ""),
+        summary=str(repaired.get("summary") or ""),
+        content=str(repaired.get("content") or ""),
+        usage=initial.usage + usage,
+        requests=initial.requests + 1,
+        body_truncated=initial.body_truncated,
+    )
+
+
 @lru_cache(maxsize=1)
 def _zh_tw_converter() -> Callable[[str], str]:
     try:
@@ -638,6 +769,30 @@ def run_shadow(
                     result=result,
                     glossary=glossary,
                 )
+                if gate_failures and config.engine == "llm" and client is not None:
+                    try:
+                        repaired = repair_article(
+                            client=client,
+                            article=article,
+                            language=language,
+                            initial=result,
+                            failures=gate_failures,
+                            glossary=glossary,
+                            config=config,
+                        )
+                        repaired_failures, repaired_warnings = validate_result(
+                            article=article,
+                            language=language,
+                            result=repaired,
+                            glossary=glossary,
+                        )
+                        result = repaired
+                        gate_failures = repaired_failures
+                        gate_warnings = repaired_warnings
+                    except Exception as repair_error:
+                        gate_failures.append(
+                            f"定向修复失败：{type(repair_error).__name__}：{repair_error}"
+                        )
                 if gate_failures:
                     failures.append(
                         {

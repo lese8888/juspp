@@ -11,6 +11,8 @@ from translation.shadow import (
     GenerationResult,
     ShadowConfig,
     extract_numbers,
+    extract_required_numbers,
+    repair_article,
     run_shadow,
     select_articles,
     validate_result,
@@ -52,6 +54,46 @@ def sample_report(count=4):
 
 
 class ShadowTranslationTests(unittest.TestCase):
+    def test_repair_article_adds_usage_and_request(self):
+        class FakeClient:
+            model = "fake"
+
+            def complete_json(self, *, system_prompt, user_prompt):
+                return (
+                    {
+                        "title": "PlayStation 5 新闻",
+                        "summary": "修复后的摘要",
+                        "content": "修复后的内容",
+                    },
+                    ChatUsage(input_tokens=2, output_tokens=3),
+                )
+
+        initial = GenerationResult(
+            title="旧标题",
+            summary="旧摘要",
+            content="旧内容",
+            usage=ChatUsage(input_tokens=1, output_tokens=1),
+            requests=1,
+        )
+        config = ShadowConfig(
+            input_file=Path("news.json"),
+            output_dir=Path("shadow"),
+            engine="llm",
+        )
+        repaired = repair_article(
+            client=FakeClient(),
+            article=sample_article(),
+            language="zh-CN",
+            initial=initial,
+            failures=["总结过短"],
+            glossary=load_glossary(),
+            config=config,
+        )
+        self.assertEqual(repaired.title, "PlayStation 5 新闻")
+        self.assertEqual(repaired.requests, 2)
+        self.assertEqual(repaired.usage.input_tokens, 3)
+        self.assertEqual(repaired.usage.output_tokens, 4)
+
     def test_openai_client_parses_json_and_usage(self):
         class Handler(BaseHTTPRequestHandler):
             def do_POST(self):
@@ -154,6 +196,12 @@ class ShadowTranslationTests(unittest.TestCase):
         clock_numbers = extract_numbers("13:00 UTC")
         self.assertIn("13", clock_numbers)
         self.assertNotIn("0", clock_numbers)
+        self.assertIn("3790000000", extract_numbers("37億9000万ドル"))
+        self.assertIn("683000000", extract_numbers("6억 8300만 달러"))
+        self.assertIn("39000000", extract_numbers("3900만 명"))
+        self.assertIn("30", extract_numbers("three decades"))
+        self.assertNotIn("1", extract_required_numbers("one of the games"))
+        self.assertIn("6", extract_required_numbers("GTA 6"))
 
     def test_missing_key_number_fails_gate(self):
         article = sample_article()

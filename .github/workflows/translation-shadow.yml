@@ -58,7 +58,7 @@ jobs:
           LLM_MAX_RETRIES: '3'
           LLM_CONCURRENCY: '4'
           LLM_JSON_MODE: '1'
-          LLM_ARTICLE_OUTPUT_TOKENS: '6000'
+          LLM_ARTICLE_OUTPUT_TOKENS: '10000'
           LLM_TEMPERATURE: '0.2'
           LLM_PRICE_INPUT_CNY_PER_M: ${{ vars.LLM_PRICE_INPUT_CNY_PER_M || '2.0' }}
           LLM_PRICE_OUTPUT_CNY_PER_M: ${{ vars.LLM_PRICE_OUTPUT_CNY_PER_M || '8.0' }}
