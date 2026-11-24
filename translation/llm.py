@@ -147,10 +147,22 @@ class OpenAICompatibleClient:
                 choices = result.get("choices") or []
                 if not choices:
                     raise LLMRequestError("模型响应缺少 choices。", retryable=True)
-                message = choices[0].get("message") or {}
+                choice = choices[0]
+                message = choice.get("message") or {}
                 content = message.get("content")
                 if not isinstance(content, str) or not content.strip():
-                    raise LLMRequestError("模型响应内容为空。", retryable=True)
+                    finish_reason = choice.get("finish_reason") or "unknown"
+                    reasoning = (
+                        message.get("reasoning_content")
+                        or message.get("reasoning")
+                        or ""
+                    )
+                    raise LLMRequestError(
+                        "模型响应内容为空"
+                        f"（finish_reason={finish_reason}，"
+                        f"reasoning_chars={len(str(reasoning))}）。",
+                        retryable=True,
+                    )
                 usage_payload = result.get("usage") or {}
                 usage = None
                 if usage_payload:
