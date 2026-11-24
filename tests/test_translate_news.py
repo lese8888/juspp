@@ -80,6 +80,11 @@ class TranslationTests(unittest.TestCase):
             "性能提高",
         )
 
+    def test_marker_adjacent_to_chinese_is_detected(self):
+        self.assertTrue(
+            translate_news.has_unrestored_marker("新闻QZABCDEF消息")
+        )
+
     def test_hyphenated_marker_is_restored(self):
         protected, terms = translate_news.protect_glossary("PlayStation and Xbox")
         token, canonical = terms[0]
@@ -88,6 +93,11 @@ class TranslationTests(unittest.TestCase):
         self.assertIn(canonical, restored)
         self.assertNotIn(token[:4], restored)
         self.assertFalse(translate_news.has_unrestored_marker(restored))
+
+    def test_normal_numeric_brackets_are_allowed(self):
+        self.assertFalse(
+            translate_news.has_unrestored_marker("引用编号 [[123456]]")
+        )
 
     def test_corrupted_marker_falls_back_to_segmented_translation(self):
         service = translate_news.OfflineTranslationService(

@@ -5,6 +5,10 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { escapeXml } from '../lib/news.mjs';
+import {
+  findTranslationMarker,
+  translationMarkerContext
+} from '../lib/translation-marker.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const report = JSON.parse(await fs.readFile(path.join(root, 'news.json'), 'utf8'));
@@ -51,17 +55,19 @@ test('不发布旧口播、翻译状态或内部术语标记', () => {
   assert.doesNotMatch(serialized, /"videoScript"|"translationStatus"|口播稿/);
   assert.doesNotMatch(serialized, /Read the full article|Continue reading|Read more at/i);
 
-  const machineLocalized = JSON.stringify(
-    report.articles.flatMap((article) =>
-      ['zh-CN', 'zh-TW', 'ja', 'ko'].flatMap((language) =>
-        Object.values(article.translations[language])
-      )
-    )
-  );
-  assert.doesNotMatch(
-    machineLocalized,
-    /Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}|\[\[\s*\d{5,}/
-  );
+  for (const article of report.articles) {
+    for (const language of ['zh-CN', 'zh-TW', 'ja', 'ko']) {
+      const localized = article.translations[language];
+      for (const field of ['title', 'summary', 'content']) {
+        const marker = findTranslationMarker(localized[field]);
+        assert.equal(
+          marker,
+          null,
+          `内部翻译标记：${marker?.marker || ''}；语言：${language}；字段：${field}；标题：${article.originalTitle}；链接：${article.url}；上下文：${translationMarkerContext(localized[field], marker?.marker || '')}`
+        );
+      }
+    }
+  }
 });
 
 test('新闻按采集阶段 heatScore 稳定降序排列', () => {

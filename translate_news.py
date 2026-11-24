@@ -193,6 +193,11 @@ class OfflineTranslationService:
             translated = self._zh_tw_converter(translated).strip()
             if not translated:
                 raise RuntimeError(f"繁体转换结果为空：{source[:100]}")
+            markers = find_unrestored_markers(translated)
+            if markers:
+                raise RuntimeError(
+                    f"繁体转换后仍有内部术语占位符 {markers[0]}：{source[:120]}"
+                )
         return translated
 
     def _translate_segmented(self, source: str, target_code: str) -> str:
@@ -217,13 +222,25 @@ class OfflineTranslationService:
 
 
 GLOSSARY_CANONICAL = {term.lower(): term for term in GLOSSARY}
+INTERNAL_MARKER_PATTERN = re.compile(r"Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}")
+BRACKET_MARKER_PATTERN = re.compile(r"\[{1,4}\s*[A-Z]{5,10}\s*\]{1,4}")
+
+
+def find_unrestored_markers(text: str) -> list[str]:
+    """返回文本中残留的内部术语占位符，不依赖单词边界。"""
+    normalized = str(text or "")
+    matches = [
+        *INTERNAL_MARKER_PATTERN.finditer(normalized),
+        *BRACKET_MARKER_PATTERN.finditer(normalized),
+    ]
+    return [
+        match.group(0)
+        for match in sorted(matches, key=lambda item: item.start())
+    ]
 
 
 def has_unrestored_marker(text: str) -> bool:
-    return bool(
-        re.search(r"\bQ[\s-]*Z(?:[\s-]*[A-Z]){5,8}\b", text)
-        or re.search(r"\[{1,4}\s*[A-Z]{5,10}\s*\]{1,4}", text)
-    )
+    return bool(find_unrestored_markers(text))
 
 
 def glossary_pattern() -> re.Pattern[str]:

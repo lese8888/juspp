@@ -16,6 +16,8 @@ from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from translate_news import find_unrestored_markers
+
 ROOT = Path(__file__).resolve().parent
 CONFLICT_RE = re.compile(r"^(?:<<<<<<<(?:\s|$)|=======$|>>>>>>>(?:\s|$))", re.MULTILINE)
 CODE_SUFFIXES = {".mjs", ".js", ".py", ".html", ".yml", ".yaml", ".json"}
@@ -300,13 +302,14 @@ def main():
                         or not str(localized.get("content", "")).strip()
                     ):
                         incomplete.append(f"第 {index} 条 {language} 标题或摘要为空")
-                    elif language != "en" and re.search(
-                        r"Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}|\[\[\s*\d{5,}",
-                        json.dumps(localized, ensure_ascii=False),
-                    ):
-                        incomplete.append(
-                            f"第 {index} 条 {language} 包含内部翻译标记"
-                        )
+                    elif language != "en":
+                        serialized = json.dumps(localized, ensure_ascii=False)
+                        markers = find_unrestored_markers(serialized)
+                        if markers:
+                            incomplete.append(
+                                f"第 {index} 条 {language} 包含内部翻译标记 "
+                                f"{markers[0]}"
+                            )
             url = str(article.get("url", "")).rstrip("/").lower()
             if url:
                 if url in seen_urls:

@@ -56,6 +56,14 @@ jobs:
         run: npm run verify:fresh
       - name: 运行采集后数据校验
         run: npm run check:data
+      - name: 上传翻译标记诊断
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: translation-marker-report
+          path: ${{ runner.temp }}/youwen-translation-marker-report.json
+          if-no-files-found: ignore
+          retention-days: 7
       - name: 写入采集摘要
         if: always()
         env:
