@@ -307,7 +307,7 @@ def extract_numbers(text: str) -> set[str]:
                 values.add(_canonical_number(number * multiplier))
         if re.search(rf"\b{word}\s+decades?\b", normalized_text):
             values.add(_canonical_number(number * 10))
-    if re.search(r"\bhalf\b", normalized_text):
+    if re.search(r"\bhalf(?!-)\b", normalized_text):
         values.add("50")
     for match in re.finditer(
         r"([二三四五六七八九十]{1,3})(?=次|个|名|款|代|年|位|家|月|日|大|周|小时|分钟)",
@@ -420,6 +420,22 @@ def split_body(body: str, max_chars: int = 3000) -> list[str]:
     if current:
         chunks.append(current.strip())
     return chunks
+
+
+def trim_to_limit_at_sentence(content: str, limit: int = 700) -> str:
+    """仅在纯长度超限时按句尾截短，保留完整句子。"""
+    text = str(content or "").strip()
+    if len(text) <= limit:
+        return text
+    boundaries = [
+        match.end()
+        for match in re.finditer(r"[.!?。！？]", text)
+        if match.end() <= limit
+    ]
+    if not boundaries:
+        return text
+    trimmed = text[: max(boundaries)].strip()
+    return trimmed if trimmed else text
 
 
 def _article_prompt(article: dict[str, Any], language: str, glossary: Glossary) -> str:
@@ -811,6 +827,34 @@ def run_shadow(
                                 f"定向修复失败：{type(repair_error).__name__}：{repair_error}"
                             )
                             break
+                    if (
+                        language != "en"
+                        and gate_failures
+                        and all("总结长度" in failure for failure in gate_failures)
+                    ):
+                        trimmed = trim_to_limit_at_sentence(result.content)
+                        if trimmed != result.content:
+                            candidate = GenerationResult(
+                                title=result.title,
+                                summary=result.summary,
+                                content=trimmed,
+                                usage=result.usage,
+                                requests=result.requests,
+                                body_truncated=result.body_truncated,
+                            )
+                            trimmed_failures, trimmed_warnings = validate_result(
+                                article=article,
+                                language=language,
+                                result=candidate,
+                                glossary=glossary,
+                            )
+                            if not trimmed_failures:
+                                result = candidate
+                                gate_failures = []
+                                gate_warnings = [
+                                    *trimmed_warnings,
+                                    "总结超过上限，已在句尾安全截短",
+                                ]
                 if gate_failures:
                     failures.append(
                         {

@@ -15,6 +15,7 @@ from translation.shadow import (
     repair_article,
     run_shadow,
     select_articles,
+    trim_to_limit_at_sentence,
     validate_result,
 )
 from translation.llm import ChatUsage, LLMRequestError, OpenAICompatibleClient
@@ -202,8 +203,14 @@ class ShadowTranslationTests(unittest.TestCase):
         self.assertIn("30", extract_numbers("three decades"))
         self.assertIn("30", extract_numbers("跨越三十年"))
         self.assertNotIn("1", extract_numbers("这是一款游戏"))
+        self.assertNotIn("50", extract_numbers("half-full van"))
+        self.assertIn("50", extract_numbers("over half of players"))
         self.assertNotIn("1", extract_required_numbers("one of the games"))
         self.assertIn("6", extract_required_numbers("GTA 6"))
+        self.assertEqual(
+            trim_to_limit_at_sentence("第一句。第二句。第三句。", 6),
+            "第一句。",
+        )
 
     def test_missing_key_number_fails_gate(self):
         article = sample_article()
