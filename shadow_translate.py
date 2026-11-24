@@ -70,7 +70,7 @@ def main() -> int:
                 max_retries=int(os.environ.get("LLM_MAX_RETRIES", "3")),
                 json_mode=os.environ.get("LLM_JSON_MODE", "1") == "1",
                 max_tokens=int(
-                    os.environ.get("LLM_ARTICLE_OUTPUT_TOKENS", "10000")
+                    os.environ.get("LLM_ARTICLE_OUTPUT_TOKENS", "16000")
                 ),
                 temperature=float(os.environ.get("LLM_TEMPERATURE", "0.2")),
             )

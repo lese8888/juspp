@@ -200,6 +200,8 @@ class ShadowTranslationTests(unittest.TestCase):
         self.assertIn("683000000", extract_numbers("6억 8300만 달러"))
         self.assertIn("39000000", extract_numbers("3900만 명"))
         self.assertIn("30", extract_numbers("three decades"))
+        self.assertIn("30", extract_numbers("跨越三十年"))
+        self.assertNotIn("1", extract_numbers("这是一款游戏"))
         self.assertNotIn("1", extract_required_numbers("one of the games"))
         self.assertIn("6", extract_required_numbers("GTA 6"))
 

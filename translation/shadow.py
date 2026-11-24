@@ -158,6 +158,27 @@ def _parse_number_token(value: str) -> float:
     return float(value.replace(",", ""))
 
 
+def _parse_chinese_number(value: str) -> int | None:
+    digits = {
+        "二": 2,
+        "三": 3,
+        "四": 4,
+        "五": 5,
+        "六": 6,
+        "七": 7,
+        "八": 8,
+        "九": 9,
+    }
+    if value == "十":
+        return 10
+    if "十" in value:
+        left, _, right = value.partition("十")
+        tens = digits.get(left, 1) if left else 1
+        ones = digits.get(right, 0) if right else 0
+        return tens * 10 + ones
+    return digits.get(value)
+
+
 def _explicit_numbers(text: str) -> set[str]:
     """提取显式数字和复合单位，用于关键数字比对。"""
     normalized = unicodedata.normalize("NFKC", str(text or ""))
@@ -288,23 +309,15 @@ def extract_numbers(text: str) -> set[str]:
             values.add(_canonical_number(number * 10))
     if re.search(r"\bhalf\b", normalized_text):
         values.add("50")
-    chinese_number_map = {
-        "一": 1,
-        "二": 2,
-        "三": 3,
-        "四": 4,
-        "五": 5,
-        "六": 6,
-        "七": 7,
-        "八": 8,
-        "九": 9,
-        "十": 10,
-    }
     for match in re.finditer(
-        r"([一二三四五六七八九十])(?=次|个|名|款|代|年|位|家|月|日|大|周|小时|分钟)",
+        r"([二三四五六七八九十]{1,3})(?=次|个|名|款|代|年|位|家|月|日|大|周|小时|分钟)",
         normalized_text,
     ):
-        values.add(str(chinese_number_map[match.group(1)]))
+        number = _parse_chinese_number(match.group(1))
+        if number is not None:
+            values.add(str(number))
+    if re.search(r"\bdecades?\b", normalized_text):
+        values.add("10")
     for hour, meridiem in re.findall(r"\b(1[0-2]|0?[1-9])\s*(a\.?m\.?|p\.?m\.?)\b", normalized_text):
         numeric_hour = int(hour)
         if meridiem.replace(".", "").startswith("p") and numeric_hour < 12:
@@ -771,29 +784,33 @@ def run_shadow(
                     glossary=glossary,
                 )
                 if gate_failures and config.engine == "llm" and client is not None:
-                    try:
-                        repaired = repair_article(
-                            client=client,
-                            article=article,
-                            language=language,
-                            initial=result,
-                            failures=gate_failures,
-                            glossary=glossary,
-                            config=config,
-                        )
-                        repaired_failures, repaired_warnings = validate_result(
-                            article=article,
-                            language=language,
-                            result=repaired,
-                            glossary=glossary,
-                        )
-                        result = repaired
-                        gate_failures = repaired_failures
-                        gate_warnings = repaired_warnings
-                    except Exception as repair_error:
-                        gate_failures.append(
-                            f"定向修复失败：{type(repair_error).__name__}：{repair_error}"
-                        )
+                    for _ in range(2):
+                        try:
+                            repaired = repair_article(
+                                client=client,
+                                article=article,
+                                language=language,
+                                initial=result,
+                                failures=gate_failures,
+                                glossary=glossary,
+                                config=config,
+                            )
+                            repaired_failures, repaired_warnings = validate_result(
+                                article=article,
+                                language=language,
+                                result=repaired,
+                                glossary=glossary,
+                            )
+                            result = repaired
+                            gate_failures = repaired_failures
+                            gate_warnings = repaired_warnings
+                            if not gate_failures:
+                                break
+                        except Exception as repair_error:
+                            gate_failures.append(
+                                f"定向修复失败：{type(repair_error).__name__}：{repair_error}"
+                            )
+                            break
                 if gate_failures:
                     failures.append(
                         {
