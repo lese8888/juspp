@@ -101,21 +101,29 @@ class OpenAICompatibleClient:
         if self.json_mode:
             payload["response_format"] = {"type": "json_object"}
 
-        content, actual_usage = self._request(payload)
-        normalized = _strip_json_fence(content)
-        try:
-            result = json.loads(normalized)
-        except json.JSONDecodeError as error:
-            raise LLMRequestError(
-                f"模型没有返回有效 JSON：{normalized[:200]}",
-                retryable=True,
-            ) from error
-        if not isinstance(result, dict):
-            raise LLMRequestError("模型返回的 JSON 顶层不是对象。", retryable=True)
-        return result, actual_usage or _estimated_usage(
-            f"{system_prompt}\n{user_prompt}",
-            content,
-        )
+        for parse_attempt in range(2):
+            content, actual_usage = self._request(payload)
+            normalized = _strip_json_fence(content)
+            try:
+                result = json.loads(normalized)
+            except json.JSONDecodeError as error:
+                if parse_attempt == 0:
+                    time.sleep(1)
+                    continue
+                raise LLMRequestError(
+                    f"模型没有返回有效 JSON：{normalized[:200]}",
+                    retryable=True,
+                ) from error
+            if not isinstance(result, dict):
+                raise LLMRequestError(
+                    "模型返回的 JSON 顶层不是对象。",
+                    retryable=True,
+                )
+            return result, actual_usage or _estimated_usage(
+                f"{system_prompt}\n{user_prompt}",
+                content,
+            )
+        raise LLMRequestError("模型未返回有效 JSON。", retryable=True)
 
     def _request(self, payload: dict[str, Any]) -> tuple[str, ChatUsage | None]:
         endpoint = f"{self._base_url}/chat/completions"

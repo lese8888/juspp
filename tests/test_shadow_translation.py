@@ -145,6 +145,7 @@ class ShadowTranslationTests(unittest.TestCase):
     def test_number_normalization_handles_million_and_wan(self):
         self.assertIn("39000000", extract_numbers("39 million"))
         self.assertIn("39000000", extract_numbers("3900 万"))
+        self.assertIn("11", extract_numbers("November 22, 2026"))
 
     def test_missing_key_number_fails_gate(self):
         article = sample_article()
