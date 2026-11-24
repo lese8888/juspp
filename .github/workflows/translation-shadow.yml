@@ -79,7 +79,8 @@ jobs:
         with:
           name: translation-shadow-${{ github.run_id }}
           path: .shadow-output/
-          if-no-files-found: warn
+          if-no-files-found: error
+          include-hidden-files: true
           retention-days: 14
       - name: 写入影子任务摘要
         if: always()
