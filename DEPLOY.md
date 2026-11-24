@@ -2,13 +2,15 @@
 
 ## GitHub Pages
 
-正式采集流程为 `.github/workflows/game-intel.yml`，每天香港时间 08:00（UTC `0 0 * * *`）运行，也支持手动触发。它安装 Argos Translate、OpenCC 和 Node 依赖，缓存离线翻译模型，执行语法与数据测试，采集最近 24 小时的 RSS，生成五种语言的数据，并把有变化的数据提交回 `main`。
+正式采集流程为 `.github/workflows/game-intel.yml`，每天香港时间 08:00（UTC `0 0 * * *`）运行，也支持手动触发。它安装 Argos Translate、OpenCC 和 Node 依赖，缓存离线翻译模型，采集最近 24 小时的 RSS，并在采集后验证最新原文距离当前不超过 26 小时，生成五种语言的数据后把有变化的内容提交回 `main`。手动触发不会发送邮件，只有每天定时任务发送一次汇总。
 
 静态发布由独立的 `.github/workflows/pages.yml` 完成。`index.html`、`news.json` 或 `rss.xml` 更新后，它会自动打包发布 GitHub Pages，避免采集任务与静态发布任务互相阻塞。
 
 仓库公开时可以使用标准 GitHub-hosted runner 与 GitHub Pages。首次部署前，在仓库 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**。站点地址为 `https://lese8888.github.io/juspp/`，简体中文 RSS 为 `https://lese8888.github.io/juspp/rss.xml`。
 
 采集结果只有在全部新闻的五种语言标题和摘要都通过校验后才会替换 `news.json` 与 `rss.xml`。任一模型缺失、摘要为空或翻译结果残缺时，任务失败并保留上一份有效数据，不发布部分语言。
+
+Actions 摘要会列出新闻总数、过去 24 小时数量、香港当天发布数量、最新原文时间、来源成功数和失败来源，便于确认每日任务是否真正更新。
 
 ## 本地预览
 

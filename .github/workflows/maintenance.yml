@@ -17,6 +17,7 @@ on:
       - 'package.json'
       - 'requirements.txt'
       - 'lib/**'
+      - 'scripts/**'
       - 'tests/**'
       - '.github/workflows/maintenance.yml'
       - '.github/workflows/game-intel.yml'
@@ -64,6 +65,10 @@ jobs:
           node --check collect.mjs
           node --check server.mjs
           node --check lib/news.mjs
+          node --check lib/freshness.mjs
+          node --check lib/collect-summary.mjs
+          node --check scripts/write-collect-summary.mjs
+          node --check scripts/verify-fresh.mjs
       - name: 检查 Python 语法
         if: github.event_name != 'schedule' || steps.cadence.outputs.run_check == 'true'
         run: python -m py_compile translate_news.py maintenance_check.py

@@ -15,6 +15,8 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
+    env:
+      COLLECT_SUMMARY_FILE: ${{ runner.temp }}/collect-summary.json
     steps:
       - name: 获取项目代码
         uses: actions/checkout@v4
@@ -37,19 +39,24 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements.txt
       - name: 安装 Node 依赖
         run: npm install --no-audit --no-fund
-      - name: 运行语法与数据校验
-        env:
-          PYTHON_EXECUTABLE: python
-        run: npm run check
+      - name: 运行采集前语法检查
+        run: npm run check:syntax
       - name: 采集并生成五语数据
         env:
-          SEND_EMAIL: ${{ github.event_name == 'schedule' && 'true' || (github.event_name == 'workflow_dispatch' && 'true' || 'false') }}
+          SEND_EMAIL: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
           SITE_URL: ${{ vars.SITE_URL || 'https://lese8888.github.io/juspp/' }}
           PYTHON_EXECUTABLE: python
         run: npm run collect
+      - name: 验证新闻发布时间新鲜度
+        run: npm run verify:fresh
+      - name: 运行采集后数据校验
+        run: npm run check:data
+      - name: 写入采集摘要
+        if: always()
+        run: node scripts/write-collect-summary.mjs
       - name: 提交更新后的新闻数据
         id: save
         run: |

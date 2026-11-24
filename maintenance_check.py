@@ -29,6 +29,10 @@ REQUIRED_FILES = [
     "package.json",
     "requirements.txt",
     "lib/news.mjs",
+    "lib/freshness.mjs",
+    "lib/collect-summary.mjs",
+    "scripts/verify-fresh.mjs",
+    "scripts/write-collect-summary.mjs",
     ".github/workflows/game-intel.yml",
     ".github/workflows/pages.yml",
     ".github/workflows/maintenance.yml",
@@ -345,7 +349,16 @@ def main():
             missing_ids = sorted(referenced_ids - parser.ids)
             require("脚本引用的网页元素均存在", not missing_ids,
                     "缺少 ID：" + "、".join(missing_ids) if missing_ids else "")
-            required_page_ids = {"language-select", "story-list", "search-input", "source-filter", "detail-close"}
+            required_page_ids = {
+                "language-select",
+                "story-list",
+                "search-input",
+                "source-filter",
+                "date-scope-filters",
+                "today-scope-count",
+                "fallback-note",
+                "detail-close",
+            }
             missing_page_ids = sorted(required_page_ids - parser.ids)
             require("五语新闻站关键元素齐全", not missing_page_ids,
                     "缺少 ID：" + "、".join(missing_page_ids) if missing_page_ids else "")
@@ -374,6 +387,10 @@ def main():
         ("node", ["--check", "collect.mjs"]),
         ("node", ["--check", "server.mjs"]),
         ("node", ["--check", "lib/news.mjs"]),
+        ("node", ["--check", "lib/freshness.mjs"]),
+        ("node", ["--check", "lib/collect-summary.mjs"]),
+        ("node", ["--check", "scripts/write-collect-summary.mjs"]),
+        ("node", ["--check", "scripts/verify-fresh.mjs"]),
         (sys.executable, ["-m", "py_compile", "translate_news.py", "maintenance_check.py"]),
     ]
     for executable, args in checks:

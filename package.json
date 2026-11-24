@@ -7,7 +7,10 @@
     "start": "node server.mjs",
     "test": "node --test test/*.test.mjs",
     "test:python": "python -m unittest discover -s tests -p \"test_*.py\"",
-    "check": "node --check collect.mjs && node --check server.mjs && node --check lib/news.mjs && python -m py_compile translate_news.py && npm test && npm run test:python"
+    "verify:fresh": "node scripts/verify-fresh.mjs",
+    "check:syntax": "node --check collect.mjs && node --check server.mjs && node --check lib/news.mjs && node --check lib/freshness.mjs && node --check lib/collect-summary.mjs && node --check scripts/write-collect-summary.mjs && node --check scripts/verify-fresh.mjs && python -m py_compile translate_news.py",
+    "check:data": "npm test && npm run test:python",
+    "check": "npm run check:syntax && npm run check:data"
   },
   "dependencies": {
     "nodemailer": "^7.0.10"

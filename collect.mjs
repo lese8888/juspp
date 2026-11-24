@@ -10,6 +10,7 @@ import {
   escapeHtml,
   sortArticlesByHeat
 } from './lib/news.mjs';
+import { assertFreshArticles, summarizeArticles } from './lib/freshness.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const config = JSON.parse(await fs.readFile(path.join(root, 'sources.json'), 'utf8'));
@@ -22,7 +23,7 @@ const rssPath = process.env.RSS_FILE
 const siteUrl = process.env.SITE_URL || 'https://lese8888.github.io/juspp/';
 const activeSources = config['来源'].filter(source => source['启用'] && source['订阅']);
 const cutoff = Date.now() - config['采集规则']['时间范围小时'] * 60 * 60 * 1000;
-let failedSourceCount = 0;
+const sourceResults = [];
 
 function validateSources(sources) {
   const requiredFields = ['名称', '来源键', '语言', '类型键', '分类键', '订阅'];
@@ -50,7 +51,7 @@ async function readSource(source) {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const xml = await response.text();
     const blocks = [...xml.matchAll(/<(item|entry)(?:\s[^>]*)?>[\s\S]*?<\/\1>/gi)].map(match => match[0]);
-    return blocks.map(block => {
+    const articles = blocks.map(block => {
       const linkTag = block.match(/<link\b([^>]*)\/?\s*>/i);
       const linkAttr = linkTag?.[1]?.match(/href=["']([^"']+)["']/i)?.[1];
       const date = cleanRssText(
@@ -74,8 +75,21 @@ async function readSource(source) {
       article.heatScore = articleHeatScore(article);
       return article;
     }).filter(item => item.originalTitle && item.url && item.timestamp >= cutoff);
+    const latestTimestamp = Math.max(0, ...articles.map(item => item.timestamp));
+    sourceResults.push({
+      name: source['名称'],
+      ok: true,
+      articleCount: articles.length,
+      latestPublishedAt: latestTimestamp ? new Date(latestTimestamp).toISOString() : null
+    });
+    return articles;
   } catch (error) {
-    failedSourceCount += 1;
+    sourceResults.push({
+      name: source['名称'],
+      ok: false,
+      articleCount: 0,
+      error: error.message
+    });
     console.error(`${source['名称']}: ${error.message}`);
     return [];
   }
@@ -99,6 +113,13 @@ async function readPreviousReport() {
   } catch {
     return null;
   }
+}
+
+async function writeCollectSummary(summary) {
+  const summaryPath = process.env.COLLECT_SUMMARY_FILE;
+  if (!summaryPath) return;
+  await fs.mkdir(path.dirname(path.resolve(summaryPath)), { recursive: true });
+  await fs.writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
 }
 
 function translationRecord(article, language) {
@@ -239,13 +260,28 @@ for (const article of batches.flat().sort((left, right) => right.heatScore - lef
 }
 
 let articles = sortArticlesByHeat([...unique.values()]);
-if (articles.length === 0) {
-  console.error('所有新闻源均未返回可发布内容，保留上一份有效数据。');
-  process.exitCode = failedSourceCount ? 1 : 0;
-} else {
+const checkedAt = new Date().toISOString();
+let freshnessSummary;
+try {
+  freshnessSummary = assertFreshArticles(articles, {
+    now: new Date(checkedAt),
+    sourceResults
+  });
+} catch (error) {
+  await writeCollectSummary({
+    status: 'failed',
+    checkedAt,
+    error: error.message,
+    ...summarizeArticles(articles, { now: new Date(checkedAt), sourceResults })
+  });
+  console.error(error.message);
+  process.exitCode = 1;
+}
+
+if (freshnessSummary) {
   const previous = await readPreviousReport();
   const rawReport = {
-    generatedAt: new Date().toISOString(),
+    generatedAt: checkedAt,
     timezone: config['默认时区'],
     periodHours: config['采集规则']['时间范围小时'],
     sourceCount: activeSources.length,
@@ -253,10 +289,20 @@ if (articles.length === 0) {
   };
 
   if (previous?.schemaVersion === 2 && signatureOf(previous) === signatureOf(rawReport)) {
+    await writeCollectSummary({
+      status: 'unchanged',
+      checkedAt,
+      ...summarizeArticles(articles, { now: new Date(checkedAt), sourceResults })
+    });
     console.log(`新闻无变化：${articles.length} 条，保留上次五语数据。`);
   } else {
     const report = await translateAndPublish(rawReport);
     articles = report.articles;
+    await writeCollectSummary({
+      status: 'ok',
+      checkedAt,
+      ...summarizeArticles(articles, { now: new Date(checkedAt), sourceResults })
+    });
     await sendEmail(report);
     console.log(`采集完成：${articles.length} 条新闻，五语数据与简体中文 RSS 已发布。`);
   }
