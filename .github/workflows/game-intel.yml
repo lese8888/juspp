@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: game-news-collect
@@ -89,3 +90,8 @@ jobs:
             exit 1
           fi
           echo 'changed=true' >> "$GITHUB_OUTPUT"
+      - name: 触发页面发布
+        if: steps.save.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
