@@ -74,6 +74,7 @@ function signatureOf(report) {
   return JSON.stringify((report?.articles || []).map(item => ({
     originalTitle: item.originalTitle,
     originalSummary: item.originalSummary,
+    originalContent: item.originalContent,
     url: item.url,
     timestamp: item.timestamp,
     source: item.source,
