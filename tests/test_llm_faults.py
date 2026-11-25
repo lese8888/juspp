@@ -1,4 +1,5 @@
 import json
+import http.client
 import threading
 import time
 import unittest
@@ -207,6 +208,23 @@ class LLMFaultTests(unittest.TestCase):
                     client.complete_json(system_prompt="system", user_prompt="user")
         self.assertTrue(context.exception.retryable)
         self.assertEqual(attempts, 2)
+
+    def test_incomplete_read_is_retryable(self):
+        client = OpenAICompatibleClient(
+            api_key="test",
+            base_url="http://127.0.0.1:1/v1",
+            model="test",
+            max_retries=2,
+        )
+        with mock.patch(
+            "translation.llm.urlopen",
+            side_effect=http.client.IncompleteRead(b"x", 1),
+        ) as request:
+            with mock.patch("translation.llm.time.sleep"):
+                with self.assertRaises(LLMRequestError) as context:
+                    client.complete_json(system_prompt="system", user_prompt="user")
+        self.assertTrue(context.exception.retryable)
+        self.assertEqual(request.call_count, 2)
 
 
 if __name__ == "__main__":

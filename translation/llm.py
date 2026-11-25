@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import http.client
 import json
 import random
 import re
@@ -190,6 +191,11 @@ class OpenAICompatibleClient:
             except (TimeoutError, URLError, OSError, json.JSONDecodeError) as error:
                 last_error = LLMRequestError(
                     f"模型请求失败：{type(error).__name__}：{error}",
+                    retryable=True,
+                )
+            except http.client.HTTPException as error:
+                last_error = LLMRequestError(
+                    f"模型 HTTP 连接异常：{type(error).__name__}：{error}",
                     retryable=True,
                 )
             if attempt < self.max_retries:

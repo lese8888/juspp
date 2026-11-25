@@ -70,14 +70,16 @@ PLACEHOLDER_PATTERN = re.compile(r"Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}|\[{1,4}\s*[A-Z]{
 NUMBER_TOKEN_PATTERN = r"(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)"
 COMPOSITE_NUMBER_PATTERN = re.compile(
     rf"(?<![A-Za-z0-9.])(?P<major>{NUMBER_TOKEN_PATTERN})\s*"
-    rf"(?P<major_unit>亿|億|억)\s*"
-    rf"(?:(?P<minor>{NUMBER_TOKEN_PATTERN})\s*(?P<minor_unit>万|萬|만))?",
+    rf"(?P<major_unit>亿|億|万|萬|억(?![\uac00-\ud7a3])|"
+    rf"만(?![\uac00-\ud7a3]))\s*"
+    rf"(?:(?P<minor>{NUMBER_TOKEN_PATTERN})"
+    rf"(?:\s*(?P<minor_unit>万|萬|亿|億|千|천|만(?![\uac00-\ud7a3])))?)?",
     re.IGNORECASE,
 )
 NUMBER_PATTERN = re.compile(
     rf"(?<![A-Za-z0-9.])(?P<number>{NUMBER_TOKEN_PATTERN})\s*"
     rf"(?P<unit>thousand|million|billion|m(?![A-Za-z])|k(?![A-Za-z])|b(?![A-Za-z])|"
-    rf"万|萬|亿|億|千|천|만|억|%|％)?",
+    rf"万|萬|亿|億|千|천|만(?![\uac00-\ud7a3])|억(?![\uac00-\ud7a3])|%|％)?",
     re.IGNORECASE,
 )
 
@@ -210,7 +212,10 @@ def _explicit_numbers(text: str) -> set[str]:
         value = major * major_unit
         if match.group("minor"):
             minor = _parse_number_token(match.group("minor"))
-            minor_unit = multipliers.get(match.group("minor_unit").lower(), 1)
+            minor_unit = multipliers.get(
+                (match.group("minor_unit") or "").lower(),
+                1,
+            )
             value += minor * minor_unit
         values.add(_canonical_number(value))
         consumed.append(match.span())
