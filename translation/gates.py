@@ -132,7 +132,7 @@ def validate_translation(
     if target_language in VALID_LANGUAGES and fields["content"]:
         language = detect_dominant_language(fields["content"])
         metrics["detectedLanguage"] = language
-        if not _language_matches(target_language, language):
+        if not _language_matches(target_language, language, fields["content"]):
             _hard(
                 failures,
                 "target_language_mismatch",
@@ -202,6 +202,7 @@ def validate_translation(
         _validate_full_l10n(
             source=source_body,
             candidate=fields["content"],
+            target_language=target_language,
             segments=segments,
             failures=failures,
             warnings=warnings,
@@ -256,6 +257,7 @@ def _validate_full_l10n(
     *,
     source: str,
     candidate: str,
+    target_language: str,
     segments: Sequence[dict[str, Any]] | None,
     failures: list[GateIssue],
     warnings: list[GateIssue],
@@ -268,17 +270,26 @@ def _validate_full_l10n(
     metrics["candidateCharCount"] = candidate_length
     metrics["lengthRatio"] = round(ratio, 4)
 
-    if source_length >= 800 and ratio < 0.35:
+    minimum_ratio = 0.25 if target_language == "zh-CN" else 0.35
+    warning_ratio = 0.45 if target_language == "zh-CN" else 0.55
+    if source_length >= 800 and ratio < minimum_ratio:
         _hard(
             failures,
             "full_content_probably_summarized",
             f"全文长度仅为原文的 {ratio:.1%}，疑似摘要冒充全文",
         )
-    elif source_length >= 800 and ratio < 0.55:
+    elif source_length >= 800 and ratio < warning_ratio:
         _warning(warnings, "short_full_translation", "全文长度明显短于原文")
 
-    if candidate.rstrip().endswith(BROKEN_ENDINGS):
+    source_incomplete = source.rstrip().endswith(BROKEN_ENDINGS)
+    if candidate.rstrip().endswith(BROKEN_ENDINGS) and not source_incomplete:
         _hard(failures, "content_ends_mid_sentence", "正文以未完成连接符或标点结束")
+    elif candidate.rstrip().endswith(BROKEN_ENDINGS):
+        _warning(
+            warnings,
+            "source_content_incomplete",
+            "原文本身在连接符或冒号处结束，候选保持相同边界",
+        )
     elif candidate and candidate.rstrip()[-1:] not in SENTENCE_ENDINGS + tuple("\"'”’）)]】"):
         _warning(warnings, "content_without_terminal_punctuation", "正文结尾没有明确句末标点")
 
@@ -373,11 +384,21 @@ def _validate_digest(
             _warning(warnings, "digest_copy_ratio_high", "摘要与原文重合度偏高")
 
 
-def _language_matches(target: str, detected: str) -> bool:
+def _language_matches(
+    target: str,
+    detected: str,
+    candidate_text: str = "",
+) -> bool:
     if detected == "unknown":
         return False
     if target == "zh-CN":
-        return detected == "zh-CN" or detected == "ja"
+        if detected == "zh-CN" or detected == "ja":
+            return True
+        if detected == "en":
+            han = len(CHINESE_PATTERN.findall(candidate_text))
+            latin = len(LATIN_PATTERN.findall(candidate_text))
+            return han >= 25 and han / max(1, latin) >= 0.25
+        return False
     return target == detected
 
 
@@ -393,6 +414,14 @@ def _is_risky_extra_number(number: str, candidate_text: str) -> bool:
     except ValueError:
         return True
     if not value.is_integer():
+        if abs(value) < 10:
+            normalized = unicodedata.normalize("NFKC", candidate_text)
+            critical_context = re.compile(
+                rf"(?:[$€£¥]\s*|货币单位\s*)?{re.escape(number)}"
+                r"\s*(?:%|％|元|美元|港元|달러|GB|TB|MB|fps|FPS|版本|version)",
+                re.IGNORECASE,
+            )
+            return bool(critical_context.search(normalized))
         return True
     if abs(value) >= 100:
         return True

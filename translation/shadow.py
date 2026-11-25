@@ -68,18 +68,29 @@ REPAIR_PROMPT = """你是资深游戏媒体编辑，正在修复一条未通过�
 FENCE_PATTERN = re.compile(r"```")
 PLACEHOLDER_PATTERN = re.compile(r"Q[\s-]*Z(?:[\s-]*[A-Z]){5,8}|\[{1,4}\s*[A-Z]{5,10}\s*\]{1,4}")
 NUMBER_TOKEN_PATTERN = r"(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)"
+KOREAN_MAN_PARTICLE = (
+    r"(?!\s*(?:보유|가진|가지|소유|있|없|이|은|는|도|을|를|의))"
+)
 COMPOSITE_NUMBER_PATTERN = re.compile(
     rf"(?<![A-Za-z0-9.])(?P<major>{NUMBER_TOKEN_PATTERN})\s*"
     rf"(?P<major_unit>亿|億|万|萬|억(?![\uac00-\ud7a3])|"
-    rf"만(?![\uac00-\ud7a3]))\s*"
+    rf"만(?![\uac00-\ud7a3]){KOREAN_MAN_PARTICLE})\s*"
     rf"(?:(?P<minor>{NUMBER_TOKEN_PATTERN})"
-    rf"(?:\s*(?P<minor_unit>千萬|千万|천만|万|萬|亿|億|千|천|만(?![\uac00-\ud7a3])))?)?",
+    rf"(?:\s*(?P<minor_unit>千萬|千万|천만|万|萬|亿|億|千|천|만(?![\uac00-\ud7a3]){KOREAN_MAN_PARTICLE}))?)?",
     re.IGNORECASE,
 )
 NUMBER_PATTERN = re.compile(
-    rf"(?<![A-Za-z0-9.])(?P<number>{NUMBER_TOKEN_PATTERN})\s*"
-    rf"(?P<unit>thousand|million|billion|m(?![A-Za-z])|k(?![A-Za-z])|b(?![A-Za-z])|"
-    rf"万|萬|亿|億|千|천|만(?![\uac00-\ud7a3])|억(?![\uac00-\ud7a3])|%|％)?",
+    rf"(?<![A-Za-z0-9.])(?P<number>{NUMBER_TOKEN_PATTERN})\+?\s*"
+    rf"(?P<unit>thousand|million|billion|trillion|bn|tn|m(?![A-Za-z])|k(?![A-Za-z])|b(?![A-Za-z])|"
+    rf"万|萬|亿|億|千|천|만(?![\uac00-\ud7a3]){KOREAN_MAN_PARTICLE}|억(?![\uac00-\ud7a3])|%|％)?",
+    re.IGNORECASE,
+)
+RANGE_WITH_UNIT_PATTERN = re.compile(
+    rf"(?<![A-Za-z0-9.])(?P<start>{NUMBER_TOKEN_PATTERN})\s*"
+    rf"(?:to|through|[-–—~〜]|至|到)\s*"
+    rf"(?P<end>{NUMBER_TOKEN_PATTERN})\+?\s*"
+    rf"(?P<unit>thousand|million|billion|trillion|bn|tn|m(?![A-Za-z])|k(?![A-Za-z])|b(?![A-Za-z])|"
+    rf"万|萬|亿|億|千|천|억(?![\uac00-\ud7a3]))",
     re.IGNORECASE,
 )
 
@@ -191,6 +202,9 @@ def _explicit_numbers(text: str) -> set[str]:
         "thousand": 1_000,
         "million": 1_000_000,
         "billion": 1_000_000_000,
+        "trillion": 1_000_000_000_000,
+        "bn": 1_000_000_000,
+        "tn": 1_000_000_000_000,
         "m": 1_000_000,
         "k": 1_000,
         "b": 1_000_000_000,
@@ -209,6 +223,11 @@ def _explicit_numbers(text: str) -> set[str]:
     }
     values: set[str] = set()
     consumed: list[tuple[int, int]] = []
+    for match in RANGE_WITH_UNIT_PATTERN.finditer(normalized):
+        multiplier = multipliers.get(match.group("unit").lower(), 1)
+        start = _parse_number_token(match.group("start"))
+        values.add(_canonical_number(start * multiplier))
+
     for match in COMPOSITE_NUMBER_PATTERN.finditer(normalized):
         major = _parse_number_token(match.group("major"))
         major_unit = multipliers.get(match.group("major_unit").lower(), 1)
@@ -227,7 +246,13 @@ def _explicit_numbers(text: str) -> set[str]:
         if any(start <= match.start() < end for start, end in consumed):
             continue
         if match.start() > 0 and normalized[match.start() - 1] == ":":
-            continue
+            number_text = match.group("number")
+            if (
+                match.start() > 1
+                and normalized[match.start() - 2].isdigit()
+                and len(number_text.replace(".", "")) <= 2
+            ):
+                continue
         number = _parse_number_token(match.group("number"))
         unit = (match.group("unit") or "").lower()
         number *= multipliers.get(unit, 1)
@@ -319,6 +344,21 @@ def extract_numbers(text: str) -> set[str]:
         ):
             if re.search(rf"\b{word}\s+{unit}\b", normalized_text):
                 values.add(_canonical_number(number * multiplier))
+    for match in re.finditer(
+        r"\b(?:a|an)\s+(thousand|million|billion|trillion)\b",
+        normalized_text,
+    ):
+        values.add(
+            _canonical_number(
+                {
+                    "thousand": 1_000,
+                    "million": 1_000_000,
+                    "billion": 1_000_000_000,
+                    "trillion": 1_000_000_000_000,
+                }[match.group(1)]
+            )
+        )
+    for word, number in number_words.items():
         if re.search(rf"\b{word}\s+decades?\b", normalized_text):
             values.add(_canonical_number(number * 10))
     if re.search(r"\bhalf(?!-)\b", normalized_text):

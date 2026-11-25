@@ -73,6 +73,76 @@ class TranslationGateTests(unittest.TestCase):
         self.assertFalse(report.passed)
         self.assertIn("full_content_probably_summarized", [x.code for x in report.hard_failures])
 
+    def test_dense_chinese_full_translation_is_not_treated_as_summary(self):
+        source = (
+            "PlayStation 5 reached 39 million players in 2026. "
+            "The platform team confirmed the milestone and continued to update live data. "
+        ) * 18
+        content = (
+            "PlayStation 5 在 2026 年达到 3900 万玩家。"
+            "平台团队确认了里程碑，并持续更新实时数据。"
+        ) * 12
+        report = validate(
+            source=source,
+            content=content,
+            policy="full_l10n",
+        )
+        self.assertNotIn(
+            "full_content_probably_summarized",
+            [x.code for x in report.hard_failures],
+        )
+
+    def test_source_ending_at_colon_does_not_fail_matching_candidate(self):
+        source = (
+            "The presentation will include the following announcements:\n\n"
+            + ("PlayStation 5 reached 39 million players in 2026. " * 20)
+            + "The final segment includes:"
+        )
+        content = (
+            "发布会将包含以下公告：\n\n"
+            + ("PlayStation 5 在 2026 年达到 3900 万玩家。" * 25)
+            + "最后环节包括："
+        )
+        report = validate(
+            source=source,
+            content=content,
+            policy="full_l10n",
+        )
+        self.assertNotIn(
+            "content_ends_mid_sentence",
+            [x.code for x in report.hard_failures],
+        )
+
+    def test_short_chinese_with_brand_names_is_accepted(self):
+        report = validate(
+            source="Attack on Titan 3 gameplay video released.",
+            title="Attack on Titan 3《城墙内探索》实机演示 - Gematsu",
+            summary="发行商 Koei Tecmo 与 Omega Force 发布了一段实机演示。",
+            content=(
+                "发行商 Koei Tecmo 与开发商 Omega Force 发布了"
+                "《Attack on Titan 3》的一段八分钟实机演示视频，聚焦墙内探索。"
+            ),
+            policy="full_l10n",
+        )
+        self.assertNotIn(
+            "target_language_mismatch",
+            [x.code for x in report.hard_failures],
+        )
+
+    def test_extra_small_decimal_is_warning_not_hard(self):
+        report = validate(
+            source="Lucia remained below deck for.1 mi ute e.",
+            title="Lucia below deck",
+            summary="A short bug report.",
+            content="Lucia remained below deck for 0.1 minutes in one report.",
+            language="en",
+            policy="digest",
+        )
+        self.assertNotIn(
+            "invented_numbers",
+            [x.code for x in report.hard_failures],
+        )
+
     def test_missing_or_reordered_segments_fail(self):
         source = "甲" * 90 + "\n\n" + "乙" * 90
         segments = [
