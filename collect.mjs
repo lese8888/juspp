@@ -9,6 +9,7 @@ import {
   escapeHtml,
   sortArticlesByHeat
 } from './lib/news.mjs';
+import { selectNewArticles } from './lib/candidate.mjs';
 import { assertFreshArticles, summarizeArticles } from './lib/freshness.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -70,19 +71,6 @@ async function readScraplingReport() {
   }
 }
 
-function signatureOf(report) {
-  return JSON.stringify((report?.articles || []).map(item => ({
-    originalTitle: item.originalTitle,
-    originalSummary: item.originalSummary,
-    originalContent: item.originalContent,
-    url: item.url,
-    timestamp: item.timestamp,
-    source: item.source,
-    sourceTypeKey: item.sourceTypeKey,
-    categoryKey: item.categoryKey
-  })));
-}
-
 async function readPreviousReport() {
   try {
     return JSON.parse(await fs.readFile(newsPath, 'utf8'));
@@ -106,6 +94,32 @@ function translationRecord(article, language) {
   return {
     title: article.title || article.originalTitle || '',
     summary: article.summary || article.originalSummary || ''
+  };
+}
+
+function productionTranslationSummary(report, newArticleCount) {
+  const translation = report.translation;
+  if (!translation) {
+    return {
+      engine: 'argos',
+      newArticleCount,
+      totalArticleCount: (report.articles || []).length
+    };
+  }
+  return {
+    engine: translation.engine || 'llm',
+    model: translation.model || '',
+    newArticleCount,
+    totalArticleCount: (report.articles || []).length,
+    requests: translation.requests,
+    tokens: translation.tokens,
+    estimatedCostCny: translation.estimatedCostCny,
+    durationSeconds: translation.durationSeconds,
+    cache: translation.cache,
+    budget: translation.budget,
+    warningCount: Array.isArray(translation.warnings)
+      ? translation.warnings.length
+      : 0
   };
 }
 
@@ -154,19 +168,29 @@ async function cleanupStage(directory, stageNews, stageRss, moved) {
   await fs.rmdir(directory).catch(() => {});
 }
 
-async function translateAndPublish(rawReport) {
+async function translateAndPublish(rawReport, previousReport) {
   const stageDirectory = await fs.mkdtemp(path.join(path.dirname(newsPath), '.game-intel-stage-'));
   const stageNews = path.join(stageDirectory, 'news.json');
   const stageRss = path.join(stageDirectory, 'rss.xml');
   await fs.writeFile(stageNews, `${JSON.stringify(rawReport, null, 2)}\n`, 'utf8');
 
   const python = process.env.PYTHON_EXECUTABLE || (process.platform === 'win32' ? 'python' : 'python3');
+  const baselineEnvironment = previousReport
+    ? {
+        BASELINE_NEWS_FILE: newsPath,
+        NEWS_BASELINE_MANIFEST: process.env.NEWS_BASELINE_MANIFEST ||
+          path.join(root, '.agent-baselines', 'manifest.json')
+      }
+    : {};
   const translation = spawnSync(python, ['translate_news.py'], {
     cwd: root,
     env: {
       ...process.env,
+      ...baselineEnvironment,
       NEWS_FILE: stageNews,
       RSS_FILE: stageRss,
+      LLM_CACHE_DIR: process.env.LLM_CACHE_DIR ||
+        path.join(root, '.shadow-cache'),
       SITE_URL: siteUrl
     },
     encoding: 'utf8',
@@ -283,20 +307,27 @@ if (freshnessSummary) {
     articles
   };
 
-  if (previous?.schemaVersion === 2 && signatureOf(previous) === signatureOf(rawReport)) {
+  const newArticles = selectNewArticles(previous, rawReport);
+  if ([2, 3].includes(previous?.schemaVersion) && newArticles.length === 0) {
     await writeCollectSummary({
       status: 'unchanged',
       checkedAt,
-      ...summarizeArticles(articles, { now: new Date(checkedAt), sourceResults })
+      ...summarizeArticles(articles, { now: new Date(checkedAt), sourceResults }),
+      translation: {
+        engine: previous.translationEngine || 'existing',
+        newArticleCount: 0,
+        totalArticleCount: previous.articles.length
+      }
     });
-    console.log(`新闻无变化：${articles.length} 条，保留上次五语数据。`);
+    console.log(`没有新文章：采集 ${articles.length} 条，保留既有五语数据。`);
   } else {
-    const report = await translateAndPublish(rawReport);
+    const report = await translateAndPublish(rawReport, previous);
     articles = report.articles;
     await writeCollectSummary({
       status: 'ok',
       checkedAt,
-      ...summarizeArticles(articles, { now: new Date(checkedAt), sourceResults })
+      ...summarizeArticles(articles, { now: new Date(checkedAt), sourceResults }),
+      translation: productionTranslationSummary(report, newArticles.length)
     });
     await sendEmail(report);
     console.log(`采集完成：${articles.length} 条新闻，五语数据与简体中文 RSS 已发布。`);

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import hashlib
 import os
@@ -9,9 +10,11 @@ from datetime import datetime, timezone
 from email.utils import format_datetime
 from html import unescape
 from pathlib import Path
-from typing import Callable, Protocol
+from typing import Any, Callable, Protocol, Sequence
 from urllib.parse import urlparse
 from xml.sax.saxutils import escape
+
+from translation.protected_articles import validate_candidate_articles
 
 
 ROOT = Path(__file__).resolve().parent
@@ -455,6 +458,20 @@ def normalize_article(
     return normalized
 
 
+def normalize_source_articles(
+    report: dict,
+    source_configs: dict[str, dict] | None = None,
+) -> list[dict]:
+    """规范化并验证输入文章，不修改调用方传入的报告。"""
+
+    normalized_articles = []
+    for raw_article in report.get("articles", []):
+        article = normalize_article(raw_article, source_configs)
+        validate_article(article)
+        normalized_articles.append(article)
+    return normalized_articles
+
+
 def translate_articles(
     report: dict,
     service: TranslationService,
@@ -464,9 +481,7 @@ def translate_articles(
     cache: dict[tuple[str, str], str] = {}
     translated_articles = []
 
-    for raw_article in report.get("articles", []):
-        article = normalize_article(raw_article, source_configs)
-        validate_article(article)
+    for article in normalize_source_articles(report, source_configs):
         original_title = article["originalTitle"].strip()
         original_summary = article["originalSummary"].strip()
         original_content = article["originalContent"].strip()
@@ -530,6 +545,44 @@ def translate_articles(
     )
 
 
+def translate_normalized_articles(
+    articles: Sequence[dict],
+    service: TranslationService,
+) -> list[dict]:
+    """用当前离线引擎翻译已经通过输入验证的文章。"""
+
+    return translate_articles(
+        {"articles": list(articles)},
+        service,
+    )
+
+
+def normalized_url(value: object) -> str:
+    """生成文章去重键；不修改 URL 的公开值。"""
+
+    return str(value or "").strip().rstrip("/").lower()
+
+
+def merge_existing_articles(
+    existing_articles: Sequence[dict],
+    translated_new_articles: Sequence[dict],
+) -> list[dict]:
+    """原样保留既有文章，只把新文章追加到末尾。"""
+
+    merged = [dict(article) for article in existing_articles]
+    existing_urls = {
+        normalized_url(article.get("url")) for article in merged
+    }
+    for article in translated_new_articles:
+        url = normalized_url(article.get("url"))
+        if url and url in existing_urls:
+            continue
+        merged.append(dict(article))
+        if url:
+            existing_urls.add(url)
+    return merged
+
+
 def cached_translation(
     service: TranslationService,
     cache: dict[tuple[str, str], str],
@@ -587,6 +640,13 @@ def make_rss(articles: list[dict], period_hours: int, site_url: str) -> str:
     items = []
     for article in articles:
         localized = article["translations"]["zh-CN"]
+        content_policy = str(
+            article.get("contentPolicy")
+            or (article.get("translationInfo") or {}).get("contentPolicy")
+            or "full_l10n"
+        )
+        content_mode = "内容摘要" if content_policy == "digest" else "完整译文"
+        description = f"【{content_mode}】{localized['summary']}"
         published = datetime.fromtimestamp(
             int(article["timestamp"]) / 1000, timezone.utc
         )
@@ -594,7 +654,7 @@ def make_rss(articles: list[dict], period_hours: int, site_url: str) -> str:
             "\n    <item>"
             f"\n      <title>{xml_text(localized['title'])}</title>"
             f"\n      <link>{xml_text(article['url'])}</link>"
-            f"\n      <description>{xml_text(localized['summary'])}</description>"
+            f"\n      <description>{xml_text(description)}</description>"
             f"\n      <pubDate>{format_datetime(published, usegmt=True)}</pubDate>"
             f"\n      <guid isPermaLink=\"true\">{xml_text(article['url'])}</guid>"
             f"\n      <category>{xml_text(article['categoryKey'])}</category>"
@@ -609,6 +669,24 @@ def make_rss(articles: list[dict], period_hours: int, site_url: str) -> str:
         f"  <language>zh-CN</language>{''.join(items)}\n"
         "</channel></rss>\n"
     )
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """解析生产入口参数；默认引擎保持 Argos。"""
+
+    parser = argparse.ArgumentParser(description="游闻五语生产翻译")
+    parser.add_argument(
+        "--translation-engine",
+        choices=("argos", "llm"),
+        default=os.environ.get("TRANSLATION_ENGINE", "argos"),
+    )
+    parser.add_argument("--baseline-news-file", type=Path)
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=ROOT / ".agent-baselines" / "manifest.json",
+    )
+    return parser.parse_args(argv)
 
 
 def write_text_atomic(path: Path, content: str) -> None:
@@ -629,32 +707,130 @@ def main(
     news_file: Path | None = None,
     rss_file: Path | None = None,
     service: TranslationService | None = None,
+    *,
+    translation_engine: str | None = None,
+    baseline_news_file: Path | None = None,
+    manifest_path: Path | None = None,
+    llm_engine: Any | None = None,
 ) -> None:
     news_path = news_file or Path(os.environ.get("NEWS_FILE", ROOT / "news.json"))
     rss_path = rss_file or Path(os.environ.get("RSS_FILE", ROOT / "rss.xml"))
     site_url = os.environ.get("SITE_URL", DEFAULT_SITE_URL)
-    translator = service or OfflineTranslationService()
+    engine_name = (
+        translation_engine
+        or os.environ.get("TRANSLATION_ENGINE", "argos")
+    ).strip().lower()
+    if engine_name not in {"argos", "llm"}:
+        raise ValueError(f"不支持的翻译引擎：{engine_name}")
+
+    baseline_path = baseline_news_file
+    if baseline_path is None:
+        environment_baseline = os.environ.get("BASELINE_NEWS_FILE", "").strip()
+        if environment_baseline:
+            baseline_path = Path(environment_baseline)
+    manifest = manifest_path or Path(
+        os.environ.get(
+            "NEWS_BASELINE_MANIFEST",
+            ROOT / ".agent-baselines" / "manifest.json",
+        )
+    )
+
     report = json.loads(news_path.read_text(encoding="utf-8"))
     sources = json.loads((ROOT / "sources.json").read_text(encoding="utf-8"))
     source_configs = {source["名称"]: source for source in sources.get("来源", [])}
-    translated_articles = translate_articles(report, translator, source_configs)
+    normalized_articles = normalize_source_articles(report, source_configs)
 
-    output = {
+    existing_articles: list[dict] = []
+    if baseline_path is not None:
+        existing_payload = json.loads(baseline_path.read_text(encoding="utf-8"))
+        existing_articles = list(existing_payload.get("articles") or [])
+    elif engine_name == "llm":
+        raise RuntimeError(
+            "LLM 生产模式必须通过 BASELINE_NEWS_FILE 提供既有生产数据，"
+            "以保留冻结文章。"
+        )
+
+    existing_urls = {
+        normalized_url(article.get("url"))
+        for article in existing_articles
+    }
+    new_articles = [
+        article
+        for article in normalized_articles
+        if normalized_url(article.get("url")) not in existing_urls
+    ]
+
+    translation_metadata: dict[str, Any] | None = None
+    if engine_name == "argos":
+        translator = service or OfflineTranslationService()
+        translated_new_articles = translate_normalized_articles(
+            new_articles,
+            translator,
+        )
+        public_engine = "Argos Translate + OpenCC"
+    else:
+        if llm_engine is None:
+            from translation.engine import (
+                LLMProductionEngine,
+                config_from_environment,
+                create_client_from_environment,
+            )
+
+            llm_engine = LLMProductionEngine(
+                client=create_client_from_environment(),
+                config=config_from_environment(),
+                source_document=report,
+            )
+        llm_result = llm_engine.translate(new_articles)
+        translated_new_articles = list(llm_result.articles)
+        translation_metadata = dict(llm_result.metadata)
+        public_engine = (
+            f"LLM / {translation_metadata.get('model') or 'unknown'}"
+        )
+
+    translated_articles = merge_existing_articles(
+        existing_articles,
+        translated_new_articles,
+    )
+    if baseline_path is not None:
+        validate_candidate_articles(
+            translated_articles,
+            manifest,
+            mode="production",
+        )
+
+    output: dict[str, Any] = {
         "schemaVersion": 2,
         "supportedLanguages": list(SUPPORTED_LANGUAGES),
         "defaultLanguage": DEFAULT_LANGUAGE,
         "generatedAt": report["generatedAt"],
         "timezone": report["timezone"],
         "periodHours": int(report["periodHours"]),
-        "sourceCount": int(report["sourceCount"]),
-        "translationEngine": "Argos Translate + OpenCC",
+        "sourceCount": len(
+            {
+                str(article.get("sourceKey") or article.get("source") or "")
+                for article in translated_articles
+                if article.get("sourceKey") or article.get("source")
+            }
+        ),
+        "translationEngine": public_engine,
         "articles": translated_articles,
     }
+    if translation_metadata is not None:
+        output["translation"] = translation_metadata
     rss = make_rss(translated_articles, output["periodHours"], site_url)
     write_text_atomic(news_path, json.dumps(output, ensure_ascii=False, indent=2) + "\n")
     write_text_atomic(rss_path, rss)
-    print(f"五语翻译完成：{len(translated_articles)} 条新闻，简体中文 RSS 已生成。")
+    print(
+        f"五语翻译完成：新增 {len(translated_new_articles)} 条，"
+        f"总计 {len(translated_articles)} 条；简体中文 RSS 已生成。"
+    )
 
 
 if __name__ == "__main__":
-    main()
+    arguments = parse_args()
+    main(
+        translation_engine=arguments.translation_engine,
+        baseline_news_file=arguments.baseline_news_file,
+        manifest_path=arguments.manifest,
+    )

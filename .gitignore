@@ -4,5 +4,7 @@ __pycache__/
 node_modules/
 test-artifacts/
 .shadow-output/
+.shadow-cache/
+.qa-output/
 .wrangler/
 scrapling-raw.json

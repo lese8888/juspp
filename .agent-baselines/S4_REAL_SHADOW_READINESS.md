@@ -35,16 +35,15 @@ Variable: LLM_MODEL=deepseek-flash
 预算门禁会在每次请求前预留最坏成本，失败请求也保留保守预留；任一上限
 触线都会停止后续模型调用。
 
-另外，当前 S1–S3 代码仍在工作区：
+当前工作已提交到独立分支：
 
 ```text
-HEAD: d233e6d
-工作区：有未提交改动
-远端 runner：尚无这些 S2/S3 代码
+分支：codex/full-l10n-shadow-s4
+基础结果提交：5f775f0
 ```
 
-当前已获准提交到独立 `codex/` 分支并从该分支手动触发影子工作流。生产
-`main`、Pages 和邮件发送仍然禁止。
+生产 `main`、Pages 发布、邮件发送和定时采集仍然禁止。S5 生产适配代码可在
+该分支继续开发和验收，但不能据此认定生产已经完成切流。
 
 ## 四、建议的批准参数
 
@@ -95,4 +94,6 @@ manual_quality_review: pending
 production_switch_ready: false
 news_75_frozen: true
 production_files_modified: false
+s5_code_ready_in_branch: true
+s5_published: false
 ```

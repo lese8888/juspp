@@ -80,3 +80,33 @@ test('Actions 摘要包含失败来源', () => {
   assert.match(markdown, /结果：失败/);
   assert.match(markdown, /Example：timeout/);
 });
+
+test('Actions 摘要包含翻译、预算和缓存统计', () => {
+  const markdown = renderCollectSummary({
+    status: 'ok',
+    checkedAt: '2026-11-24T02:00:00.000Z',
+    articleCount: 76,
+    last24hCount: 1,
+    todayHktCount: 1,
+    todayHktDate: '2026-11-24',
+    latestPublishedAt: '2026-11-24T01:30:00.000Z',
+    successfulSourceCount: 1,
+    sourceCount: 1,
+    failedSources: [],
+    translation: {
+      engine: 'llm',
+      model: 'test-model',
+      newArticleCount: 1,
+      totalArticleCount: 76,
+      requests: 4,
+      tokens: { input: 100, output: 200 },
+      estimatedCostCny: 0.12,
+      durationSeconds: 8.5,
+      cache: { hits: 1, misses: 3 },
+      warningCount: 0
+    }
+  });
+  assert.match(markdown, /llm \/ test-model/);
+  assert.match(markdown, /100 输入 \/ 200 输出/);
+  assert.match(markdown, /1 命中 \/ 3 未命中/);
+});

@@ -1,14 +1,29 @@
 # 部署与发布
 
+> 当前状态（2026-11-25）：生产定时采集已停用，`main` 仍使用 Argos 和原
+> 75 条冻结数据。LLM 生产入口已经实现，但必须在 S4 内容签收、75 篇影子、
+> Dry Run、回滚演练和人工灰度之后才能发布。
+
 ## GitHub Pages
 
-正式采集流程为 `.github/workflows/game-intel.yml`，每天香港时间 08:00（UTC `0 0 * * *`）运行，也支持手动触发。它安装 Scrapling、Argos Translate、OpenCC 和 Node 依赖，缓存离线翻译模型，从各来源的公开列表页或 sitemap 采集最近 24 小时新闻，并在采集后验证最新原文距离当前不超过 26 小时，生成五种语言的数据后把有变化的内容提交回 `main`。手动触发不会发送邮件，只有每天定时任务发送一次汇总。
+正式采集流程为 `.github/workflows/game-intel.yml`。冻结验证期内只允许手动触发，不恢复定时任务。它安装 Scrapling、Argos Translate、OpenCC 和 Node 依赖，从各来源的公开列表页或 sitemap 采集最近 24 小时新闻，验证最新原文距离当前不超过 26 小时，并只把冻结基线之外的新文章追加到既有数据末尾。
+
+工作流提供 `translation_engine` 手动选项：
+
+```text
+argos：默认生产引擎，保持现有行为
+llm：显式选用的生产候选引擎，单次费用硬上限 ¥20，硬截止 60 分钟
+```
+
+LLM 模式失败时整批任务失败，不会静默回退并覆盖数据。人工触发不会发送邮件；恢复定时任务后才允许发送每日汇总。
 
 静态发布由独立的 `.github/workflows/pages.yml` 完成。`index.html`、`news.json` 或 `rss.xml` 更新后，它会自动打包发布 GitHub Pages，避免采集任务与静态发布任务互相阻塞。
 
+采集提交前和 Pages 复制、部署前都会执行新闻冻结校验。原 75 条必须保持原字段、原顺序和原哈希；新增文章只能追加。任一校验失败都会停止提交或发布，并保留上一份有效线上数据。
+
 仓库公开时可以使用标准 GitHub-hosted runner 与 GitHub Pages。首次部署前，在仓库 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**。站点地址为 `https://lese8888.github.io/juspp/`，简体中文 RSS 为 `https://lese8888.github.io/juspp/rss.xml`。
 
-采集结果只有在全部新闻的五种语言标题和摘要都通过校验后才会替换 `news.json` 与 `rss.xml`。任一模型缺失、摘要为空或翻译结果残缺时，任务失败并保留上一份有效数据，不发布部分语言。
+采集结果只有在全部新增文章的五种语言标题、摘要、正文和质量闸门都通过校验后才会替换 `news.json` 与 `rss.xml`。任一模型缺失、摘要为空、数字错误或翻译结果残缺时，任务失败并保留上一份有效数据，不发布部分语言。
 
 Actions 摘要会列出新闻总数、过去 24 小时数量、香港当天发布数量、最新原文时间、来源成功数和失败来源，便于确认每日任务是否真正更新。
 
@@ -67,6 +82,30 @@ npm run check
 - `/news.json` 与 `/api/news.json`：`schemaVersion: 2` 公开新闻数据
 - `/rss.xml`：继续使用 `translations["zh-CN"]` 的简体中文 RSS
 
+页面和 Worker 同时兼容过渡期 `schemaVersion: 2` 与影子 `schemaVersion: 3`。旧数据缺少 `contentPolicy` 时按“完整译文”显示；LLM 新文章按实际策略显示“完整译文”或“内容摘要”。
+
+## 回滚
+
+发布前必须保存当次 `news.json`、`rss.xml` 的哈希和发布提交。出现正文截断、
+关键数字错误、大面积字段缺失、成本失控、Pages 异常或线上接口不一致时：
+
+```bash
+git revert <问题提交>
+git push origin main
+gh workflow run pages.yml --ref main
+```
+
+随后验证：
+
+```text
+https://lese8888.github.io/juspp/news.json
+https://lese8888.github.io/juspp/rss.xml
+https://youwen-game-news.game-intel-brief.workers.dev/api/news.json
+```
+
+回滚后页面必须恢复上一份通过冻结校验的数据。LLM 任务继续保持停用，直到
+故障原因定位、修复并通过 Dry Run。
+
 ## 边界
 
-本轮只展示来源页面提供的公开标题和摘要，不抓取文章完整正文，不增加历史归档或独立五语 RSS。机器翻译用于阅读辅助，专有名词、数字和传闻应以原文链接为准。
+当前线上数据继续只展示来源页面提供的公开标题、摘要和正文，不增加独立五语 RSS。冻结的 75 条新闻不会因为采集、重译或灰度被替换。机器翻译用于阅读辅助，专有名词、数字和传闻应以原文链接为准。

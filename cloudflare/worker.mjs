@@ -1,5 +1,7 @@
 const ORIGIN = 'https://lese8888.github.io/juspp/';
-const CACHE_NAMESPACE = '2';
+// schema v2 与 v3 共用同一公开路由，缓存命名空间升级可避免边缘节点
+// 在上线切换后的五分钟内混用两种数据。
+const CACHE_NAMESPACE = 'schema-v2-v3-1';
 const CACHE_SECONDS = 300;
 
 const ROUTES = new Map([

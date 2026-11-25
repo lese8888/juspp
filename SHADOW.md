@@ -29,7 +29,8 @@ mock 结果只验证程序链路，不代表模型翻译质量。
 ```text
 engine=llm
 limit=20
-language=空（生成 zh-CN、en、ja、ko，zh-TW 由 OpenCC 生成）
+language=all（生成 zh-CN、en、ja、ko，zh-TW 由 OpenCC 生成）
+content_mode=mixed（按 5000 英文词 / 2000 汉字路由全文或摘要）
 ```
 
 任何单篇硬失败都会让工作流失败，但候选和报告仍会上传，供定位问题。
@@ -41,7 +42,9 @@ language=空（生成 zh-CN、en、ja、ko，zh-TW 由 OpenCC 生成）
 
 ## 当前边界
 
-- 内容模式：500 字摘要，`digest`；
+- 真实 20 篇全文影子已通过自动闸门，运行 ID `45535747280`；
+- 当前 75 篇预计全部为 `full_l10n`，真实 75 篇影子尚未执行；
+- 人工五语内容质量签收仍待完成；
 - 不覆盖正式新闻数据；
 - 不发送邮件；
 - 不触发页面发布；
