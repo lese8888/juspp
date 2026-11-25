@@ -10,6 +10,8 @@ from typing import Any, Literal, Sequence
 
 from .cache import CacheEligibility
 from .routing import CONTENT_ROUTING_VERSION
+from .shadow import extract_numbers as _extract_numbers
+from .shadow import extract_required_numbers as _extract_required_numbers
 
 
 VALID_LANGUAGES = frozenset({"zh-CN", "en", "ja", "ko"})
@@ -23,7 +25,7 @@ NUMBER_PATTERN = re.compile(
     re.IGNORECASE,
 )
 SENTENCE_ENDINGS = tuple(".!?。！？")
-BROKEN_ENDINGS = tuple(",，:：、-–—/")
+BROKEN_ENDINGS = tuple(",，:：、-–—")
 ENGLISH_WORD_PATTERN = re.compile(r"[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*")
 CHINESE_PATTERN = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
 JAPANESE_KANA_PATTERN = re.compile(r"[\u3040-\u30ff\u31f0-\u31ff]")
@@ -89,6 +91,7 @@ def validate_translation(
     *,
     source_text: str,
     source_body_text: str | None = None,
+    critical_source_text: str | None = None,
     candidate_title: str,
     candidate_summary: str,
     candidate_content: str,
@@ -136,27 +139,49 @@ def validate_translation(
                 f"目标语言为 {target_language}，实际主导语言为 {language}",
             )
 
-    source_numbers = extract_required_numbers(source)
-    candidate_numbers = extract_required_numbers(
+    source_numbers = _extract_numbers(source)
+    candidate_numbers = _extract_numbers(
         "\n".join(fields.values())
     )
-    missing_numbers = sorted(source_numbers - candidate_numbers)
+    required_numbers = _extract_required_numbers(
+        critical_source_text if critical_source_text is not None else source
+    )
+    missing_numbers = sorted(required_numbers - candidate_numbers)
     extra_numbers = sorted(candidate_numbers - source_numbers)
+    risky_extra_numbers = sorted(
+        number
+        for number in extra_numbers
+        if _is_risky_extra_number(
+            number,
+            "\n".join(fields.values()),
+        )
+    )
+    minor_extra_numbers = sorted(
+        set(extra_numbers) - set(risky_extra_numbers)
+    )
     metrics["sourceNumbers"] = sorted(source_numbers)
     metrics["candidateNumbers"] = sorted(candidate_numbers)
     metrics["missingNumbers"] = missing_numbers
     metrics["extraNumbers"] = extra_numbers
+    metrics["riskyExtraNumbers"] = risky_extra_numbers
+    metrics["minorExtraNumbers"] = minor_extra_numbers
     if missing_numbers:
         _hard(
             failures,
             "missing_required_numbers",
             f"候选缺少原文数字：{', '.join(missing_numbers)}",
         )
-    if extra_numbers:
+    if risky_extra_numbers:
         _hard(
             failures,
             "invented_numbers",
-            f"候选新增原文不存在的数字：{', '.join(extra_numbers)}",
+            f"候选新增原文不存在的高风险数字：{', '.join(risky_extra_numbers)}",
+        )
+    elif minor_extra_numbers:
+        _warning(
+            warnings,
+            "extra_small_numbers",
+            f"候选含原文未出现的非关键小数字：{', '.join(minor_extra_numbers)}",
         )
 
     normalized_source = _normalize_text(source)
@@ -202,34 +227,9 @@ def validate_translation(
 
 
 def extract_required_numbers(text: str) -> set[str]:
-    """提取显式数字并归一化千、万、百万、十亿和百分比单位。"""
+    """复用影子模块的稳健数字解析和中文数量词归一化。"""
 
-    normalized = unicodedata.normalize("NFKC", str(text or ""))
-    multipliers = {
-        "thousand": 1_000,
-        "million": 1_000_000,
-        "billion": 1_000_000_000,
-        "千": 1_000,
-        "천": 1_000,
-        "万": 10_000,
-        "萬": 10_000,
-        "만": 10_000,
-        "亿": 100_000_000,
-        "億": 100_000_000,
-        "억": 100_000_000,
-        "%": 1,
-        "％": 1,
-    }
-    values: set[str] = set()
-    for match in NUMBER_PATTERN.finditer(normalized):
-        number = float(match.group("number").replace(",", ""))
-        multiplier = multipliers.get((match.group("unit") or "").lower(), 1)
-        value = number * multiplier
-        if value.is_integer():
-            values.add(str(int(value)))
-        else:
-            values.add(f"{value:.6f}".rstrip("0").rstrip("."))
-    return values
+    return _extract_required_numbers(str(text or ""))
 
 
 def detect_dominant_language(text: str) -> str:
@@ -383,6 +383,27 @@ def _language_matches(target: str, detected: str) -> bool:
 
 def _normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", str(text or ""))).strip().lower()
+
+
+def _is_risky_extra_number(number: str, candidate_text: str) -> bool:
+    """忽略列表编号等普通小整数，保留金额、数量、年份和带单位数字。"""
+
+    try:
+        value = float(number)
+    except ValueError:
+        return True
+    if not value.is_integer():
+        return True
+    if abs(value) >= 100:
+        return True
+    normalized = unicodedata.normalize("NFKC", candidate_text)
+    unit_pattern = re.compile(
+        rf"(?<!\d){re.escape(number)}\s*"
+        r"(?:%|％|万|萬|亿|億|千|million|billion|thousand|元|美元|달러|명|人|次|年|月|日|"
+        r"GB|TB|MB|FPS|fps)",
+        re.IGNORECASE,
+    )
+    return bool(unit_pattern.search(normalized))
 
 
 def _hard(issues: list[GateIssue], code: str, message: str) -> None:

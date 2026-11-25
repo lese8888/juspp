@@ -302,6 +302,10 @@ def _gate_candidate(
             )
         ),
         source_body_text=str(article.get("originalContent") or ""),
+        critical_source_text="\n".join(
+            str(article.get(field) or "")
+            for field in ("originalTitle", "originalSummary")
+        ),
         candidate_title=candidate.title,
         candidate_summary=candidate.summary,
         candidate_content=candidate.content,
