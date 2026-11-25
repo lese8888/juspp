@@ -60,10 +60,10 @@ jobs:
           mkdir -p .shadow-output
           printf '%s\n' '{"status":"not_started","shadow":true,"productionFilesModified":false}' > .shadow-output/translation-report.json
       - name: 恢复影子翻译缓存
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: .shadow-cache
-          key: youwen-shadow-cache-v1-${{ runner.os }}-${{ hashFiles('translation/**/*.py', 'shadow_translate.py', '.agent-baselines/news-75-1fd6c3b33383.json') }}
+          key: youwen-shadow-cache-v1-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             youwen-shadow-cache-v1-${{ runner.os }}-
       - name: 运行影子任务测试
@@ -123,6 +123,12 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
           retention-days: 14
+      - name: 保存影子翻译缓存
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .shadow-cache
+          key: youwen-shadow-cache-v1-${{ runner.os }}-${{ github.run_id }}
       - name: 写入影子任务摘要
         if: always()
         run: |

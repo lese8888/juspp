@@ -76,7 +76,8 @@ COMPOSITE_NUMBER_PATTERN = re.compile(
 )
 NUMBER_PATTERN = re.compile(
     rf"(?<![A-Za-z0-9.])(?P<number>{NUMBER_TOKEN_PATTERN})\s*"
-    rf"(?P<unit>thousand|million|billion|万|萬|亿|億|千|천|만|억|%|％)?",
+    rf"(?P<unit>thousand|million|billion|m(?![A-Za-z])|k(?![A-Za-z])|b(?![A-Za-z])|"
+    rf"万|萬|亿|億|千|천|만|억|%|％)?",
     re.IGNORECASE,
 )
 
@@ -188,6 +189,9 @@ def _explicit_numbers(text: str) -> set[str]:
         "thousand": 1_000,
         "million": 1_000_000,
         "billion": 1_000_000_000,
+        "m": 1_000_000,
+        "k": 1_000,
+        "b": 1_000_000_000,
         "千": 1_000,
         "천": 1_000,
         "万": 10_000,

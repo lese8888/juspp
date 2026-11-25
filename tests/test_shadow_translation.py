@@ -188,6 +188,10 @@ class ShadowTranslationTests(unittest.TestCase):
     def test_number_normalization_handles_million_and_wan(self):
         self.assertIn("39000000", extract_numbers("39 million"))
         self.assertIn("39000000", extract_numbers("3900 万"))
+        self.assertIn("10000000", extract_numbers("peaked over 10m"))
+        self.assertIn("5000", extract_numbers("5k users"))
+        self.assertIn("3790000000", extract_numbers("$3.79b"))
+        self.assertIn("10", extract_numbers("10MB update"))
         self.assertIn("11", extract_numbers("November 22, 2026"))
         self.assertIn("1901", extract_numbers("同时在线创下1,901人纪录"))
         self.assertNotIn("49", extract_numbers("同时在线创下1,901人纪录"))

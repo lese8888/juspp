@@ -409,6 +409,7 @@ def run_mixed_shadow(
     ]
     results: dict[tuple[str, str], Candidate] = {}
     failures: list[dict[str, Any]] = []
+    failed_candidates: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
     policy_mismatch_count = 0
 
@@ -491,6 +492,14 @@ def run_mixed_shadow(
                             }
                         )
                 if candidate.gate is not None and not candidate.gate.passed:
+                    failed_candidates.append(
+                        {
+                            "articleId": identifier,
+                            "language": language,
+                            "candidate": _language_output(candidate),
+                            "gate": candidate.gate.as_dict(),
+                        }
+                    )
                     failures.append(
                         {
                             "articleId": identifier,
@@ -713,6 +722,11 @@ def run_mixed_shadow(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    if failed_candidates:
+        (config.output_dir / "failed-candidates.json").write_text(
+            json.dumps(failed_candidates, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary_path:
         with open(summary_path, "a", encoding="utf-8") as handle:
