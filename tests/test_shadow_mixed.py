@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from translation.gates import GateIssue, GateReport
 from translation.llm import ChatUsage
 from translation.mixed_shadow import (
     Candidate,
@@ -313,6 +314,50 @@ class MixedShadowTests(unittest.TestCase):
             self.assertEqual(second["estimatedCostCny"], 0)
             self.assertEqual(second["budget"]["maxCostCny"], 20.0)
             self.assertEqual(second["hardDeadlineMinutes"], 60.0)
+
+    def test_failed_cached_candidate_is_regenerated_as_miss(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_file = write_document(root, [short_article()])
+            client = FakeLLM()
+            config = MixedShadowConfig(
+                input_file=input_file,
+                output_dir=root / "shadow",
+                limit=1,
+                engine="llm",
+                language="zh-CN",
+                cache_dir=root / "cache",
+            )
+            first = run_mixed_shadow(
+                config,
+                client=client,
+                zh_tw_converter=lambda value: value,
+            )
+            self.assertEqual(first["status"], "passed")
+            with mock.patch(
+                "translation.mixed_shadow._gate_candidate",
+                side_effect=[
+                    GateReport(
+                        content_policy="full_l10n",
+                        target_language="zh-CN",
+                        hard_failures=(
+                            GateIssue(code="stale_cache", message="旧缓存失效"),
+                        ),
+                    ),
+                    GateReport(
+                        content_policy="full_l10n",
+                        target_language="zh-CN",
+                    ),
+                ],
+            ):
+                second = run_mixed_shadow(
+                    config,
+                    client=client,
+                    zh_tw_converter=lambda value: value,
+                )
+            self.assertEqual(second["status"], "passed")
+            self.assertEqual(second["cache"]["rejectedHits"], 1)
+            self.assertEqual(second["generatedArticles"], 1)
 
     def test_real_mode_budget_hard_limit_stops_before_request(self):
         with tempfile.TemporaryDirectory() as directory:

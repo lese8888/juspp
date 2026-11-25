@@ -194,6 +194,8 @@ class ShadowTranslationTests(unittest.TestCase):
         self.assertIn("10", extract_numbers("10MB update"))
         self.assertIn("25000", extract_numbers("英国の2万5000人が利用"))
         self.assertIn("25000", extract_numbers("영국 플레이어 2만 5천 명"))
+        self.assertIn("3790000000", extract_numbers("37억 9천만 달러"))
+        self.assertIn("2360000000", extract_numbers("23억 6천만 달러"))
         bad_korean = extract_numbers("GTA 6만큼 좋은 게임")
         self.assertIn("6", bad_korean)
         self.assertNotIn("60000", bad_korean)

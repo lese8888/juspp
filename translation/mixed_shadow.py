@@ -412,6 +412,7 @@ def run_mixed_shadow(
     failed_candidates: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
     policy_mismatch_count = 0
+    cache_rejected_hits: list[dict[str, Any]] = []
 
     def execute(article: dict[str, Any], language: str) -> Candidate:
         identifier = article_id(article)
@@ -440,7 +441,18 @@ def run_mixed_shadow(
                 )
                 if candidate.gate.passed:
                     return candidate
-                raise ValueError("缓存结果未通过当前质量闸门")
+                # 闸门升级或数字解析修正后，旧缓存可能不再有效。此时
+                # 应回退为 miss 重新生成，而不是让整篇任务失败。
+                cache_rejected_hits.append(
+                    {
+                        "articleId": identifier,
+                        "language": language,
+                        "failures": [
+                            issue.code
+                            for issue in candidate.gate.hard_failures
+                        ],
+                    }
+                )
 
         candidate = _generate_candidate(
             client=effective_client,
@@ -642,6 +654,8 @@ def run_mixed_shadow(
             "rejected_writes": 0,
         }
     )
+    cache_stats["rejectedHits"] = len(cache_rejected_hits)
+    cache_stats["rejectedHitDetails"] = cache_rejected_hits
     budget_snapshot = (
         budgeted_client.snapshot().as_dict()
         if budgeted_client is not None
