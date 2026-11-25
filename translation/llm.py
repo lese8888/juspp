@@ -173,6 +173,7 @@ class OpenAICompatibleClient:
                 return content, usage
             except HTTPError as error:
                 detail = error.read().decode("utf-8", errors="replace")[:500]
+                error.close()
                 retryable = error.code == 429 or 500 <= error.code < 600
                 last_error = LLMRequestError(
                     f"模型接口 HTTP {error.code}：{detail}",
@@ -180,6 +181,12 @@ class OpenAICompatibleClient:
                 )
                 if not retryable:
                     raise last_error from error
+            except LLMRequestError as error:
+                # 空正文、缺少 choices 等响应级错误属于可重试故障，必须
+                # 消耗本次请求的重试预算，而不是直接中断整个影子任务。
+                last_error = error
+                if not error.retryable:
+                    raise
             except (TimeoutError, URLError, OSError, json.JSONDecodeError) as error:
                 last_error = LLMRequestError(
                     f"模型请求失败：{type(error).__name__}：{error}",

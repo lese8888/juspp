@@ -26,6 +26,14 @@ on:
           - en
           - ja
           - ko
+      content_mode:
+        description: 内容模式
+        required: true
+        default: mixed
+        type: choice
+        options:
+          - mixed
+          - digest
 
 permissions:
   contents: read
@@ -51,8 +59,25 @@ jobs:
         run: |
           mkdir -p .shadow-output
           printf '%s\n' '{"status":"not_started","shadow":true,"productionFilesModified":false}' > .shadow-output/translation-report.json
+      - name: 恢复影子翻译缓存
+        uses: actions/cache@v4
+        with:
+          path: .shadow-cache
+          key: youwen-shadow-cache-v1-${{ runner.os }}-${{ hashFiles('translation/**/*.py', 'shadow_translate.py', '.agent-baselines/news-75-1fd6c3b33383.json') }}
+          restore-keys: |
+            youwen-shadow-cache-v1-${{ runner.os }}-
       - name: 运行影子任务测试
-        run: python -m unittest discover -s tests -p "test_shadow_translation.py"
+        run: |
+          python -m unittest \
+            tests.test_shadow_mixed \
+            tests.test_shadow_translation \
+            tests.test_budget_limits \
+            tests.test_llm_faults \
+            tests.test_digest \
+            tests.test_segmentation \
+            tests.test_full_l10n \
+            tests.test_translation_gates \
+            tests.test_translation_cache
       - name: 生成影子候选
         env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
@@ -60,22 +85,34 @@ jobs:
           LLM_MODEL: ${{ vars.LLM_MODEL || 'deepseek-chat' }}
           LLM_TIMEOUT_SECONDS: '120'
           LLM_MAX_RETRIES: '3'
-          LLM_CONCURRENCY: '4'
+          LLM_CONCURRENCY: '3'
           LLM_JSON_MODE: '1'
           LLM_ARTICLE_OUTPUT_TOKENS: '16000'
           LLM_TEMPERATURE: '0.2'
+          LLM_MAX_COST_CNY_PER_RUN: '20'
+          LLM_HARD_DEADLINE_MINUTES: '60'
           LLM_PRICE_INPUT_CNY_PER_M: ${{ vars.LLM_PRICE_INPUT_CNY_PER_M || '2.0' }}
           LLM_PRICE_OUTPUT_CNY_PER_M: ${{ vars.LLM_PRICE_OUTPUT_CNY_PER_M || '8.0' }}
         run: |
           if [ "${{ inputs.language }}" != "all" ]; then
             python shadow_translate.py \
               --engine "${{ inputs.engine }}" \
+              --content-mode "${{ inputs.content_mode }}" \
               --limit "${{ inputs.limit }}" \
-              --language "${{ inputs.language }}"
+              --language "${{ inputs.language }}" \
+              --input .agent-baselines/news-75-1fd6c3b33383.json \
+              --cache-dir .shadow-cache \
+              --max-cost-cny 20 \
+              --hard-deadline-minutes 60
           else
             python shadow_translate.py \
               --engine "${{ inputs.engine }}" \
-              --limit "${{ inputs.limit }}"
+              --content-mode "${{ inputs.content_mode }}" \
+              --limit "${{ inputs.limit }}" \
+              --input .agent-baselines/news-75-1fd6c3b33383.json \
+              --cache-dir .shadow-cache \
+              --max-cost-cny 20 \
+              --hard-deadline-minutes 60
           fi
       - name: 上传影子候选与报告
         if: always()
@@ -93,7 +130,10 @@ jobs:
             echo "## 游闻 LLM 影子验证"
             echo
             echo "- 引擎：${{ inputs.engine }}"
+            echo "- 内容模式：${{ inputs.content_mode }}"
             echo "- 抽样数：${{ inputs.limit }}"
+            echo "- 费用硬上限：¥20"
+            echo "- 硬截止：60分钟"
             echo "- 生产文件：未修改"
             echo "- 发布动作：未执行"
             echo "- 候选数据：请下载本次 artifact 查看"

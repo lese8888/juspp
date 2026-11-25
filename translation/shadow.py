@@ -17,6 +17,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from .glossary import Glossary, load_glossary
 from .llm import ChatUsage, OpenAICompatibleClient
+from .routing import CONTENT_ROUTING_VERSION, route_content
 
 
 SUPPORTED_LANGUAGES = ("zh-CN", "zh-TW", "en", "ja", "ko")
@@ -26,7 +27,8 @@ DEFAULT_MAX_BODY_CHARS = 24000
 DEFAULT_PRICE_INPUT_CNY_PER_M = 2.0
 DEFAULT_PRICE_OUTPUT_CNY_PER_M = 8.0
 
-SYSTEM_PROMPT = """你是资深游戏媒体编辑。你会收到一篇英文游戏新闻，
+SYSTEM_PROMPT = """你是资深游戏媒体编辑。你会收到一篇游戏新闻，
+来源可能是英文、中文或其他语言，请按原始事实完成目标语言处理。
 请为目标语言完成三件事：
 1. 翻译标题；
 2. 翻译来源摘要；
@@ -449,6 +451,7 @@ def _article_prompt(article: dict[str, Any], language: str, glossary: Glossary) 
             "内容总结目标": "中文、日文、韩文 450–580 字；英文 250–380 词",
             "术语对照": terms,
             "新闻": {
+                "sourceLanguage": article.get("sourceLanguage", "unknown"),
                 "title": article.get("originalTitle", ""),
                 "summary": article.get("originalSummary", ""),
                 "body": article.get("originalContent", ""),
@@ -916,6 +919,7 @@ def run_shadow(
             for language in SUPPORTED_LANGUAGES
             if language in generated
         }
+        planned_route = route_content(article)
         output_articles.append(
             {
                 "id": identifier,
@@ -924,11 +928,12 @@ def run_shadow(
                 "sourceKey": article.get("sourceKey"),
                 "sourceTypeKey": article.get("sourceTypeKey"),
                 "categoryKey": article.get("categoryKey"),
-                "sourceLanguage": article.get("sourceLanguage", "en"),
+                "sourceLanguage": planned_route.source_language,
                 "publishedAt": article.get("publishedAt"),
                 "timestamp": int(article.get("timestamp") or 0),
                 "heatScore": int(article.get("heatScore") or 0),
                 "sourceHash": source_hash(article),
+                "plannedRouting": planned_route.as_dict(),
                 "originalTitle": article.get("originalTitle"),
                 "originalSummary": article.get("originalSummary"),
                 "translations": generated,
@@ -953,6 +958,16 @@ def run_shadow(
                 "partialShadow": bool(config.language),
             }
         )
+
+    planned_policy_counts = {"full_l10n": 0, "digest": 0}
+    planned_route_warnings: dict[str, int] = {}
+    for article in output_articles:
+        route = article["plannedRouting"]
+        planned_policy_counts[route["contentPolicy"]] += 1
+        for warning in route["warnings"]:
+            planned_route_warnings[warning] = (
+                planned_route_warnings.get(warning, 0) + 1
+            )
 
     total_usage = ChatUsage()
     request_count = 0
@@ -982,6 +997,9 @@ def run_shadow(
             "promptVersion": "shadow-v1",
             "glossaryVersion": glossary.version,
             "contentPolicy": CONTENT_MODE,
+            "contentRoutingVersion": CONTENT_ROUTING_VERSION,
+            "plannedPolicyCounts": planned_policy_counts,
+            "plannedRouteWarnings": planned_route_warnings,
             "digestChars": 500,
             "articlesSelected": len(selected),
             "articlesGenerated": len(output_articles),
@@ -1009,6 +1027,9 @@ def run_shadow(
         "tokens": shadow_news["translation"]["tokens"],
         "estimatedCostCny": round(estimated_cost, 6),
         "durationSeconds": duration_seconds,
+        "contentRoutingVersion": CONTENT_ROUTING_VERSION,
+        "plannedPolicyCounts": planned_policy_counts,
+        "plannedRouteWarnings": planned_route_warnings,
         "truncatedBodies": body_truncated,
         "failures": failures,
         "warnings": warnings,

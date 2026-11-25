@@ -261,6 +261,21 @@ class ShadowTranslationTests(unittest.TestCase):
             self.assertEqual(input_file.read_bytes(), before)
             self.assertTrue((root / "shadow" / "news.shadow.json").is_file())
             self.assertTrue((root / "shadow" / "translation-report.json").is_file())
+            shadow = json.loads(
+                (root / "shadow" / "news.shadow.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertTrue(
+                all(
+                    item["plannedRouting"]["contentPolicy"] == "full_l10n"
+                    for item in shadow["articles"]
+                )
+            )
+            self.assertEqual(
+                result["plannedPolicyCounts"],
+                {"full_l10n": 3, "digest": 0},
+            )
             self.assertFalse(result["productionFilesModified"])
             self.assertEqual(report, original)
 

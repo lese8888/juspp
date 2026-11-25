@@ -1,8 +1,7 @@
 name: 游闻多语言新闻采集
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  # 冻结期只允许人工触发；恢复前必须接入新闻冻结写入门禁。
   workflow_dispatch:
 
 permissions:
