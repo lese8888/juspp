@@ -73,7 +73,7 @@ KOREAN_MAN_PARTICLE = (
 )
 COMPOSITE_NUMBER_PATTERN = re.compile(
     rf"(?<![A-Za-z0-9.])(?P<major>{NUMBER_TOKEN_PATTERN})\s*"
-    rf"(?P<major_unit>亿|億|万|萬|억(?![\uac00-\ud7a3])|"
+    rf"(?P<major_unit>亿|億|万|萬|千萬|千万|천만|억(?![\uac00-\ud7a3])|"
     rf"만(?![\uac00-\ud7a3]){KOREAN_MAN_PARTICLE})\s*"
     rf"(?:(?P<minor>{NUMBER_TOKEN_PATTERN})"
     rf"(?:\s*(?P<minor_unit>千萬|千万|천만|万|萬|亿|億|千|천|만(?![\uac00-\ud7a3]){KOREAN_MAN_PARTICLE}))?)?",
@@ -176,6 +176,7 @@ def _parse_number_token(value: str) -> float:
 
 def _parse_chinese_number(value: str) -> int | None:
     digits = {
+        "一": 1,
         "二": 2,
         "三": 3,
         "四": 4,
@@ -364,9 +365,15 @@ def extract_numbers(text: str) -> set[str]:
     if re.search(r"\bhalf(?!-)\b", normalized_text):
         values.add("50")
     for match in re.finditer(
-        r"([二三四五六七八九十]{1,3})(?=次|个|名|款|代|年|位|家|月|日|大|周|小时|分钟)",
+        r"([一二三四五六七八九十]{1,3})(?=次|个|名|款|代|年|位|家|月|日|大|周|小时|分钟|章|篇|集|季|级|区|阶段)",
         normalized_text,
     ):
+        if (
+            match.group(1) == "一"
+            and normalized_text[match.end():match.end() + 1]
+            in {"个", "名", "款", "位", "家"}
+        ):
+            continue
         number = _parse_chinese_number(match.group(1))
         if number is not None:
             values.add(str(number))
