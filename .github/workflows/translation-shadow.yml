@@ -114,6 +114,12 @@ jobs:
               --max-cost-cny 20 \
               --hard-deadline-minutes 60
           fi
+      - name: 生成离线审核页
+        if: always()
+        run: |
+          if [ -f .shadow-output/news.shadow.json ]; then
+            node scripts/build-shadow-review.mjs .shadow-output
+          fi
       - name: 上传影子候选与报告
         if: always()
         uses: actions/upload-artifact@v4

@@ -55,6 +55,19 @@ const itemCount = Array.isArray(news.items)
 
 const generatedAt =
   news.generatedAt || news.generated_at || news.generated || "未记录";
+const fullCount = Number(
+  report?.actualPolicyCounts?.full_l10n ??
+  news.actualPolicyCounts?.full_l10n ??
+  0,
+);
+const digestCount = Number(
+  report?.actualPolicyCounts?.digest ??
+  news.actualPolicyCounts?.digest ??
+  0,
+);
+const contentModeLabel = digestCount
+  ? `混合模式（完整译文 ${fullCount} / 内容摘要 ${digestCount}）`
+  : `完整五语译文（${fullCount || itemCount} 篇）`;
 const runId = /llm-\d+/.exec(runDir)?.[0] || "shadow-run";
 const sampleItem = news.items?.[0] || news.articles?.[0] || {};
 const sampleTranslation =
@@ -426,7 +439,7 @@ const html = `<!doctype html>
       <div class="run-meta">
         <span>运行编号 <code>${escapeHtml(runId)}</code></span>
         <span>生成时间 ${escapeHtml(generatedAt)}</span>
-        <span>内容模式 ${escapeHtml(news.contentMode || news.mode || "digest")}</span>
+        <span>内容模式 ${escapeHtml(contentModeLabel)}</span>
       </div>
     </div>
   </header>
@@ -440,7 +453,7 @@ const html = `<!doctype html>
     </section>
 
     <div class="notice">
-      影子候选采用约 500 字内容总结，不包含原文正文；线上生产内容仍是原有完整五语正文。审核重点：事实、数字、日期、价格、平台、游戏名与厂商名，以及各语言是否自然。
+      影子候选内容模式：${escapeHtml(contentModeLabel)}。候选仍只保存在离线目录，尚未进入生产。审核重点：事实、数字、日期、价格、平台、游戏名与厂商名，以及各语言是否自然。
     </div>
 
     <section class="toolbar" aria-label="筛选工具">

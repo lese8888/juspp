@@ -1,14 +1,14 @@
-# S4 真实全文影子准备状态
+# S4 真实全文影子状态
 
-> 生成日期：2026-11-24（香港时间）
-> 状态：**真实20篇影子已完成；20/20通过自动闸门，等待人工五语质量审核**
+> 更新日期：2026-11-25（香港时间）
+> 状态：**真实20篇与75篇影子均已完成；75/75通过自动闸门，等待人工五语质量签收**
 
 ## 一、已完成
 
 - S1 冻结基线、逐篇哈希、写入门禁、调度审计通过；
 - S2 全文翻译、长文分段、摘要、质量闸门和缓存模块通过；
 - S3 混合影子链路通过；
-- 75 篇冻结副本 mock 冒烟为 75/75，计划与实际模式均为 `full_l10n`；
+- 真实 75 篇影子运行 `45549719200` 通过，计划与实际模式均为 `full_l10n`；
 - `npm run check` 全量通过，共 147 次测试执行，去重后 140 项；
 - 401、429、5xx、超时、空正文和无效 JSON 故障注入通过；
 - 生产 `news.json`、`rss.xml` 未被修改；
@@ -86,10 +86,16 @@ engineering_ready: true
 budget_approved_cny: 20
 hard_deadline_minutes: 60
 real_model_shadow: passed_20_of_20
-real_model_final_run: 45535747280
-real_model_cost_cny: 2.108750
-real_model_duration_seconds: 465.425
-cumulative_shadow_cost_cny: 15.567440
+real_model_final_run: 45549719200
+real_model_cost_cny: 10.284478
+real_model_duration_seconds: 2115.944
+full_shadow_generated_articles: 75
+full_shadow_generated_expected: 75
+full_shadow_hard_failures: 0
+full_shadow_warning_count: 244
+full_shadow_budget_exceeded: false
+full_shadow_deadline_exceeded: false
+full_shadow_cumulative_cost_cny: 31.752156
 manual_quality_review: pending
 production_switch_ready: false
 news_75_frozen: true
