@@ -293,7 +293,15 @@ def _gate_candidate(
     """对真实模型候选执行统一质量闸门；缓存命中结果也重新验证。"""
 
     return validate_translation(
-        source_text=str(article.get("originalContent") or ""),
+        source_text="\n".join(
+            str(article.get(field) or "")
+            for field in (
+                "originalTitle",
+                "originalSummary",
+                "originalContent",
+            )
+        ),
+        source_body_text=str(article.get("originalContent") or ""),
         candidate_title=candidate.title,
         candidate_summary=candidate.summary,
         candidate_content=candidate.content,
@@ -488,6 +496,7 @@ def run_mixed_shadow(
                             "failures": [
                                 issue.code for issue in candidate.gate.hard_failures
                             ],
+                            "gate": candidate.gate.as_dict(),
                         }
                     )
                     continue

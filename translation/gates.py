@@ -88,6 +88,7 @@ class GateReport:
 def validate_translation(
     *,
     source_text: str,
+    source_body_text: str | None = None,
     candidate_title: str,
     candidate_summary: str,
     candidate_content: str,
@@ -120,6 +121,11 @@ def validate_translation(
         _hard(failures, "internal_placeholder", "候选包含内部术语占位符")
 
     source = str(source_text or "")
+    source_body = (
+        str(source_body_text)
+        if source_body_text is not None
+        else source
+    )
     if target_language in VALID_LANGUAGES and fields["content"]:
         language = detect_dominant_language(fields["content"])
         metrics["detectedLanguage"] = language
@@ -169,7 +175,7 @@ def validate_translation(
 
     if content_policy == "full_l10n":
         _validate_full_l10n(
-            source=source,
+            source=source_body,
             candidate=fields["content"],
             segments=segments,
             failures=failures,

@@ -89,6 +89,23 @@ class FakeLLM:
         )
 
 
+class NumberMetadataClient:
+    model = "fake-model"
+
+    def complete_json(self, *, system_prompt, user_prompt):
+        return (
+            {
+                "title": "GTA 6 新消息",
+                "summary": "2026 年报道提到 3900 万玩家。",
+                "content": (
+                    "GTA 6 的相关消息在 2026 年获得确认，报道同时提到 3900 万玩家，"
+                    "内容保持完整并覆盖标题与来源摘要中的数字。"
+                ),
+            },
+            ChatUsage(input_tokens=10, output_tokens=20),
+        )
+
+
 class MixedShadowTests(unittest.TestCase):
     def test_mock_mixed_route_generates_five_languages_and_keeps_input_unchanged(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -318,6 +335,31 @@ class MixedShadowTests(unittest.TestCase):
             self.assertEqual(report["status"], "failed")
             self.assertEqual(len(client.calls), 0)
             self.assertTrue(report["budget"]["budgetExceeded"])
+
+    def test_gate_compares_numbers_from_title_summary_and_body(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            article = short_article()
+            article["originalTitle"] = "GTA 6 reaches 39 million players"
+            article["originalSummary"] = "The 2026 launch attracted 39 million players."
+            article["originalContent"] = (
+                "The launch attracted a large audience. "
+                "The company confirmed the result in a public statement."
+            )
+            input_file = write_document(root, [article])
+            report = run_mixed_shadow(
+                MixedShadowConfig(
+                    input_file=input_file,
+                    output_dir=root / "shadow",
+                    limit=1,
+                    engine="llm",
+                    language="zh-CN",
+                ),
+                client=NumberMetadataClient(),
+                zh_tw_converter=lambda value: value,
+            )
+            self.assertEqual(report["status"], "passed", report)
+            self.assertEqual(report["generatedArticles"], 1)
 
     def test_shadow_cli_parses_mixed_and_digest_modes(self):
         import shadow_translate
